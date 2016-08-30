@@ -1,0 +1,16 @@
+&mksrfexp
+fgswpmask   = ''
+fgridname   = ''
+fdemname    = '/home/zhq/colmCN/rawdata/DEM-USGS.30s'
+fmaskname   = '/home/zhq/colmCN/rawdata/LWMASK-USGS.30s'
+flandname   = '/home/zhq/colmCN/rawdata/VEG-USGS.30s'
+fsolaname   = '/home/zhq/colmCN/rawdata/SOILCAT.30s'
+fsolbname   = '/home/zhq/colmCN/rawdata/SOILCATB.30s'
+fsurdat     = '/p2/zhq/CoLM_PRC/site15/RSTDAT/srfdat.site15'
+lon_points  =  1
+lat_points  =  1
+edgen       =  3.
+edgee       =  -67.
+edges       =  2.
+edgew       =  -68.
+/

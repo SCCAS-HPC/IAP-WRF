@@ -1,0 +1,20 @@
+
+Creating initial files for BNUESM model:
+
+1. mksrfdata_rdgrd/
+   a) genlandat_MOM4p1.ncl : T42_MOM4p1_surf.bin => mask_3527-data.128x064.nc
+   b) define MOM4p1 in mksrfdata.F90 to produce srfdata for BNUESM model
+
+2. mkinidata/
+   a) input file : inidat.stdin.T42.MOM4p1
+   b) create 4 files for main/ : CoLM_T42_MOM4p1_const, CoLM_T42_MOM4p1_gridata,
+                                 CoLM_T42_MOM4p1_restart-1990-001-01800, CoLM_T42_MOM4p1_sbcini
+
+
+Creating initial files for BNUESM model with carbon:
+
+1. use mksrfdata/mksrfdata_rdgrd to make surface dataset
+
+2. use mkpft to make baresoil suitable for CoLM-DGVM
+
+3. use mkinidatac to make initial condition files for CoLM-DGVM ( compiled with big_endian support )

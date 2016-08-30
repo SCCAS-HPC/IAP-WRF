@@ -1,0 +1,8 @@
+
+files need removed:
+
+hdinti.F90, hordif.F90£¬settau.F90, stats.F90, trunc.F90, tstep.F90
+
+plevs0.F90 from slt to dynamics/iap
+
+restart , beglat--> beglatdyn ????

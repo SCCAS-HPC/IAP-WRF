@@ -1,0 +1,143 @@
+#
+
+LN      =       ln -sf
+MAKE    =       make -i -r
+RM      =       rm -f
+
+MODULES =  \
+	module_stringutil.o \
+	misc_definitions_module.o \	
+	parallel_module.o \
+	cio.o \
+	read_geogrid.o \
+	hash_module.o \	
+	smooth_module.o \
+	module_debug.o \	
+	bitarray_module.o \
+	queue_module.o \
+	list_module.o \	
+	gridinfo_module.o \
+	interp_module.o \
+	llxy_module.o \
+	source_data_module.o \	
+	proc_point_module.o \
+	process_tile_module.o \
+	module_metgrid.o \
+	module_real.o 
+	
+OBJS    =
+
+LIBPATHS =
+
+LIBTARGET    =  prepare
+TARGETDIR    =  ./
+$(LIBTARGET) :  $(MODULES) $(OBJS)
+		$(AR) $(ARFLAGS) ../main/$(LIBWRFLIB) $(MODULES) $(OBJS)
+
+include ../configure.wrf
+
+clean:
+	@ echo 'use the clean script'
+
+# DEPENDENCIES : only dependencies after this line (don't remove the word DEPENDENCIES)
+
+
+# this already built above :../dyn_em/module_initialize.real.o 
+
+parallel_module.o: \
+	../frame/module_dm.o
+	../frame/module_atm_communicator.o
+
+module_debug.o: \
+	../prep/parallel_module.o \
+	../prep/cio.o	
+	
+bitarray_module.o: \
+	../prep/module_debug.o
+	
+list_module.o: \
+	../prep/module_debug.o
+
+queue_module.o: \
+	../prep/module_debug.o
+
+smooth_module.o: \
+	../prep/parallel_module.o
+	
+gridinfo_module.o: \
+	../frame/constants_module.o \
+	../prep/misc_definitions_module.o \
+	../prep/module_debug.o \
+	../frame/module_driver_constants.o 
+
+interp_module.o : \	
+	../prep/bitarray_module.o \
+	../prep/misc_definitions_module.o \
+	../prep/module_debug.o \
+	../prep/queue_module.o
+	
+llxy_module.o: \
+	../prep/gridinfo_module.o \
+	../prep/list_module.o \
+	../share/module_llxy.o \
+	../prep/module_debug.o \
+	../prep/misc_definitions_module.o
+
+source_data_module.o: \
+	../prep/hash_module.o \
+	../prep/list_module.o \
+	../prep/module_debug.o \
+	../prep/misc_definitions_module.o \
+	../prep/gridinfo_module.o \
+	../prep/stringutil.o \
+	../prep/llxy_module.o \
+	../oreo/read_geogrid.o 	
+   
+proc_point_module: \
+	../prep/bitarray_module.o \
+	../prep/hash_module.o \
+	../prep/misc_definitions_module.o \
+	../prep/module_debug.o \
+	../prep/source_data_module.o \
+	../prep/llxy_module.o \
+	../prep/interp_module.o 	
+	
+process_tile_module.o: \
+	../prep/bitarray_module.o \
+	../prep/interp_module.o \
+	../prep/llxy_module.o \
+	../prep/misc_definitions_module.o \
+	../prep/proc_point_module.o \
+	../prep/queue_module.o \
+	../prep/source_data_module.o \
+	../prep/hash_module.o \
+	../frame/constants_module.o \     
+	../frame/module_domain.o \ 
+	../frame/module_domain_type.o \ 
+	../prep/gridinfo_module.o 	
+      
+module_metgrid.o: \
+	../frame/module_domain_type.o \
+	../frame/module_domain.o \
+	../share/module_llxy.o \
+	../prep/gridinfo_module.o \
+	../prep/llxy_module.o \
+	../prep/list_module.o \
+	../prep/module_debug.o \
+	../prep/process_tile_module.o \
+	../prep/source_data_module.o
+
+module_real.o: \
+	../frame/module_machine.o \
+	../frame/module_domain.o \
+	../frame/module_driver_constants.o \
+	../frame/module_configure.o \
+	../frame/module_timing.o \
+	../frame/module_dm.o \
+	../dyn_em/module_big_step_utilities_em.o \
+	../dyn_em/module_initialize_real.o \
+	../share/module_io_domain.o \
+	../share/module_date_time.o \
+	../share/module_optional_input.o \
+	../share/module_bc_time_utilities.o 	
+# DO NOT DELETE

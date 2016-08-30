@@ -1,0 +1,23 @@
+ &clmexp
+ site           = 'T42'
+ fgrid          = '/home/jidy/CoLM_csm/data/CoLM_T42_CCSM35_gridata'
+ flai           = ''
+ fmet           = '/home/jidy/swgfs/Princeton_30MIN'
+ fout           = '/home/jidy/CoLM_csm/output/global'
+ fconst         = '/home/jidy/CoLM_csm/data/CoLM_T42_CCSM35_const'
+ frestart       = 
+ '/home/jidy/CoLM_csm/data/CoLM_T42_CCSM35_restart-1990-001-01800'
+ frestcpl       = ''
+ lugrid         =          130
+ lusbcini       =          140
+ lulai          =          150
+ lumet          =          160
+ luhistory      =          170
+ lurestart      =          180
+ luconst        =          190
+ lon_points     =          128
+ lat_points     =           64
+ numpatch       =        15069
+ mstep          =       150000
+ dtime          =    1800.00000000000     
+ /

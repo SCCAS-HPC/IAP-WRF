@@ -1,0 +1,151 @@
+#!/bin/csh -f
+
+#-------------------------------------------------------
+# [1] Set necessary environment variables
+#-------------------------------------------------------
+
+#setenv FC xlf
+#setenv FC pgi
+setenv FC ifort
+
+setenv ROOTDIR $HOME/CoLM
+
+# 1. set clm include directory root
+setenv CLM_INCDIR $ROOTDIR/include
+
+# 2. set clm raw land data directory root
+setenv CLM_RAWDIR $ROOTDIR/rawdata
+
+# 3. set clm surface data rectory root
+setenv CLM_SRFDIR $ROOTDIR/mksrfdata
+
+# 4. set clm input data directory root
+setenv CLM_DATADIR $ROOTDIR/data
+
+# 5. set clm initial directory root
+setenv CLM_INIDIR $ROOTDIR/mkinidata
+
+# 6. set clm source directory root
+setenv CLM_SRCDIR $ROOTDIR/main
+
+# 7. set executable directory
+setenv CLM_EXEDIR $ROOTDIR/run
+
+# 8. set output directory
+setenv CLM_OUTDIR $ROOTDIR/output
+	
+mkdir -p $CLM_OUTDIR
+
+#------------------------------------------------------
+# build define.h in ./include directory
+#------------------------------------------------------
+
+\cat >! $CLM_INCDIR/define.h << EOF
+#undef  coup_atmosmodel
+#undef  RDGRID
+#undef  SOILINI
+#define offline
+#define USGS
+#define EcoDynamics
+#define LANDONLY
+#undef  LAND_SEA
+#undef  SINGLE_POINT
+#define WR_MONTHLY
+EOF
+
+#-------------------------------------------------------
+# [2] compling and executing clm surface data making
+#-------------------------------------------------------
+
+# Compile
+cd $CLM_SRFDIR
+make -f Makefile.${FC} clean
+make -f Makefile.${FC} >>& $CLM_EXEDIR/compile.log.clm || exit 5
+
+cp -f ./srf.x $CLM_EXEDIR/srf.x
+
+# Create an input parameter namelist file
+\cat >! $CLM_EXEDIR/srfdat.stdin << EOF
+&mksrfexp
+fmetmask   = ''
+fgridname  = ''
+fdemname   = '$CLM_RAWDIR/DEM-USGS.30s'
+fmaskname  = '$CLM_RAWDIR/LWMASK-USGS.30s'
+flandname  = '$CLM_RAWDIR/VEG-USGS.30s'
+fsolaname  = '$CLM_RAWDIR/SOILCAT.30s'
+fsolbname  = '$CLM_RAWDIR/SOILCATB.30s'
+fsurdat    = '$CLM_DATADIR/srfdata.valdai'
+lon_points = 1
+lat_points = 1
+edgen      = 57.625
+edgee      = 33.125
+edges      = 57.575
+edgew      = 33.075
+/
+EOF
+
+# Executing clm initialization'
+
+$CLM_EXEDIR/srf.x < $CLM_EXEDIR/srfdat.stdin >& $CLM_EXEDIR/clm.log.srf || exit 5
+
+echo 'CLM Making Surface Data Completed'
+
+#-------------------------------------------------------
+# [3] compling and executing clm initialization
+#-------------------------------------------------------
+
+# Compile
+cd $CLM_INIDIR
+make -f Makefile.${FC} clean
+make -f Makefile.${FC} >>& $CLM_EXEDIR/compile.log.clm || exit 5
+
+cp -f ./initial.x $CLM_EXEDIR/initial.x
+
+# Create an input parameter namelist file
+\cat >! $CLM_EXEDIR/inidat.stdin << EOF
+&clminiexp
+site           = 'Valdai'
+greenwich      = .false.
+start_yr       =  1966
+start_jday     =  1
+start_sec      =  0
+fsurdat        = '$CLM_DATADIR/srfdata.valdai'
+flaidat        = ' '
+fsoildat       = '$CLM_DATADIR/soilini'
+fmetdat        = '$CLM_DATADIR/VAL.DAT.CTRL.INT'
+fhistTimeConst = '$CLM_OUTDIR/VALDAI-rstTimeConst'
+fhistTimeVar   = '$CLM_OUTDIR/VALDAI-rstTimeVar'
+foutdat        = '$CLM_OUTDIR/VALDAI'
+finfolist      = '$CLM_EXEDIR/clmini.infolist'
+lon_points     =  1
+lat_points     =  1
+deltim         =  1800
+mstep          =  315552
+/
+EOF
+
+# Executing clm initialization'
+
+$CLM_EXEDIR/initial.x < $CLM_EXEDIR/inidat.stdin >& $CLM_EXEDIR/clm.log.initial || exit 5
+
+echo 'CLM Initialization Completed'
+
+#-------------------------------------------------------
+# [4] compiling and executing clm model
+#-------------------------------------------------------
+
+# Compile
+cd $CLM_SRCDIR
+make -f Makefile.${FC} clean
+make -f Makefile.${FC} >>& $CLM_EXEDIR/compile.log.clm || exit 5
+
+cp -f ./clm.x $CLM_EXEDIR/clm.x
+
+mv -f $CLM_EXEDIR/clmini.infolist $CLM_EXEDIR/timeloop.stdin
+
+# Executing clm'
+
+$CLM_EXEDIR/clm.x < $CLM_EXEDIR/timeloop.stdin >& $CLM_EXEDIR/clm.log.timeloop || exit 5
+
+echo 'CLM Running Completed'
+

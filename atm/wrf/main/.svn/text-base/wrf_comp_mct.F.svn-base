@@ -1,0 +1,1951 @@
+!WRF:DRIVER_LAYER:TOP
+
+MODULE wrf_comp_mct
+!<DESCRIPTION>
+! This module defines top-level wrf_init_mct(), wrf_run_mct(), and wrf_final_mct()
+! routines.
+! by juanxiong he, 2010/05/09	
+!</DESCRIPTION>
+
+#ifdef CCSMCOUPLED
+#ifdef SEQ_MCT
+
+  use mct_mod
+  use esmf_mod, CCSM_Clock=>ESMF_Clock
+  use seq_flds_mod
+  use seq_flds_indices
+  use seq_cdata_mod
+  use seq_infodata_mod
+  use seq_timemgr_mod
+  use seq_comm_mct, only:seq_comm_iamroot,seq_comm_iamin
+  use shr_file_mod     , only: shr_file_getunit, shr_file_freeunit, &
+                               shr_file_setLogUnit, shr_file_setLogLevel, &
+                               shr_file_getLogUnit, shr_file_getLogLevel, &
+		               shr_file_setIO
+  use shr_sys_mod      , only: shr_sys_flush, shr_sys_abort
+
+#endif
+#endif   
+! for WRF
+	
+   USE module_machine
+   USE module_domain
+   USE module_domain_type
+   USE module_integrate
+   USE module_driver_constants
+   USE module_configure
+   USE module_io_domain
+   USE module_io
+   USE module_io_wrf
+   USE module_timing
+   USE module_utility  ! for using ESMF function in WRF
+   USE module_wrf_error
+ 
+   use module_real  ! for vertical interpolation
+   use module_geogrid ! for map info, terrain and surface layer
+   use gridinfo_module ! for project type
+   use list_module  ! for list delete
+   use module_llxy ! for ijll_latlon
+   use llxy_module ! for projstack information
+   
+   USE module_atm_communicator, only: mpi_communicator_atm
+#ifdef DM_PARALLEL
+   USE module_dm
+#endif
+
+implicit none
+!
+! coupler
+!
+#ifdef CCSMCOUPLED
+#ifdef SEQ_MCT
+
+#if defined(DM_PARALLEL) 
+     include "mpif.h"
+#endif
+!--------------------------------------------------------------------------
+! Public interfaces
+!--------------------------------------------------------------------------
+
+  public :: wrf_init_mct
+  public :: wrf_run_mct
+  public :: wrf_final_mct
+
+!--------------------------------------------------------------------------
+! Private interfaces
+!--------------------------------------------------------------------------
+
+  private :: atm_SetgsMap_mct
+  private :: atm_import_mct
+  private :: atm_export_mct
+  private :: atm_domain_mct
+  private :: atm_read_srfrest_mct
+  private :: atm_write_srfrest_mct
+  
+  private :: atm_SetgsMap_cam ! juanxiong he for wrf/cam coupling
+  private :: atm_domain_cam ! juanxiong he for wrf/cam coupling
+  private :: atm_import_cam  ! juanxiong he for wrf/cam coupling
+  private :: atm_export_cam ! juanxiong he for wrf/cam coupling
+
+!--------------------------------------------------------------------------
+! Private data
+!--------------------------------------------------------------------------
+
+  type(mct_aVect)   :: a2x_a_SNAP
+  type(mct_aVect)   :: a2x_a_SUM
+
+! both projection and structure cam grid defined in module_metgrid
+
+! camgrid decomposition on wrf processors  
+  integer, pointer, dimension(:,:) :: processors
+  integer, dimension(2) :: buffer
+  integer :: atmroot
+  integer :: mpi_ierr
+
+  integer, parameter :: r8 = 8
+
+! Time averaged counter for flux fields
+  integer :: avg_count
+
+! Time averaged flux fields
+  character(*), parameter :: a2x_avg_flds = "Faxa_rainc:Faxa_rainl:Faxa_snowc:Faxa_snowl"  
+!
+! Are all surface types present   
+!
+  logical :: lnd_present ! if true => land is present
+  logical :: ocn_present ! if true => ocean is present
+     
+!  integer :: iulog  ! for I/O
+  logical :: exists
+
+  integer :: ATMID
+  
+#endif
+#endif
+
+!  wrf
+	
+   REAL    :: time
+   integer :: loop       ! loop=1 input all new fields, loop>1 onlu bdy and fdda 
+   INTEGER :: levels_to_process
+
+   TYPE (domain) , POINTER :: keep_grid, grid_ptr, null_domain
+   TYPE (grid_config_rec_type), SAVE :: config_flags
+   INTEGER                 :: number_at_same_level
+   INTEGER                 :: time_step_begin_restart
+
+   INTEGER :: max_dom , domain_id , fid , oid , idum1 , idum2 , ierr
+   INTEGER :: debug_level
+   LOGICAL :: input_from_file
+
+#ifdef DM_PARALLEL
+   INTEGER                 :: nbytes
+   INTEGER, PARAMETER      :: configbuflen = 4* CONFIG_BUF_LEN
+   INTEGER                 :: configbuf( configbuflen )
+   LOGICAL , EXTERNAL      :: wrf_dm_on_monitor
+#endif
+
+   CHARACTER ( 80)      :: rstname
+   CHARACTER ( 80)      :: message
+
+   INTERFACE
+     SUBROUTINE Setup_Timekeeping( grid )
+      USE module_domain
+      TYPE(domain), POINTER :: grid
+     END SUBROUTINE Setup_Timekeeping
+
+#if (EM_CORE == 1)
+     SUBROUTINE wrf_dfi_write_initialized_state( )
+     END SUBROUTINE wrf_dfi_write_initialized_state
+
+     SUBROUTINE wrf_dfi_bck_init( )
+     END SUBROUTINE wrf_dfi_bck_init
+
+     SUBROUTINE wrf_dfi_fwd_init( )
+     END SUBROUTINE wrf_dfi_fwd_init
+
+     SUBROUTINE wrf_dfi_fst_init( )
+     END SUBROUTINE wrf_dfi_fst_init
+
+     SUBROUTINE wrf_dfi_array_reset ( )
+     END SUBROUTINE wrf_dfi_array_reset
+#endif
+   END INTERFACE
+
+CONTAINS
+
+      SUBROUTINE wrf_init_mct( &
+#ifdef CCSMCOUPLED
+#ifdef SEQ_MCT  
+      EClock, cdata_a, cdata_c, x2a_a, a2x_a, x2c_c, c2x_c,NLFilename,&
+#endif
+#endif
+      no_init1 )
+!<DESCRIPTION>
+!     WRF initialization routine.
+!</DESCRIPTION>
+#ifdef CCSMCOUPLED
+#ifdef SEQ_MCT  	
+      type(CCSM_Clock), intent(in)                 :: EClock
+      type(seq_cdata), intent(inout)              :: cdata_a
+      type(seq_cdata), intent(inout)              :: cdata_c  ! cam grid
+      type(mct_aVect), intent(inout)              :: x2a_a  ! wrf/pop/cice/lnd coupling
+      type(mct_aVect), intent(inout)              :: a2x_a  ! wrf/pop/cice/lnd coupling 
+      type(mct_aVect), intent(inout)              :: x2c_c  ! wrf/cam coupling
+      type(mct_aVect), intent(inout)              :: c2x_c  ! wrf/cam coupling     
+      character( *), optional,   intent(IN)    :: NLFilename ! Namelist filename
+#endif
+#endif
+      LOGICAL, OPTIONAL, INTENT(IN) :: no_init1
+!
+! Locals
+!
+#ifdef CCSMCOUPLED
+#ifdef SEQ_MCT
+      type(mct_gsMap), pointer   :: gsMap_atm
+      type(mct_gGrid), pointer   :: dom_a
+      type(mct_gsMap), pointer   :: gsMap_cc  ! cam grid
+      type(mct_gGrid), pointer   :: dom_c
+      type(seq_infodata_type),pointer :: infodata
+      integer :: mpicom_atm
+      integer :: lsize 
+      real(r8):: nextsw_cday      ! calendar of next atm shortwave		 
+      integer :: stepno           ! time step			 
+      integer :: dtime_sync       ! integer timestep size
+      integer :: currentymd       ! current year-month-day
+      integer :: dtime            ! time step increment (sec)
+      integer :: wrf_cpl_dt       ! driver atm coupling time step 
+      integer :: start_ymd        ! Start date (YYYYMMDD)
+      integer :: start_tod        ! Start time of day (sec)
+      integer :: restart_ymd        ! Start date (YYYYMMDD)
+      integer :: restart_tod        ! Start time of day (sec)
+      integer :: ref_ymd          ! Reference date (YYYYMMDD)
+      integer :: ref_tod          ! Reference time of day (sec)
+      integer :: stop_ymd         ! Stop date (YYYYMMDD)
+      integer :: stop_tod         ! Stop time of day (sec)
+      logical :: perpetual_run    ! If in perpetual mode or not
+      integer :: perpetual_ymd    ! Perpetual date (YYYYMMDD)
+      real(r8) :: eccen       ! Eccentricity of orbit
+      real(r8) :: mvelp       ! Locatn of vernal equinox
+      real(r8) :: obliqr      ! Obliquity in radians
+      real(r8) :: lambm0      ! Long of perh. radians
+      real(r8) :: mvelpp      ! Locatn of vernal equinox at perh. 
+      integer :: plon,plat    ! global grid number in the lon and lat direction
+      character( 80) :: start_type    ! Start type
+      character( 80) :: caseid     ! Short case identification
+      character( 80) :: ctitle       ! Long case description 
+      logical  :: adiabatic ! atm adiabatic mode
+      logical  :: ideal_phys! atm idealized-physics mode
+      logical   :: aqua_planet   ! aqua_planet mode
+      logical   :: brnch_retain_casename
+      logical    :: single_column
+      real (R8) :: scmlat
+      real (R8)  :: scmlon
+      integer :: nradt
+      integer :: nsrest 
+   
+      logical :: first_time = .true.
+      character( 80) :: calendar  ! Calendar type
+      character( 80) :: starttype ! infodata start type
+
+      TYPE(WRFU_Time) :: current_time
+      type(WRFU_TimeInterval) :: off     
+      integer :: ymd              ! WRF current date (YYYYMMDD)
+      integer :: yr               ! WRF current year
+      integer :: mon              ! WRF current month
+      integer :: day              ! WRF current day
+      integer :: hour             ! WRF current hour
+      integer :: minuate            ! WRF current minuate
+      integer :: second             ! WRF current second
+      integer :: tod              ! WRF current time of day (sec)
+      logical :: restart
+      real,dimension(:),allocatable::value
+     
+      integer :: ids,ide,jds,jde,kds,kde,ims,ime,jms,jme,kms,kme,ips,ipe,jps,jpe,kps,kpe,&
+                 start_year,start_month,start_day,start_hour,start_minute,start_second,&
+	         i,j,k,ig	
+      integer::n
+      
+      integer, dimension(MPI_STATUS_SIZE) :: mpi_stat
+      
+      LOGICAL , EXTERNAL      :: wrf_dm_on_monitor	
+      INTEGER :: mpicomcart
+      INTEGER, DIMENSION(2) :: dims, coords
+            
+#endif
+#endif
+	
+      INTEGER myproc,nproc,hostid,loccomm,ierr,buddcounter,mydevice
+      INTEGER, ALLOCATABLE :: hostids(:), budds(:)
+      CHARACTER*512 hostname
+
+#include "version_decl"
+
+!<DESCRIPTION>
+! Program_name, a global variable defined in frame/module_domain.F, is
+! set, then a routine <a href=init_modules.html>init_modules</a> is
+! called. This calls all the init programs that are provided by the
+! modules that are linked into WRF.  These include initialization of
+! external I/O packages.   Also, some key initializations for
+! distributed-memory parallelism occur here if DM_PARALLEL is specified
+! in the compile: setting up I/O quilt processes to act as I/O servers
+! and dividing up MPI communicators among those as well as initializing
+! external communication packages such as RSL or RSL_LITE.
+!
+!</DESCRIPTION>
+
+     program_name = "WRF " // TRIM(release_version) // " MODEL"
+
+#ifdef CCSMCOUPLED
+#ifdef SEQ_MCT
+
+! 
+! Get data from driver routine
+!
+   
+       call seq_cdata_setptrs(cdata_a, ID=ATMID, mpicom=mpicom_atm,&
+                          mpicomcart=mpicomcart,mpicomx=local_communicator_x,&
+                          mpicomy=local_communicator_y,ntasks=ntasks,ntasks_x=ntasks_x,ntasks_y=ntasks_y,& 
+                          gsMap=gsMap_atm, dom=dom_a, infodata=infodata)
+
+      call seq_cdata_setptrs(cdata_c, ID=ATMID, mpicom=mpicom_atm,&  ! for cam->wrf
+                          mpicomcart=mpicomcart,mpicomx=local_communicator_x,&
+                          mpicomy=local_communicator_y,ntasks=ntasks,ntasks_x=ntasks_x,ntasks_y=ntasks_y,& 
+                          gsMap=gsMap_cc, dom=dom_c, infodata=infodata)
+                          
+       if(first_time) then
+	    
+         mpi_communicator_atm=mpicom_atm  ! get ATM group communicator
+
+       if (seq_comm_iamroot(ATMID)) then
+          inquire(file='wrf_modelio.nml',exist=exists)
+          if (exists) then
+             iulog = shr_file_getUnit()
+             call shr_file_setIO('wrf_modelio.nml',iulog)
+          endif
+          write(iulog,*) "WRF initialization"
+       endif
+       
+       call shr_file_getLogUnit (shrlogunit)
+       call shr_file_getLogLevel(shrloglev)
+       call shr_file_setLogUnit (iulog)
+
+!       write(iulog,*)'********ATM communicator*********',mpi_communicator_atm,ATMID
+! 
+! Get data from infodata object
+!
+       call seq_infodata_GetData( infodata,                                           &
+            case_name=caseid, case_desc=ctitle,                                       &
+            start_type=starttype,                                                     &
+            orb_eccen=eccen, orb_mvelpp=mvelpp, orb_lambm0=lambm0, orb_obliqr=obliqr, &
+            lnd_present=lnd_present, ocn_present=ocn_present, atm_present=atm_present)
+    
+! Get nsrest from startup type methods
+!
+       if (     trim(starttype) == trim(seq_infodata_start_type_start)) then
+          nsrest = 0
+       else if (trim(starttype) == trim(seq_infodata_start_type_cont) ) then
+          nsrest = 1
+       else if (trim(starttype) == trim(seq_infodata_start_type_brnch)) then
+          nsrest = 3
+       else
+          write(iulog,*) 'wrf_init: ERROR: unknown starttype'
+          call shr_sys_abort()
+       end if
+#endif
+#endif
+!-----------------------------------------------
+   
+   ! Initialize WRF modules:
+   ! Phase 1 returns after MPI_INIT() (if it is called)
+      CALL init_modules(1)
+      IF ( .NOT. PRESENT( no_init1 ) ) THEN
+!     CALL WRFU_Initialize( defaultCalendar=WRFU_CAL_GREGORIAN )
+       CALL WRFU_Initialize( defaultCalendar=ESMF_CAL_NOLEAP )  ! follow the CCSM4
+      ENDIF
+   ! Phase 2 resumes after MPI_INIT() (if it is called)
+      CALL init_modules(2)
+
+!<DESCRIPTION>
+! The wrf namelist.input file is read and stored in the USE associated
+! structure model_config_rec, defined in frame/module_configure.F, by the
+! call to <a href=initial_config.html>initial_config</a>.  On distributed
+! memory parallel runs this is done only on one processor, and then
+! broadcast as a buffer.  For distributed-memory, the broadcast of the
+! configuration information is accomplished by first putting the
+! configuration information into a buffer (<a
+! href=get_config_as_buffer.html>get_config_as_buffer</a>), broadcasting
+! the buffer, then setting the configuration information (<a
+! href=set_config_as_buffer.html>set_config_as_buffer</a>).
+!
+!</DESCRIPTION>
+
+#ifdef DM_PARALLEL
+      IF ( wrf_dm_on_monitor() ) THEN
+       CALL initial_config
+      ENDIF
+      CALL get_config_as_buffer( configbuf, configbuflen, nbytes )
+      CALL wrf_dm_bcast_bytes( configbuf, nbytes )
+      CALL set_config_as_buffer( configbuf, configbuflen )
+
+! ---------------------------------------------------------------------
+! added by Juanxiong He
+! --------------------------------------------------------------------
+#ifdef CCSMCOUPLED
+#ifdef SEQ_MCT
+
+      CALL wrf_set_dm_communicator (mpicomcart)
+      write(iulog,*)'ntasks_x=',ntasks_x
+      write(iulog,*)'ntasks_y=',ntasks_y
+
+      CALL mpi_comm_rank( local_communicator, mytask, ierr )
+                 
+      CALL mpi_cart_coords( local_communicator, mytask, 2, coords, ierr )
+
+      mytask_x = coords(2)   ! col task (x)
+      mytask_y = coords(1)   ! row task (y)
+      CALL nl_set_nproc_x ( 1, ntasks_x )
+      CALL nl_set_nproc_y ( 1, ntasks_y )
+      
+      allocate(0:ntasks_x-1,0:ntasks_y-1)
+      processors(mytask_y,mytask_x)=mytask
+      if (seq_comm_iamroot(ATMID)) then
+         atmroot=mytask
+         do i=1,ntasks-1
+            call MPI_Recv(buffer, 2, MPI_INTEGER, i, MPI_ANY_TAG, comm, mpi_stat, mpi_ierr)
+            processors(buffer(1), buffer(2)) = mpi_stat(MPI_SOURCE)
+         end do
+      else
+         buffer(1) = mytask_x
+         buffer(2) = mytask_y
+         call MPI_Send(buffer, 2, MPI_INTEGER, 0, mytask, comm, mpi_ierr)
+      end if
+
+      do ix=0,nproc_x-1
+         do iy=0,nproc_y-1
+         call MPI_Bcast(processors(ix,iy), 1, MPI_INTEGER, atmroot, mpicom_atm, mpi_ierr)            
+         end do
+      end do
+           
+#else
+#endif
+#else	
+      CALL wrf_dm_initialize
+#endif
+! ---------------------------------------------------------------------
+! added by Juanxiong He
+! ---------------------------------------------------------------------
+
+#else
+      CALL initial_config
+#endif
+
+      CALL set_derived_rconfigs
+
+#ifdef RUN_ON_GPU
+      CALL wrf_get_myproc( myproc )
+      CALL wrf_get_nproc( nproc )
+      CALL wrf_get_hostid ( hostid )
+#ifdef DM_PARALLEL
+      CALL wrf_get_dm_communicator ( loccomm )
+      ALLOCATE( hostids(nproc) )
+      ALLOCATE( budds(nproc) )
+      CALL mpi_allgather( hostid, 1, MPI_INTEGER, hostids, 1, MPI_INTEGER, loccomm, ierr )
+      if ( ierr .NE. 0 ) write(0,*)__FILE__,__LINE__,'error in mpi_allgather ',ierr
+      budds = -1
+      buddcounter = 0
+   ! mark the ones i am on the same node with
+      DO i = 1, nproc
+        IF ( hostid .EQ. hostids(i) ) THEN
+           budds(i) = buddcounter
+           buddcounter = buddcounter + 1
+        ENDIF
+      ENDDO
+      mydevice = budds(myproc+1)
+      DEALLOCATE( hostids )
+      DEALLOCATE( budds )
+#else
+      mydevice = 0
+#endif
+      CALL wsm5_gpu_init( myproc, nproc, mydevice )
+#endif
+
+!<DESCRIPTION>
+! Among the configuration variables read from the namelist is
+! debug_level. This is retrieved using nl_get_debug_level (Registry
+! generated and defined in frame/module_configure.F).  The value is then
+! used to set the debug-print information level for use by <a
+! href=wrf_debug.html>wrf_debug</a> throughout the code. Debug_level
+! of zero (the default) causes no information to be printed when the
+! model runs. The higher the number (up to 1000) the more information is
+! printed.
+!
+!</DESCRIPTION>
+
+      CALL nl_get_debug_level ( 1, debug_level )
+      CALL set_wrf_debug_level ( debug_level )
+
+   ! allocated and configure the mother domain
+
+      NULLIFY( null_domain )
+
+!<DESCRIPTION>
+! RSL is required for WRF nesting options.
+! The non-MPI build that allows nesting is only supported on machines
+! with the -DSTUBMPI option.  Check to see if the WRF model is being asked
+! for a for a multi-domain run (max_dom > 1, from the namelist).  If so,
+! then we check to make sure that we are under the parallel
+! run option or we are on an acceptable machine.
+!</DESCRIPTION>
+
+     CALL nl_get_max_dom( 1, max_dom )
+     IF ( max_dom > 1 ) THEN
+#if ( ! defined(DM_PARALLEL)  &&   ! defined(STUBMPI) )
+     CALL wrf_error_fatal( &
+     'nesting requires either an MPI build or use of the -DSTUBMPI option' )
+#endif
+     END IF
+
+!<DESCRIPTION>
+! The top-most domain in the simulation is then allocated and configured
+! by calling <a href=alloc_and_configure_domain.html>alloc_and_configure_domain</a>.
+! Here, in the case of this root domain, the routine is passed the
+! globally accessible pointer to TYPE(domain), head_grid, defined in
+! frame/module_domain.F.  The parent is null and the child index is given
+! as negative, signifying none.  Afterwards, because the call to
+! alloc_and_configure_domain may modify the model's configuration data
+! stored in model_config_rec, the configuration information is again
+! repacked into a buffer, broadcast, and unpacked on each task (for
+! DM_PARALLEL compiles). The call to <a
+! href=setup_timekeeping.html>setup_timekeeping</a> for head_grid relies
+! on this configuration information, and it must occur after the second
+! broadcast of the configuration information.
+!
+!</DESCRIPTION>
+     CALL       wrf_message ( program_name )
+     CALL       wrf_debug ( 100 , 'wrf: calling alloc_and_configure_domain ' )
+     CALL alloc_and_configure_domain ( domain_id  = 1 ,                  &
+                                     grid       = head_grid ,          &
+                                     parent     = null_domain ,        &
+                                     kid        = -1                   )
+
+     CALL       wrf_debug ( 100 , 'wrf: calling model_to_grid_config_rec ' )
+     CALL model_to_grid_config_rec ( head_grid%id , model_config_rec , config_flags )
+     CALL       wrf_debug ( 100 , 'wrf: calling set_scalar_indices_from_config ' )
+     CALL set_scalar_indices_from_config ( head_grid%id , idum1, idum2 )
+     CALL       wrf_debug ( 100 , 'wrf: calling init_wrfio' )
+     CALL init_wrfio
+
+#ifdef DM_PARALLEL
+     CALL get_config_as_buffer( configbuf, configbuflen, nbytes )
+     CALL wrf_dm_bcast_bytes( configbuf, nbytes )
+     CALL set_config_as_buffer( configbuf, configbuflen )
+#endif
+
+#if (EM_CORE == 1)
+! In case we are doing digital filter initialization, set dfi_stage = DFI_SETUP
+!   to indicate in Setup_Timekeeping that we want forecast start and
+!   end times at this point
+     IF ( head_grid%dfi_opt .NE. DFI_NODFI ) head_grid%dfi_stage = DFI_SETUP
+#endif		      
+!
+! Initialize wrf time manager
+!
+     CALL Setup_Timekeeping (head_grid)
+
+	
+! ---------------------------------------------------------------------
+! initialize geogrid information firstly, since atm_domain_mct and
+! atm_domain_cam need projection information	
+! added by Juanxiong He
+! ---------------------------------------------------------------------                    
+       
+      ! initialize the geograph information of all domains
+      call init_geogrid
+       
+      call nl_get_restart(1,restart)
+      if(.not.restart) then
+          call geogrid(head_grid, 1)
+      endif
+     
+! ---------------------------------------------------------------------
+! added by Juanxiong He
+! ---------------------------------------------------------------------     
+     
+! ---------------------------------------------------------------------
+! Check consistency of outside clock and WRF clock
+! Check consistency of restart time information with input clock
+! added by Juanxiong He
+! ---------------------------------------------------------------------	
+#ifdef CCSMCOUPLED
+#ifdef SEQ_MCT
+!
+! Initialize time manager (outside clock).
+!
+       call seq_timemgr_EClockGetData(EClock, &
+                                      start_ymd=start_ymd, start_tod=start_tod, &
+                                      ref_ymd=ref_ymd, ref_tod=ref_tod,         &
+                                      stop_ymd=stop_ymd, stop_tod=stop_tod,     &
+                                      calendar=calendar )   
+		
+!
+! Initialize MCT gsMap, domain and attribute vectors
+!
+        call atm_SetgsMap_mct( head_grid, mpicom_atm, ATMID, gsMap_atm )
+        lsize = mct_gsMap_lsize(gsMap_atm, mpicom_atm)
+!
+! Initialize MCT domain 
+!
+        call atm_domain_mct( head_grid, lsize, gsMap_atm, dom_a )
+!
+! Initialize MCT attribute vectors
+!
+        call mct_aVect_init(a2x_a, rList=seq_flds_a2x_fields, lsize=lsize)
+        call mct_aVect_zero(a2x_a)
+       
+        call mct_aVect_init(x2a_a, rList=seq_flds_x2a_fields, lsize=lsize) 
+        call mct_aVect_zero(x2a_a)
+       
+        call mct_aVect_init(a2x_a_SNAP, rList=a2x_avg_flds, lsize=lsize)
+        call mct_aVect_zero(a2x_a_SNAP)
+       
+        call mct_aVect_init(a2x_a_SUM , rList=a2x_avg_flds, lsize=lsize)
+        call mct_aVect_zero(a2x_a_SUM )         
+
+       ! initial processors map
+        call atm_SetgsMap_cam(head_grid, mpicom_atm, ATMID, gsMap_cc )  
+        lsize = mct_gsMap_lsize(gsMap_cc, mpicom_atm)
+       
+        ! initial domain       
+        call atm_domain_cam( lsize, gsMap_cc, dom_c ) 
+
+       ! initial bundle vector       
+        call mct_aVect_init(x2c_c, rList=seq_flds_x2w_fields, lsize=lsize) 
+        call mct_aVect_zero(x2c_c)
+       
+        call mct_aVect_init(c2x_c, rList=seq_flds_w2x_fields, lsize=lsize)
+        call mct_aVect_zero(c2x_c)        
+        
+!
+! Initialize averaging counter
+!
+        avg_count = 0   
+!
+! Set flag to specify that an extra albedo calculation is to be done (i.e. specify active)
+!		
+        
+        plon=ide-ids  
+        plat=jde-jds  
+        
+        call seq_infodata_PutData(infodata, wrf_prognostic=.true.)
+        call seq_infodata_PutData(infodata, wrf_nx=plon, wrf_ny=plat)
+!
+! Set time step of radiation computation as the current calday
+! This will only be used on the first timestep of an initial run
+!
+
+       write(iulog,*)'plon=',plon,mytask 
+       write(iulog,*)'plat=',plat,mytask
+                       
+       first_time = .false.
+       write(iulog,*) '******local comunicator*******',local_communicator
+	  
+       call shr_file_setLogUnit (shrlogunit)
+       call shr_file_setLogLevel(shrloglev)
+
+    else
+       
+       call shr_file_getLogUnit (shrlogunit)
+       call shr_file_getLogLevel(shrloglev)
+       call shr_file_setLogUnit (iulog)       
+!<DESCRIPTION>
+! The head grid is initialized with read-in data through the call to <a
+! href=med_initialdata_input.html>med_initialdata_input</a>, which is
+! passed the pointer head_grid and a locally declared configuration data
+! structure, config_flags, that is set by a call to <a
+! href=model_to_grid_config_rec.html>model_to_grid_config_rec</a>.  It is
+! also necessary that the indices into the 4d tracer arrays such as
+! moisture be set with a call to <a
+! href=set_scalar_indices_from_config.html>set_scalar_indices_from_config</a>
+! prior to the call to initialize the domain.  Both of these calls are
+! told which domain they are setting up for by passing in the integer id
+! of the head domain as <tt>head_grid%id</tt>, which is 1 for the
+! top-most domain.
+!
+! In the case that write_restart_at_0h is set to true in the namelist,
+! the model simply generates a restart file using the just read-in data
+! and then shuts down. This is used for ensemble breeding, and is not
+! typically enabled.
+!
+!</DESCRIPTION>
+	
+! ---------------------------------------------------------------------
+! initial dataset of wrf comes from cam
+! initialize other domains	
+! added by Juanxiong He
+! ---------------------------------------------------------------------                    
+       
+      ! import cam data from coupler and prepare initial dataset
+      loop=0
+      call atm_import_cam(x2c_c, head_grid, loop )
+	
+      CALL med_initialdata_input( head_grid , config_flags )
+       
+      !initial nest domains 
+      call init_nest_domain(head_grid)
+     
+! ---------------------------------------------------------------------
+! added by Juanxiong He
+! ---------------------------------------------------------------------
+	
+      IF ( config_flags%write_restart_at_0h ) THEN
+        CALL med_restart_out ( head_grid, config_flags )
+#ifndef AUTODOC_BUILD
+! prevent this from showing up before the call to integrate in the autogenerated call tree
+        CALL wrf_debug ( 0 , ' 0 h restart only wrf: SUCCESS COMPLETE WRF' )
+! TBH:  $$$ Unscramble this later...
+! TBH:  $$$ Need to add state to avoid calling wrf_finalize() twice when ESMF
+! TBH:  $$$ library is used.  Maybe just set clock stop_time=start_time and
+! TBH:  $$$ do0com not call wrf_finalize here...
+        CALL wrf_final_mct( )
+#endif
+      END IF
+
+! set default values for subtimes
+      head_grid%start_subtime = domain_get_start_time ( head_grid )
+      head_grid%stop_subtime = domain_get_stop_time ( head_grid )
+        
+       call shr_file_setLogUnit (shrlogunit)
+       call shr_file_setLogLevel(shrloglev)
+       
+    end if
+     
+#endif
+#endif
+   END SUBROUTINE wrf_init_mct
+
+   SUBROUTINE wrf_run_mct(&
+#ifdef CCSMCOUPLED
+#ifdef SEQ_MCT   
+   EClock, cdata_a, cdata_c, x2a_a, a2x_a, x2c_c, c2x_c &
+#endif
+#endif
+   )
+!<DESCRIPTION>
+!     WRF run routine.
+!</DESCRIPTION>
+
+!<DESCRIPTION>
+! Once the top-level domain has been allocated, configured, and
+! initialized, the model time integration is ready to proceed.  The start
+! and stop times for the domain are set to the start and stop time of the
+! model run, and then <a href=integrate.html>integrate</a> is called to
+! advance the domain forward through that specified time interval.  On
+! return, the simulation is completed.
+!
+!</DESCRIPTION>
+
+!  The forecast integration for the most coarse grid is now started.  The
+!  integration is from the first step (1) to the last step of the simulation.
+!-----------------------------------------------------------------------
+!
+! Arguments
+!
+#ifdef CCSMCOUPLED
+#ifdef SEQ_MCT	
+    type(CCSM_Clock)            ,intent(in)    :: EClock
+    type(seq_cdata)             ,intent(inout) :: cdata_a
+    type(seq_cdata)             ,intent(inout) :: cdata_c
+    type(mct_aVect)             ,intent(inout) :: x2a_a
+    type(mct_aVect)             ,intent(inout) :: a2x_a
+    type(mct_aVect)             ,intent(inout) :: x2c_c
+    type(mct_aVect)             ,intent(inout) :: c2x_c
+
+!
+! Local variables
+!
+    type(seq_infodata_type),pointer :: infodata
+    integer :: lsize           ! size of attribute vector
+    integer :: DTime_Sync      ! integer timestep size
+    integer :: iradsw          ! shortwave radation frequency (time steps)
+    logical :: dosend          ! true => send data back to driver
+    integer :: dtime           ! time step increment (sec)
+    integer :: wrf_cpl_dt      ! driver atm coupling time step
+    integer :: ymd_sync        ! Sync date (YYYYMMDD)
+    integer :: yr_sync         ! Sync current year
+    integer :: mon_sync        ! Sync current month
+    integer :: day_sync        ! Sync current day
+    integer :: tod_sync        ! Sync current time of day (sec)
+    real(r8):: nextsw_cday     ! calendar of next atm shortwave
+    logical :: rstwr           ! .true. ==> write restart file before returning
+    logical :: nlend           ! Flag signaling last time-step
+    logical :: rstwr_sync      ! .true. ==> write restart file before returning
+    logical :: nlend_sync      ! Flag signaling last time-step
+    logical :: first_time = .true.    
+    
+    TYPE(WRFU_Time) :: current_time
+    type(WRFU_TimeInterval) :: off
+    integer :: ymd             ! WRF current date (YYYYMMDD)
+    integer :: yr              ! WRF current year
+    integer :: mon             ! WRF current month
+    integer :: day             ! WRF current day
+    integer :: hour             ! WRF current hour
+    integer :: minuate            ! WRF current minuate
+    integer :: second             ! WRF current second
+    integer :: tod             ! WRF current time of day (sec)
+    integer :: nstep           ! WRF nstep
+    
+    integer :: ids,ide,jds,jde,kds,kde,ims,ime,jms,jme,kms,kme,ips,ipe,jps,jpe,kps,kpe,&
+		i,j,ig
+    real(r8)::tv
+    real :: st
+    
+#endif
+#endif    
+!-----------------------------------------------------------------------
+
+#ifdef CCSMCOUPLED
+#ifdef SEQ_MCT
+
+! Note that sync clock time should match wrf time at end of time step/loop not beginning
+
+       call seq_cdata_setptrs(cdata_a, infodata=infodata)
+       call seq_timemgr_EClockGetData(EClock,curr_ymd=ymd_sync,curr_tod=tod_sync, &
+             curr_yr=yr_sync,curr_mon=mon_sync,curr_day=day_sync)
+
+       nlend_sync = seq_timemgr_StopAlarmIsOn(EClock)
+       rstwr_sync = seq_timemgr_RestartAlarmIsOn(EClock)
+
+    
+! Cycle over all time steps in a wrf radiation coupling interval
+
+       dosend = .false.
+       do while (.not. dosend)
+
+!        write(iulog,*)  'wrf: calling integrate' 
+
+        call domain_clock_get(head_grid, current_time=current_time)
+        call WRFU_timeget(current_time, yy=yr, mm=mon, dd=day, h=hour, m=minuate, s=second)
+        ymd = yr*10000 + mon*100 + day
+        tod = hour*3600+minuate*60+second
+        write(iulog,*) ymd,tod
+#endif
+#endif
+
+        call integrate ( head_grid)
+
+#ifdef CCSMCOUPLED
+#ifdef SEQ_MCT
+
+!      write(iulog,*)  'wrf: back from integrate' 
+
+! Determine if dosend
+! When time is not updated at the end of the loop - then return only if
+! are in sync with clock before time is updated
+
+        call domain_clock_get(head_grid, current_time=current_time)
+        call WRFU_timeget(current_time, yy=yr, mm=mon, dd=day, h=hour, m=minuate, s=second)
+        ymd = yr*10000 + mon*100 + day
+        tod = hour*3600+minuate*60+second
+        dosend = (seq_timemgr_EClockDateInSync( EClock, ymd, tod))
+       
+! Determine if time to write wrf restart and stop
+
+        rstwr = .false.
+        if (rstwr_sync .and. dosend) rstwr = .true.
+        nlend = .false.
+        if (nlend_sync .and. dosend) nlend = .true.
+
+! Map output from wrf to mct data structures
+             
+! Compute snapshot attribute vector for accumulation
+
+! don't accumulate on first coupling freq ts1 and ts2
+! for consistency with ccsm3 when flxave is off       
+        nstep = head_grid%itimestep        
+        if (nstep <= 2) then
+          call mct_aVect_copy( a2x_a, a2x_a_SUM )
+          avg_count = 1
+        else
+          call mct_aVect_copy( a2x_a, a2x_a_SNAP )
+          call mct_aVect_accum( aVin=a2x_a_SNAP, aVout=a2x_a_SUM )
+          avg_count = avg_count + 1
+        endif
+
+       end do
+
+! Finish accumulation of attribute vector and average and copy accumulation
+! field into output attribute vector
+
+       call mct_aVect_avg ( a2x_a_SUM, avg_count)
+       call mct_aVect_copy( a2x_a_SUM, a2x_a )
+       call mct_aVect_zero( a2x_a_SUM)
+       avg_count = 0
+
+! Get time of next radiation calculation - albedos will need to be
+! calculated by each surface model at this time
+
+       call seq_timemgr_EClockGetData(Eclock,dtime=wrf_cpl_dt)
+       call domain_clock_get( head_grid, current_time=current_time)
+       call WRFU_TimeIntervalSet( off, s=wrf_cpl_dt)
+       current_time = current_time + off
+       call WRFU_TimeGet( current_time, dayOfYear_r8=nextsw_cday)
+
+! Check for consistency of internal wrf clock with master sync clock
+
+      call domain_clock_get(head_grid, current_time=current_time)    
+      call WRFU_timeget(current_time, yy=yr, mm=mon, dd=day, h=hour, m=minuate, s=second)
+      ymd = yr*10000 + mon*100 + day
+      tod = hour*3600+minuate*60+second
+       
+      if ( .not. seq_timemgr_EClockDateInSync( EClock, ymd, tod ) )then
+       call seq_timemgr_EClockGetData(EClock, curr_ymd=ymd_sync, curr_tod=tod_sync )
+       write(iulog,*)  ' wrf ymd=',ymd     ,'  wrf tod= ',tod 
+       write(iulog,*)  ' sync ymd=',ymd_sync,' sync tod= ',tod_sync
+       call shr_sys_abort()
+      end if
+      
+      ! Map input from mct to wrf data structure
+
+       loop=loop+1
+       loop=mod(loop,24) !input every 6 days
+       if(loop.eq.0) loop=1
+       call atm_import_cam(x2c_c, head_grid, loop ) 
+
+#endif
+#endif
+   END SUBROUTINE wrf_run_mct
+
+   SUBROUTINE wrf_final_mct( no_shutdown )
+!<DESCRIPTION>
+!     WRF finalize routine.
+!</DESCRIPTION>
+
+!<DESCRIPTION>
+! A Mediation Layer-provided
+! subroutine, <a href=med_shutdown_io.html>med_shutdown_io</a> is called
+! to allow the the model to do any I/O specific cleanup and shutdown, and
+! then the WRF Driver Layer routine <a
+! href=wrf_shutdown.html>wrf_shutdown</a> (quilt servers would be
+! directed to shut down here) is called to properly end the run,
+! including shutting down the communications (for example, most comm
+! layers would call MPI_FINALIZE at this point if they're using MPI).
+!
+!</DESCRIPTION>
+     LOGICAL, OPTIONAL, INTENT(IN) :: no_shutdown
+
+
+#if CCSMCOUPLED
+#if SEQ_MCT
+
+         ! release memory used by module_real
+         IF ( ALLOCATED ( ubdy3dtemp1 ) ) DEALLOCATE ( ubdy3dtemp1 )
+         IF ( ALLOCATED ( vbdy3dtemp1 ) ) DEALLOCATE ( vbdy3dtemp1 )
+         IF ( ALLOCATED ( tbdy3dtemp1 ) ) DEALLOCATE ( tbdy3dtemp1 )
+         IF ( ALLOCATED ( pbdy3dtemp1 ) ) DEALLOCATE ( pbdy3dtemp1 )
+         IF ( ALLOCATED ( qbdy3dtemp1 ) ) DEALLOCATE ( qbdy3dtemp1 )
+         IF ( ALLOCATED ( mbdy2dtemp1 ) ) DEALLOCATE ( mbdy2dtemp1 )
+         IF ( ALLOCATED ( ubdy3dtemp2 ) ) DEALLOCATE ( ubdy3dtemp2 )
+         IF ( ALLOCATED ( vbdy3dtemp2 ) ) DEALLOCATE ( vbdy3dtemp2 )
+         IF ( ALLOCATED ( tbdy3dtemp2 ) ) DEALLOCATE ( tbdy3dtemp2 )
+         IF ( ALLOCATED ( pbdy3dtemp2 ) ) DEALLOCATE ( pbdy3dtemp2 )
+         IF ( ALLOCATED ( qbdy3dtemp2 ) ) DEALLOCATE ( qbdy3dtemp2 )
+         IF ( ALLOCATED ( mbdy2dtemp2 ) ) DEALLOCATE ( mbdy2dtemp2 )
+         
+         ! release memory used by module_geogrid
+         call datalist_destroy()
+     
+#endif
+#endif
+          
+     ! shut down I/O
+     CALL med_shutdown_io ( head_grid , config_flags )
+     CALL       wrf_debug ( 100 , 'wrf: back from med_shutdown_io' )
+
+     CALL       wrf_debug (   0 , 'wrf: SUCCESS COMPLETE WRF' )
+
+     ! Call wrf_shutdown() (which calls MPI_FINALIZE()
+     ! for DM parallel runs).
+     IF ( .NOT. PRESENT( no_shutdown ) ) THEN
+     ! Finalize time manager
+     deallocate(processors)
+     CALL WRFU_Finalize
+     CALL wrf_shutdown
+     
+     ENDIF
+
+   END SUBROUTINE wrf_final_mct
+
+   SUBROUTINE wrf_dfi()
+
+#if CCSMCOUPLED
+#if SEQ_MCT
+#else
+#endif
+#else
+   
+!<DESCRIPTION>
+! Runs a digital filter initialization procedure.
+!</DESCRIPTION>
+      IMPLICIT NONE
+
+#if (EM_CORE == 1)
+      ! Initialization procedure
+      IF ( config_flags%dfi_opt .NE. DFI_NODFI ) THEN
+
+         SELECT CASE ( config_flags%dfi_opt )
+
+            CASE (DFI_DFL)
+               wrf_err_message = 'Initializing with DFL'
+               CALL wrf_message(TRIM(wrf_err_message))
+
+               wrf_err_message = '   Filtering forward in time'
+               CALL wrf_message(TRIM(wrf_err_message))
+
+               CALL wrf_dfi_fwd_init()
+               CALL wrf_run_mct()
+
+               CALL wrf_dfi_array_reset()
+
+               CALL wrf_dfi_fst_init()
+
+               IF ( config_flags%dfi_write_filtered_input ) THEN
+                  CALL wrf_dfi_write_initialized_state()
+               END IF
+
+            CASE (DFI_DDFI)
+               wrf_err_message = 'Initializing with DDFI'
+               CALL wrf_message(TRIM(wrf_err_message))
+
+               wrf_err_message = '   Integrating backward in time'
+               CALL wrf_message(TRIM(wrf_err_message))
+
+               CALL wrf_dfi_bck_init()
+               CALL wrf_run_mct()
+
+               wrf_err_message = '   Filtering forward in time'
+               CALL wrf_message(TRIM(wrf_err_message))
+
+               CALL wrf_dfi_fwd_init()
+               CALL wrf_run_mct()
+
+               CALL wrf_dfi_array_reset()
+
+               CALL wrf_dfi_fst_init()
+
+               IF ( config_flags%dfi_write_filtered_input ) THEN
+                  CALL wrf_dfi_write_initialized_state()
+               END IF
+
+            CASE (DFI_TDFI)
+               wrf_err_message = 'Initializing with TDFI'
+               CALL wrf_message(TRIM(wrf_err_message))
+
+               wrf_err_message = '   Integrating backward in time'
+               CALL wrf_message(TRIM(wrf_err_message))
+
+               CALL wrf_dfi_bck_init()
+               CALL wrf_run_mct()
+
+               CALL wrf_dfi_array_reset()
+
+               wrf_err_message = '   Filtering forward in time'
+               CALL wrf_message(TRIM(wrf_err_message))
+
+               CALL wrf_dfi_fwd_init()
+               CALL wrf_run_mct()
+
+               CALL wrf_dfi_array_reset()
+
+               CALL wrf_dfi_fst_init()
+
+               IF ( config_flags%dfi_write_filtered_input ) THEN
+                  CALL wrf_dfi_write_initialized_state()
+               END IF
+
+            CASE DEFAULT
+               wrf_err_message = 'Unrecognized DFI_OPT in namelist'
+               CALL wrf_error_fatal(TRIM(wrf_err_message))
+
+         END SELECT
+
+      END IF
+#endif
+#endif
+   END SUBROUTINE wrf_dfi
+
+   SUBROUTINE set_derived_rconfigs
+!<DESCRIPTION>
+! Some derived rconfig entries need to be set based on the value of other,
+! non-derived entries before package-dependent memory allocation takes place.
+! This might be employed when, for example, we want to allocate arrays in
+! a package that depends on the setting of two or more namelist variables.
+! In this subroutine, we do just that.
+!</DESCRIPTION>
+
+      IMPLICIT NONE
+
+      INTEGER :: i
+
+
+#if (EM_CORE == 1)
+      IF ( model_config_rec % dfi_opt .EQ. DFI_NODFI ) THEN
+        DO i = 1, model_config_rec % max_dom
+           model_config_rec % mp_physics_dfi(i) = -1
+        ENDDO
+      ELSE
+        DO i = 1, model_config_rec % max_dom
+           model_config_rec % mp_physics_dfi(i) = model_config_rec % mp_physics(i)
+        ENDDO
+      END IF
+#endif
+
+#if (DA_CORE == 1)
+      IF ( model_config_rec % dyn_opt .EQ. 2 ) THEN
+        DO i = 1, model_config_rec % max_dom
+           model_config_rec % mp_physics_4dvar(i) = -1
+        ENDDO
+      ELSE
+        DO i = 1, model_config_rec % max_dom
+           model_config_rec % mp_physics_4dvar(i) = model_config_rec % mp_physics(i)
+        ENDDO
+      END IF
+#endif
+
+   END SUBROUTINE set_derived_rconfigs
+   
+!================================================================================
+#ifdef CCSMCOUPLED
+#ifdef SEQ_MCT
+
+    subroutine atm_SetgsMap_mct( grid, mpicom_atm, ATMID, GSMap_atm )
+
+!-------------------------------------------------------------------
+!
+! Arguments
+!
+    TYPE(domain) , POINTER :: grid
+    integer        , intent(in)  :: mpicom_atm
+    integer        , intent(in)  :: ATMID
+    type(mct_gsMap), intent(out) :: GSMap_atm
+!
+! Local variables
+!
+    integer, allocatable :: gindex(:)
+    integer :: i, j, k, n,lsize,gsize
+    integer :: ids,ide,jds,jde,kds,kde,ims,ime,jms,jme,kms,kme,ips,ipe,jps,jpe,kps,kpe
+    integer :: ier            ! error status
+!-------------------------------------------------------------------
+! Build the atmosphere grid numbering for MCT
+! NOTE:  Numbering scheme is: West to East and South to North
+! starting at south pole.  Should be the same as what's used in SCRIP
+! Determine global seg map
+    call get_ijk_from_grid (  grid ,                   &
+                              ids, ide, jds, jde, kds, kde,    &
+                              ims, ime, jms, jme, kms, kme,    &
+                              ips, ipe, jps, jpe, kps, kpe    )
+    if(jpe.eq.jde) jpe=jpe-1
+    if(ipe.eq.ide) ipe=ipe-1
+			      
+    lsize=0
+    do j=jps, jpe             
+       do i=ips,ipe
+             lsize = lsize+1  !local index
+       end do
+    end do
+
+!    gsize=(ide-ids+1)*(jde-jds+1)
+    gsize=(ide-ids)*(jde-jds)
+    allocate(gindex(lsize))
+
+    n=0
+    do j=jps, jpe             
+       do i=ips,ipe
+          n=n+1
+!          gindex(n) = (j-1)*(ide-ids+1)+i  ! global index
+          gindex(n) = (j-1)*(ide-ids)+i  ! global index
+       end do
+    end do
+
+    call mct_gsMap_init( gsMap_atm, gindex, mpicom_atm, ATMID, lsize, gsize)
+
+    deallocate(gindex)
+
+  end subroutine atm_SetgsMap_mct
+
+!===============================================================================
+
+  subroutine atm_import_mct( x2a_a, grid )
+
+!-----------------------------------------------------------------------
+!
+! Arguments
+!
+    TYPE(domain) , POINTER:: grid
+    type(mct_aVect)   , intent(inout) :: x2a_a
+
+!
+! Local variables
+!		
+    integer  :: mype            ! processor ID
+    integer  :: m             ! indices
+    integer  :: i,j,k,ig  ! indices    
+    integer :: ids,ide,jds,jde,kds,kde,ims,ime,jms,jme,kms,kme,ips,ipe,jps,jpe,kps,kpe    
+    logical :: intp
+    logical,save :: first_time=.true.
+    real :: ust, & ! friction velocity
+            znt ! roughness length
+            
+    real,dimension(:,:),allocatable :: taux,tauy    
+!-----------------------------------------------------------------------
+!
+! wrf sign convention is that fluxes are positive downward
+
+       call shr_file_getLogUnit (shrlogunit)
+       call shr_file_getLogLevel(shrloglev)
+       call shr_file_setLogUnit (iulog)
+
+	       
+       call shr_file_setLogUnit (shrlogunit)
+       call shr_file_setLogLevel(shrloglev)
+     
+  end subroutine atm_import_mct
+
+!===============================================================================
+
+  subroutine atm_export_mct( grid, a2x_a )
+  
+  USE module_state_description
+!-------------------------------------------------------------------
+!
+! Arguments
+!
+    TYPE(domain) , POINTER:: grid
+    type(mct_aVect)    , intent(out) :: a2x_a
+!
+! Local variables
+!
+    real :: u_phy,v_phy
+    real(r8)::z,tv,rd,g,xlapse,alpha,tstar,tt0,alph,beta,psfc,pslv,p
+    integer :: i,j,k,ig       ! indices    
+    integer :: ids,ide,jds,jde,kds,kde,ims,ime,jms,jme,kms,kme,ips,ipe,jps,jpe,kps,kpe
+!-----------------------------------------------------------------------
+! Copy from component arrays into chunk array data structure
+! Rearrange data from chunk structure into lat-lon buffer and subsequently
+! create attribute vector
+
+    
+    call shr_file_getLogUnit (shrlogunit)
+    call shr_file_getLogLevel(shrloglev)
+    call shr_file_setLogUnit (iulog)
+
+       call shr_file_setLogUnit (shrlogunit)
+       call shr_file_setLogLevel(shrloglev)    
+
+  end subroutine atm_export_mct
+
+!===============================================================================
+
+  subroutine atm_domain_mct( grid, lsize, gsMap_a, dom_a )
+
+!-------------------------------------------------------------------
+! Arguments
+!
+    TYPE(domain) , POINTER:: grid
+    integer        , intent(in)   :: lsize
+    type(mct_gsMap), intent(in)   :: gsMap_a
+    type(mct_ggrid), intent(inout):: dom_a    
+!
+! Local Variables
+!
+    integer  :: i,j,k,m,n           ! indices	
+    integer :: ids,ide,jds,jde,kds,kde,ims,ime,jms,jme,kms,kme,ips,ipe,jps,jpe,kps,kpe
+    real(r8),dimension(:,:,:),allocatable :: ew_vert,ns_vert,xcenterlat,xcenterlon ! vertex of cell    
+    real(r8),dimension(:,:),allocatable :: area          ! area in radians squared for each grid point
+    real(r8), pointer  :: data(:)     ! temporary
+    integer , pointer  :: idata(:)    ! temporary  
+
+! Initialize mct atm domain
+
+         call mct_gGrid_init( GGrid=dom_a, CoordChars=trim(seq_flds_dom_coord), OtherChars=trim(seq_flds_dom_other), lsize=lsize )
+
+! Allocate memory
+
+         allocate(data(lsize))
+ 
+! Initialize attribute vector with special value
+
+         call mct_gsMap_orderedPoints(gsMap_a, mytask, idata)
+         call mct_gGrid_importIAttr(dom_a,'GlobGridNum',idata,lsize)
+
+! Determine domain (numbering scheme is: West to East and South to North to South pole)
+! Initialize attribute vector with special value
+
+        data(:) = -9999.0_R8 
+        call mct_gGrid_importRAttr(dom_a,"lat"  ,data,lsize) 
+        call mct_gGrid_importRAttr(dom_a,"lon"  ,data,lsize) 
+        call mct_gGrid_importRAttr(dom_a,"area" ,data,lsize) 
+        call mct_gGrid_importRAttr(dom_a,"aream",data,lsize) 
+        data(:) = 0.0_R8     
+        call mct_gGrid_importRAttr(dom_a,"mask" ,data,lsize) 
+        data(:) = 1.0_R8
+        call mct_gGrid_importRAttr(dom_a,"frac" ,data,lsize)
+
+!
+! Fill in correct values for domain components
+!
+       call get_ijk_from_grid (grid ,                   &
+                               ids, ide, jds, jde, kds, kde,    &
+                               ims, ime, jms, jme, kms, kme,    &    
+		       	       ips, ipe, jps, jpe, kps, kpe    )
+    
+       if(jpe.eq.jde) jpe=jpe-1
+       if(ipe.eq.ide) ipe=ipe-1
+    
+       m=2*(ide-ids)+3 ! 50km shrink to 25km, so the gridcorner of 50km is the center of 25km
+       n=2*(jde-jds)+3
+	
+       allocate(area(ips:ipe,jps:jpe))
+       allocate(xcenterlat(1:m,1:n,1:1))
+       allocate(xcenterlon(1:m,1:n,1:1))
+       allocate(ew_vert(4,ids:ide,jds:jde))
+       allocate(ns_vert(4,ids:ide,jds:jde))
+
+! lat	
+       n=0
+       do j=jps, jpe             
+         do i=ips, ipe
+            n = n+1
+            data(n) = grid%xlat(i,j)
+         end do
+       end do
+       call mct_gGrid_importRAttr(dom_a,"lat",data,lsize) 
+
+! lon
+       n=0
+       do j=jps, jpe             
+          do i=ips,ipe
+            n = n+1
+            data(n) = grid%xlong(i,j)
+          end do
+       end do
+       call mct_gGrid_importRAttr(dom_a,"lon",data,lsize) 
+
+! the corner of the gridcells
+    
+       do j=1,2*(jde-jds)+3
+         do i=1,2*(ide-ids)+3      
+         SELECT CASE (iproj_type)
+  
+         CASE (PROJ_MERC)
+            CALL ijll_merc(i, j, proj_stack(SOURCE_PROJ), lat, lon)
+   
+         CASE (PROJ_PS)
+            CALL ijll_ps(i, j, proj_stack(SOURCE_PROJ), lat, lon)
+
+         CASE (PROJ_LC)
+            CALL ijll_lc(i, j, proj_stack(SOURCE_PROJ), lat, lon)
+   
+         CASE (PROJ_CASSINI)
+            CALL ijll_cassini(i, j, proj_stack(SOURCE_PROJ), lat, lon)
+   
+         CASE (PROJ_ROTLL)
+            CALL ijll_rotlatlon(i, j, proj_stack(SOURCE_PROJ), lat, lon)
+   
+         CASE DEFAULT
+            PRINT '(A,I2)', 'Unrecognized map projection: ', iproj_type
+            CALL wrf_error_fatal ( 'IJ_TO_LATLON' )
+  
+         END SELECT      
+           xcenterlat(i,j,1)=lat
+           xcenterlon(i,j,1)=lon      
+         enddo
+       enddo
+      
+       do j=2,jde-jds+1
+         do i=2,ide-ids+1
+
+          ns_vert(1,i-1,j-1) = xcenterlat(2*i-2,2*j-2,1)
+          ns_vert(2,i-1,j-1) = xcenterlat(2*i,2*j-2,1)
+          ns_vert(3,i-1,j-1) = xcenterlat(2*i,2*j,1)
+	  ns_vert(4,i-1,j-1) = xcenterlat(2*i-2,2*j,1)
+	  
+          if(xcenterlon(2*i-2,2*j-2,1).lt.0) xcenterlon(2*i-2,2*j-2,1)=xcenterlon(2*i-2,2*j-2,1)+360.0
+          if(xcenterlon(2*i-2,2*j,1).lt.0) xcenterlon(2*i-2,2*j,1)=xcenterlon(2*i-2,2*j,1)+360.0
+          if(xcenterlon(2*i,2*j,1).lt.0) xcenterlon(2*i,2*j,1)=xcenterlon(2*i,2*j,1)+360.0
+          if(xcenterlon(2*i,2*j-2,1).lt.0) xcenterlon(2*i,2*j-2,1)=xcenterlon(2*i,2*j-2,1)+360.0
+          if(xcenterlon(2*i-1,2*j-1,1).lt.0) xcenterlon(2*i-1,2*j-1,1)=xcenterlon(2*i-1,2*j-1,1)+360.0
+	  
+	    ew_vert(1,i-1,j-1) = xcenterlon(2*i-2,2*j-2,1)    
+            ew_vert(2,i-1,j-1) = xcenterlon(2*i,2*j-2,1)	    
+	    ew_vert(3,i-1,j-1) = xcenterlon(2*i,2*j,1)
+            ew_vert(4,i-1,j-1) = xcenterlon(2*i-2,2*j,1)
+         
+         enddo
+       enddo
+
+! area
+	do j=jps,jpe
+	 do i=ips,ipe
+! segement intersection
+	   area(i,j)=0.0
+	   do k=1,4
+	   m=k+1
+	   if(m.eq.5) m=1
+	   del_phi = (dsin( ns_vert(k,i,j)*RAD_PER_DEG )+ dsin( ns_vert(m,i,j)*RAD_PER_DEG))/2.0
+	   if(abs(ew_vert(k,i,j)-ew_vert(m,i,j)).gt.190) then  !gridcell cross 0 longitude
+	    if(ew_vert(k,i,j).gt.ew_vert(m,i,j)) then  
+	     del_theta = ( ew_vert(k,i,j)-ew_vert(m,i,j)-360.0)*RAD_PER_DEG
+	    else 
+             del_theta = (ew_vert(k,i,j)+360.0-ew_vert(m,i,j) )*RAD_PER_DEG
+	    endif
+	   else
+	     del_theta = (ew_vert(k,i,j)-ew_vert(m,i,j) )*RAD_PER_DEG
+           endif
+           area(i,j) = area(i,j)+del_theta*del_phi
+	   enddo
+	   area(i,j)=dabs(area(i,j))
+
+          if(area(i,j).gt.1) then  ! cover the pole
+           area(i,j)=0.0
+	   do k=1,4
+	   m=k+1
+	   if(m.eq.5) m=1
+	   del_phi = (dsin( ns_vert(k,i,j)*RAD_PER_DEG)+ dsin( ns_vert(m,i,j)*RAD_PER_DEG))/2.0
+	   if(abs(ew_vert(k,i,j)-ew_vert(m,i,j)).gt.190) then  !gridcell cross 0 longitude
+	    if(ew_vert(k,i,j).gt.ew_vert(m,i,j)) then  
+	     del_theta = ( ew_vert(m,i,j)+360-ew_vert(k,i,j) )*RAD_PER_DEG
+	    else 
+             del_theta = (ew_vert(k,i,j)-360.0-ew_vert(m,i,j)  )*RAD_PER_DEG
+	    endif
+	   else
+	    del_theta = (ew_vert(k,i,j)-ew_vert(m,i,j)  )*RAD_PER_DEG
+           endif
+           area(i,j) = area(i,j)+del_theta*(1.0-abs(del_phi))
+	   enddo
+	   area(i,j)=dabs(area(i,j))
+	  endif
+	  
+	 enddo
+      enddo
+
+      n=0
+      do j=jps, jpe             
+       do i=ips, ipe
+          n = n+1
+          data(n) = area(i,j) 
+       end do
+      end do
+      call mct_gGrid_importRAttr(dom_a,"area",data,lsize) 
+
+      n=0
+      do j=jps, jpe             
+       do i=ips,ipe
+          n = n+1
+          data(n) = 1._r8 ! mask
+       end do
+      end do
+      call mct_gGrid_importRAttr(dom_a,"mask"   ,data,lsize) 
+    
+	deallocate(data)
+	deallocate(area)
+	deallocate(xcenterlat)
+	deallocate(xcenterlon)
+	deallocate(ew_vert)
+	deallocate(ns_vert)
+
+  end subroutine atm_domain_mct
+
+!===========================================================================================
+!
+  subroutine atm_import_cam( x2c_c, grid, loop )
+  USE module_state_description
+!-----------------------------------------------------------------------
+! Arguments
+!
+    TYPE(cam_domain) , POINTER:: grid
+    type(mct_aVect)   , intent(inout) :: x2c_c
+    integer :: loop
+!
+! Local variables
+!		
+    integer  :: mype            ! processor ID
+    integer  :: m             ! indices
+    integer  :: i,j,k,ig  ! indices    
+    integer :: ids,ide,jds,jde,kds,kde,ims,ime,jms,jme,kms,kme,ips,ipe,jps,jpe,kps,kpe    
+    real::z,tv,rd,g,xlapse,alpha,tstar,tt0,alph,beta,psfc,pslv,p    
+    real,dimension(:,:,:),allocatable::z3d,u3d,v3d,w3d,q3d,t3d,p3d
+    real,dimension(:,:),allocatable::ps,phis
+    TYPE (grid_config_rec_type)              :: config_flags
+    
+       call shr_file_getLogUnit (shrlogunit)
+       call shr_file_getLogLevel(shrloglev)
+       call shr_file_setLogUnit (iulog)
+       
+       CALL model_to_grid_config_rec ( grid%id , model_config_rec , config_flags )
+       
+       call get_ijk_from_grid (grid ,                   &
+                               ids, ide, jds, jde, kds, kde,    &
+                               ims, ime, jms, jme, kms, kme,    &    
+		       	       ips, ipe, jps, jpe, kps, kpe    )	
+      rd=287.0
+      g=9.81
+      xlapse= 6.5e-3		       	       
+      allocate(z3d(ips:ipe,1:config_flags%num_metgrid_levels,jps:jpe))
+      allocate(u3d(ips:ipe,1:config_flags%num_metgrid_levels,jps:jpe))
+      allocate(v3d(ips:ipe,1:config_flags%num_metgrid_levels,jps:jpe))
+      allocate(w3d(ips:ipe,1:config_flags%num_metgrid_levels,jps:jpe))
+      allocate(t3d(ips:ipe,1:config_flags%num_metgrid_levels,jps:jpe))
+      allocate(q3d(ips:ipe,1:config_flags%num_metgrid_levels,jps:jpe))
+      allocate(p3d(ips:ipe,1:config_flags%num_metgrid_levels,jps:jpe))
+      allocate(q3d(ips:ipe,1:config_flags%num_metgrid_levels,jps:jpe))
+      allocate(ps(ips:ipe,jps:jpe))
+      allocate(phis(ips:ipe,jps:jpe))
+      
+      ig=1
+      do j=jps,jpe                                                        
+        do k=1, config_flags%num_metgrid_levels
+         do i =ips, ipe
+!          grid%lat_gc(i,k,j)       = x2c_c%rAttr(index_x2w_Sx_lat     ,ig)
+!          grid%on_gc(i,k,j)       = x2c_c%rAttr(index_x2w_Sx_lon     ,ig)
+          grid%ght_gc(i,k,j)       = x2c_c%rAttr(index_x2w_Sx_z3d     ,ig)
+          grid%u_gc(i,k,j)       = x2c_c%rAttr(index_x2w_Sx_u3d     ,ig)   
+          grid%v_gc(i,k,j)       = x2c_c%rAttr(index_x2w_Sx_v3d     ,ig)  
+          grid%t_gc(i,k,j)       = x2c_c%rAttr(index_x2w_Sx_t3d     ,ig)   ! unit: K
+          grid%sh_gc(i,k,j)       = x2c_c%rAttr(index_x2w_Sx_q3d     ,ig)  
+!          w3d(i,k,j)       = x2c_c%rAttr(index_x2w_Sx_w3d     ,ig)   ! At present, don't need vertical velocity 
+          grid%p_gc(i,k,j)       = x2c_c%rAttr(index_x2w_Sx_p3d     ,ig)
+          grid%psfc_gc(i,j)       = x2c_c%rAttr(index_x2w_Sx_ps      ,ig)   
+          grid%ht_gc(i,j)     = x2c_c%rAttr(index_x2w_Sx_phis    ,ig)            
+
+          ! sea level pressure
+          if(k.eq.1) then          	  
+	   tv=grid%t_gc(i,1,j)*(1-grid%sh_gc(i,1,j)+grid%sh_gc(i,1,j)/0.622)    ! virtual temperature
+           z=grid%ht_gc(i,j) *9.81                                   ! terrain height
+	           
+	   alpha = rd*xlapse/g
+	   psfc= grid%psfc_gc(i,j)
+	   p=grid%p_gc(i,1,j) 
+           if ( abs(z/g) < 1.e-4_r8 )then
+             pslv=psfc
+           else
+             tstar=tv*(1+alpha*(psfc/p-1)) 
+             tt0=tstar + xlapse*z/g
+
+            if ( tstar<=290.5 .and. tt0>290.5 ) then     
+               alph=rd/z*(290.5-tstar)  
+            else if (tstar>290.5  .and. tt0>290.5) then  
+               alph=0.
+               tstar= 0.5 * (290.5 + tstar)  
+            else  
+               alph=alpha  
+               if (tstar<255.) then  
+                tstar= 0.5 * (255. + tstar)             
+               endif
+            endif
+
+            beta = z/(rd*tstar)
+            pslv=psfc*exp( beta*(1.-alph*beta/2.+((alph*beta)**2)/3.))
+           end if
+	   grid%pslv_gc(i,j)=pslv  
+          endif
+          
+          ! relative humidity
+	  beta=grid%sh_gc(i,k,j) !specific humidity 
+	  beta=beta/(1-beta) ! mixing ratio
+	  p=grid%p_gc(i,k,j) !pressure
+	  beta=beta*p(beta+0.622) ! water vapor pressure
+          tv=grid%t_gc(i,k,j) ! temperature
+          alpha=6.112*exp(17.67*tv/(tv+243.5)) ! saturation water vapor pressure    
+	  grid%rh_gc(i,k,j)=beta/alpha*100 ! relative humidity 	  
+	  
+	  grid%tsk(i,j) = x2c_c%rAttr(index_x2w_Sx_ts  ,ig)            
+          grid%sst(i,j) = x2c_c%rAttr(index_x2w_Sx_sst  ,ig)    
+          grid%xice(i,j) = x2c_c%rAttr(index_x2w_Sx_seaice  ,ig)
+          grid%xland(i,j)= 1- (x2c_c%rAttr(index_x2w_Sx_seaice  ,ig)+x2c_c%rAttr(index_x2w_Sx_ocnfrac  ,ig))
+          grid%snow(i,j) = grid%xland(i,j) *x2c_c%rAttr(index_x2w_Sx_snowhland  ,ig)  +grid%xice(i,j) * x2c_c%rAttr(index_x2w_Sx_snowhice   ,ig)          
+          ig=ig+1
+         end do
+        enddo  
+       end do               
+
+       ! vetical interpolation
+       call real_interp(grid, config_flags, loop)
+             
+       deallocate(z3d)
+       deallocate(u3d)
+       deallocate(v3d)
+       deallocate(w3d)
+       deallocate(t3d)
+       deallocate(q3d)
+       deallocate(p3d)
+       deallocate(ps)
+       deallocate(phis)
+       call shr_file_setLogUnit (shrlogunit)
+       call shr_file_setLogLevel(shrloglev)
+     
+  end subroutine atm_import_cam
+
+!===============================================================================
+
+  subroutine atm_export_cam( grid, c2x_c )
+  
+  USE module_state_description
+!-------------------------------------------------------------------
+!
+! Arguments
+!
+    TYPE(domain) , POINTER:: grid
+    type(mct_aVect)    , intent(out) :: c2x_c
+!
+! Local variables
+!
+    real :: u_phy,v_phy
+    real(r8)::z,tv,rd,g,xlapse,alpha,tstar,tt0,alph,beta,psfc,pslv,p
+    integer :: i,j,k,ig       ! indices    
+    integer :: ids,ide,jds,jde,kds,kde,ims,ime,jms,jme,kms,kme,ips,ipe,jps,jpe,kps,kpe
+    TYPE (grid_config_rec_type)              :: config_flags
+!-----------------------------------------------------------------------
+! Copy from component arrays into chunk array data structure
+! Rearrange data from chunk structure into lat-lon buffer and subsequently
+! create attribute vector
+
+    
+    call shr_file_getLogUnit (shrlogunit)
+    call shr_file_getLogLevel(shrloglev)
+    call shr_file_setLogUnit (iulog)
+
+    CALL model_to_grid_config_rec ( grid%id , model_config_rec , config_flags )
+    
+    call shr_file_setLogUnit (shrlogunit)
+    call shr_file_setLogLevel(shrloglev)    
+
+  end subroutine atm_export_cam
+
+!===============================================================================
+	
+  subroutine atm_SetgsMap_cam( grid, mpicom_atm, ATMID, GSMap_cc )
+
+!-------------------------------------------------------------------
+!
+! Arguments
+!
+    TYPE(domain) , POINTER :: grid
+    integer        , intent(in)  :: mpicom_atm
+    integer        , intent(in)  :: ATMID
+    type(mct_gsMap), intent(out) :: GSMap_cc
+!
+! Local variables
+!
+    integer, allocatable :: gindex(:)
+    integer :: i, j, k, n,lsize,gsize
+    integer :: ids,ide,jds,jde,kds,kde,ims,ime,jms,jme,kms,kme,ips,ipe,jps,jpe,kps,kpe
+    integer :: ier            ! error status
+    TYPE (grid_config_rec_type)              :: config_flags
+!-------------------------------------------------------------------
+! Build the atmosphere grid numbering for MCT
+! NOTE:  Numbering scheme is: West to East, bottom to level, and South to North
+! starting at south pole.  Should be the same as what's used in SCRIP
+! Determine global seg map
+
+       CALL model_to_grid_config_rec ( grid%id , model_config_rec , config_flags )
+	
+       call get_ijk_from_grid (grid ,                   &
+                               ids, ide, jds, jde, kds, kde,    &
+                               ims, ime, jms, jme, kms, kme,    &    
+		       	       ips, ipe, jps, jpe, kps, kpe    )	
+  
+    lsize=0
+    do j=jps, jpe 
+     do k=1, config_flags%num_metgrid_levels
+       do i=ips, ipe
+             lsize = lsize+1  !local index
+       end do
+    end do
+
+    gsize=(ide-ids+1)*(jde-jds+1)*(kde-kds+1)
+    allocate(gindex(lsize))
+
+    n=0
+    do j=jps, jpe  
+     do k=1, config_flags%num_metgrid_levels
+       do i=ips, ipe
+          n=n+1
+          gindex(n) = (j-1)*(kde-kds+1)*(ide-ids)+(k-1)*(ide-ids)+i  ! global index
+       end do
+      end do 
+    end do
+
+    call mct_gsMap_init( gsMap_cc, gindex, mpicom_atm, ATMID, lsize, gsize)
+
+    deallocate(gindex)
+
+  end subroutine atm_SetgsMap_cam
+  
+!===============================================================================
+
+  subroutine atm_domain_cam( grid, lsize, gsMap_c, dom_c )
+
+!-------------------------------------------------------------------
+! Arguments
+!
+    TYPE(domain) , POINTER:: grid
+    integer     , intent(in)   :: lsize
+    type(mct_gsMap), intent(in)   :: gsMap_c
+    type(mct_ggrid), intent(inout):: dom_c    
+!
+! Local Variables
+!
+    integer  :: i,j,k,m,n           ! indices	
+    integer :: ids,ide,jds,jde,kds,kde,ims,ime,jms,jme,kms,kme,ips,ipe,jps,jpe,kps,kpe
+    real(r8)::del_phi,del_theta
+    real(r8),dimension(:,:,:),allocatable :: ew_vert,ns_vert,xcenterlat,xcenterlon ! vertex of cell    
+    real(r8),dimension(:,:),allocatable :: area          ! area in radians squared for each grid point
+    real(r8), pointer  :: data(:)     ! temporary
+    integer , pointer  :: idata(:)    ! temporary
+    TYPE (grid_config_rec_type)              :: config_flags
+! Initialize mct atm domain
+         call mct_gGrid_init( GGrid=dom_c, CoordChars=trim(seq_flds_dom_coord), OtherChars=trim(seq_flds_dom_other), lsize=lsize )
+
+! Allocate memory
+         allocate(data(lsize))
+ 
+! Initialize attribute vector with special value
+         call mct_gsMap_orderedPoints(gsMap_a, mytask, idata)
+         call mct_gGrid_importIAttr(dom_a,'GlobGridNum',idata,lsize)
+
+! Determine domain (numbering scheme is: West to East and South to North to South pole)
+! Initialize attribute vector with special value
+
+        data(:) = -9999.0_R8 
+        call mct_gGrid_importRAttr(dom_c,"lat"  ,data,lsize) 
+        call mct_gGrid_importRAttr(dom_c,"lon"  ,data,lsize) 
+        call mct_gGrid_importRAttr(dom_c,"area" ,data,lsize) 
+        call mct_gGrid_importRAttr(dom_c,"aream",data,lsize) 
+        data(:) = 0.0_R8     
+        call mct_gGrid_importRAttr(dom_c,"mask" ,data,lsize) 
+        data(:) = 1.0_R8
+        call mct_gGrid_importRAttr(dom_c,"frac" ,data,lsize)
+
+!
+! Fill in correct values for domain components
+!
+       call get_ijk_from_grid (grid ,                   &
+                               ids, ide, jds, jde, kds, kde,    &
+                               ims, ime, jms, jme, kms, kme,    &    
+		       	       ips, ipe, jps, jpe, kps, kpe    )
+    
+      CALL model_to_grid_config_rec ( grid%id , model_config_rec , config_flags )
+    
+       m=2*(ide-ids+1)+3 ! for example, 50km shrink to 25km, so the gridcorner of 50km is the center of 25km
+       n=2*(jde-jds+1)+3
+	
+       allocate(area(ips:ipe,jps:jpe))
+       allocate(xcenterlat(1:m,1:n,1:1))
+       allocate(xcenterlon(1:m,1:n,1:1))
+       allocate(ew_vert(4,ids:ide,jds:jde))
+       allocate(ns_vert(4,ids:ide,jds:jde))
+
+! lat	
+       n=0
+       do j=jps, jpe
+        do k= 1, config_flags%num_metgrid_levels
+         do i=ips,ipe
+            n = n+1
+            data(n) = grid%xlat(i,j)
+         end do
+        end do 
+       end do
+       call mct_gGrid_importRAttr(dom_a,"lat",data,lsize) 
+
+! lon
+       n=0
+       do j=jps, jpe
+         do k= 1, config_flags%num_metgrid_levels
+          do i=ips, ipe
+            n = n+1
+            data(n) = grid%xlong(i,j)
+          end do
+         enddo 
+       end do
+       call mct_gGrid_importRAttr(dom_a,"lon",data,lsize) 
+
+! the corner of the gridcells
+    
+       do j=1,2*(jde-jds+1)+3
+         do i=1,2*(ide-ids+1)+3      
+           
+         SELECT CASE (iproj_type)
+  
+         CASE (PROJ_MERC)
+            CALL ijll_merc(i, j, proj_stack(SOURCE_PROJ), lat, lon)
+   
+         CASE (PROJ_PS)
+            CALL ijll_ps(i, j, proj_stack(SOURCE_PROJ), lat, lon)
+
+         CASE (PROJ_LC)
+            CALL ijll_lc(i, j, proj_stack(SOURCE_PROJ), lat, lon)
+   
+         CASE (PROJ_CASSINI)
+            CALL ijll_cassini(i, j, proj_stack(SOURCE_PROJ), lat, lon)
+   
+         CASE (PROJ_ROTLL)
+            CALL ijll_rotlatlon(i, j, proj_stack(SOURCE_PROJ), lat, lon)
+   
+         CASE DEFAULT
+            PRINT '(A,I2)', 'Unrecognized map projection code: ', iproj_type
+            CALL wrf_error_fatal ( 'IJ_TO_LATLON' )
+  
+         END SELECT
+           
+           xcenterlat(i,j,1)=lat
+           xcenterlon(i,j,1)=lon      
+         enddo
+       enddo
+      
+       do j=2,jde-jds+1
+         do i=2,ide-ids+1
+
+          ns_vert(1,i-1,j-1) = xcenterlat(2*i-2,2*j-2,1)
+          ns_vert(2,i-1,j-1) = xcenterlat(2*i,2*j-2,1)
+          ns_vert(3,i-1,j-1) = xcenterlat(2*i,2*j,1)
+	  ns_vert(4,i-1,j-1) = xcenterlat(2*i-2,2*j,1)
+	  
+          if(xcenterlon(2*i-2,2*j-2,1).lt.0) xcenterlon(2*i-2,2*j-2,1)=xcenterlon(2*i-2,2*j-2,1)+360.0
+          if(xcenterlon(2*i-2,2*j,1).lt.0) xcenterlon(2*i-2,2*j,1)=xcenterlon(2*i-2,2*j,1)+360.0
+          if(xcenterlon(2*i,2*j,1).lt.0) xcenterlon(2*i,2*j,1)=xcenterlon(2*i,2*j,1)+360.0
+          if(xcenterlon(2*i,2*j-2,1).lt.0) xcenterlon(2*i,2*j-2,1)=xcenterlon(2*i,2*j-2,1)+360.0
+          if(xcenterlon(2*i-1,2*j-1,1).lt.0) xcenterlon(2*i-1,2*j-1,1)=xcenterlon(2*i-1,2*j-1,1)+360.0
+	  
+	    ew_vert(1,i-1,j-1) = xcenterlon(2*i-2,2*j-2,1)    
+            ew_vert(2,i-1,j-1) = xcenterlon(2*i,2*j-2,1)	    
+	    ew_vert(3,i-1,j-1) = xcenterlon(2*i,2*j,1)
+            ew_vert(4,i-1,j-1) = xcenterlon(2*i-2,2*j,1)
+         
+         enddo
+       enddo
+
+! area
+	do j=jps,jpe
+	 do i=ips,ipe
+! segement intersection
+	   area(i,j)=0.0
+	   do k=1,4
+	   m=k+1
+	   if(m.eq.5) m=1
+	   del_phi = (dsin( ns_vert(k,i,j)*RAD_PER_DEG )+ dsin( ns_vert(m,i,j)*RAD_PER_DEG))/2.0
+	   if(abs(ew_vert(k,i,j)-ew_vert(m,i,j)).gt.190) then  !gridcell cross 0 longitude
+	    if(ew_vert(k,i,j).gt.ew_vert(m,i,j)) then  
+	     del_theta = ( ew_vert(k,i,j)-ew_vert(m,i,j)-360.0)*RAD_PER_DEG
+	    else 
+             del_theta = (ew_vert(k,i,j)+360.0-ew_vert(m,i,j) )*RAD_PER_DEG
+	    endif
+	   else
+	    del_theta = (ew_vert(k,i,j)-ew_vert(m,i,j) )*RAD_PER_DEG
+           endif
+           area(i,j) = area(i,j)+del_theta*del_phi
+	   enddo
+	   area(i,j)=dabs(area(i,j))
+
+          if(area(i,j).gt.1) then  ! cover the pole
+           area(i,j)=0.0
+	   do k=1,4
+	   m=k+1
+	   if(m.eq.5) m=1
+	   del_phi = (dsin( ns_vert(k,i,j)*RAD_PER_DEG)+ dsin( ns_vert(m,i,j)*RAD_PER_DEG))/2.0
+	   if(abs(ew_vert(k,i,j)-ew_vert(m,i,j)).gt.190) then  !gridcell cross 0 longitude
+	    if(ew_vert(k,i,j).gt.ew_vert(m,i,j)) then  
+	     del_theta = ( ew_vert(m,i,j)+360-ew_vert(k,i,j) )*RAD_PER_DEG
+	    else 
+             del_theta = (ew_vert(k,i,j)-360.0-ew_vert(m,i,j)  )*RAD_PER_DEG
+	    endif
+	   else
+	    del_theta = (ew_vert(k,i,j)-ew_vert(m,i,j)  )*RAD_PER_DEG
+           endif
+           area(i,j) = area(i,j)+del_theta*(1.0-abs(del_phi))
+	   enddo
+	   area(i,j)=dabs(area(i,j))
+	  endif
+	  
+	 enddo
+      enddo
+
+      n=0
+      do j=jps, jpe
+       do k= 1, config_flags%num_metgrid_levels 
+        do i=ips, ipe
+          n = n+1
+          data(n) = area(i,j) 
+        end do
+       end do 
+      end do
+      call mct_gGrid_importRAttr(dom_a,"area",data,lsize) 
+
+      n=0
+      do j=jps, jpe
+       do k= 1, config_flags%num_metgrid_levels
+        do i=ips,ipe
+          n = n+1
+          data(n) = 1._r8 ! mask
+        end do
+       end do 
+      end do
+      call mct_gGrid_importRAttr(dom_a,"mask"   ,data,lsize) 
+    
+	deallocate(data)
+	deallocate(area)
+	deallocate(xcenterlat)
+	deallocate(xcenterlon)
+	deallocate(ew_vert)
+	deallocate(ns_vert)
+
+  end subroutine atm_domain_cam  
+
+  recursive subroutine init_nest_domain(grid)
+       USE module_timing    
+       !  Input data.
+       TYPE(domain) , POINTER :: grid
+       !  Local data
+       TYPE(domain) , POINTER :: grid_ptr , new_nest   
+       INTEGER               :: nestid , kid
+       LOGICAL               :: a_nest_was_opened
+        
+            a_nest_was_opened = .false.	
+            DO WHILE ( nests_to_open( grid , nestid , kid ) )
+               ! nestid is index into model_config_rec (module_configure) of the grid
+               ! to be opened; kid is index into an open slot in grid's list of children
+               a_nest_was_opened = .true.
+               CALL med_pre_nest_initial ( grid , nestid , config_flags )
+               CALL alloc_and_configure_domain ( domain_id  = nestid ,   &
+                                                 grid       = new_nest , &
+                                                 parent     = grid ,     &
+                                                 kid        = kid        )
+               CALL Setup_Timekeeping (new_nest)               
+	       call nl_get_restart( 1, restart )
+	       if(.not.restart) then
+               call geogrid(new_nest, nestid)               
+               endif               
+               call real_interp(grid, config_flags, loop)
+               CALL med_nest_initial ( grid , new_nest , config_flags )               
+            END DO	
+            IF ( a_nest_was_opened ) THEN
+               CALL set_overlaps ( grid )   ! find overlapping and set pointers
+            END IF	           
+            grid_ptr => grid
+            DO WHILE ( ASSOCIATED( grid_ptr ) )
+               DO kid = 1, max_nests
+                 IF ( ASSOCIATED( grid_ptr%nests(kid)%ptr ) ) THEN
+                   CALL set_current_grid_ptr( grid_ptr%nests(kid)%ptr )
+                   ! Recursive -- advance nests from previous time level to this time level.
+                   CALL init_nest_domain ( grid_ptr%nests(kid)%ptr )                   
+                 END IF
+               END DO
+               grid_ptr => grid_ptr%sibling
+            END DO
+            CALL set_current_grid_ptr( grid )            
+  end subroutine init_nest_domain  
+     
+#endif
+#endif
+  
+END MODULE wrf_comp_mct

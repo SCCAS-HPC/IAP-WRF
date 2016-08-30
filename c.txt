@@ -1,0 +1,986 @@
+atm/wrf/main/wrf_comp_mct.F.0721:      type(mct_gsMap), pointer   :: gsMap_atm
+atm/wrf/main/wrf_comp_mct.F.0721:      type(mct_gsMap), pointer   :: gsMap_cc  ! cam grid
+atm/wrf/main/wrf_comp_mct.F.0721:        lsize = mct_gsMap_lsize(gsMap_atm, mpicom_atm)
+atm/wrf/main/wrf_comp_mct.F.0721:        lsize = mct_gsMap_lsize(gsMap_cc, mpicom_atm)
+atm/wrf/main/wrf_comp_mct.F.0721:       type(mct_gsMap), intent(out) :: GSMap_atm
+atm/wrf/main/wrf_comp_mct.F.0721:       call mct_gsMap_init( gsMap_atm, gindex, mpicom_atm, WRFID, lsize, gsize)
+atm/wrf/main/wrf_comp_mct.F.0721:      type(mct_gsMap), intent(in)   :: gsMap_a
+atm/wrf/main/wrf_comp_mct.F.0721:         call mct_gsMap_orderedPoints(gsMap_a, mytask, idata)
+atm/wrf/main/wrf_comp_mct.F.0721:      type(mct_gsMap), intent(out) :: GSMap_cc
+atm/wrf/main/wrf_comp_mct.F.0721:      call mct_gsMap_init( gsMap_cc, gindex, mpicom_atm, WRFID, lsize, gsize)
+atm/wrf/main/wrf_comp_mct.F.0721:      TYpe(mct_gsMap), intent(in)   :: gsMap_c
+atm/wrf/main/wrf_comp_mct.F.0721:         call mct_gsMap_orderedPoints(gsMap_c, mytask, idata)
+atm/wrf/main/wrf_comp_mct.F.0513:      type(mct_gsMap), pointer   :: gsMap_atm
+atm/wrf/main/wrf_comp_mct.F.0513:      type(mct_gsMap), pointer   :: gsMap_cc  ! cam grid
+atm/wrf/main/wrf_comp_mct.F.0513:        lsize = mct_gsMap_lsize(gsMap_atm, mpicom_atm)
+atm/wrf/main/wrf_comp_mct.F.0513:        lsize = mct_gsMap_lsize(gsMap_cc, mpicom_atm)
+atm/wrf/main/wrf_comp_mct.F.0513:       type(mct_gsMap), intent(out) :: GSMap_atm
+atm/wrf/main/wrf_comp_mct.F.0513:       call mct_gsMap_init( gsMap_atm, gindex, mpicom_atm, WRFID, lsize, gsize)
+atm/wrf/main/wrf_comp_mct.F.0513:      type(mct_gsMap), intent(in)   :: gsMap_a
+atm/wrf/main/wrf_comp_mct.F.0513:         call mct_gsMap_orderedPoints(gsMap_a, mytask, idata)
+atm/wrf/main/wrf_comp_mct.F.0513:      type(mct_gsMap), intent(out) :: GSMap_cc
+atm/wrf/main/wrf_comp_mct.F.0513:      call mct_gsMap_init( gsMap_cc, gindex, mpicom_atm, WRFID, lsize, gsize)
+atm/wrf/main/wrf_comp_mct.F.0513:      TYpe(mct_gsMap), intent(in)   :: gsMap_c
+atm/wrf/main/wrf_comp_mct.F.0513:         call mct_gsMap_orderedPoints(gsMap_c, mytask, idata)
+atm/wrf/main/wrf_comp_mct.F.xiugai:      type(mct_gsMap), pointer   :: gsMap_atm
+atm/wrf/main/wrf_comp_mct.F.xiugai:      type(mct_gsMap), pointer   :: gsMap_cc  ! cam grid
+atm/wrf/main/wrf_comp_mct.F.xiugai:        lsize = mct_gsMap_lsize(gsMap_atm, mpicom_atm)
+atm/wrf/main/wrf_comp_mct.F.xiugai:        lsize = mct_gsMap_lsize(gsMap_cc, mpicom_atm)
+atm/wrf/main/wrf_comp_mct.F.xiugai:       type(mct_gsMap), intent(out) :: GSMap_atm
+atm/wrf/main/wrf_comp_mct.F.xiugai:       call mct_gsMap_init( gsMap_atm, gindex, mpicom_atm, WRFID, lsize, gsize)
+atm/wrf/main/wrf_comp_mct.F.xiugai:      type(mct_gsMap), intent(in)   :: gsMap_a
+atm/wrf/main/wrf_comp_mct.F.xiugai:         call mct_gsMap_orderedPoints(gsMap_a, mytask, idata)
+atm/wrf/main/wrf_comp_mct.F.xiugai:      type(mct_gsMap), intent(out) :: GSMap_cc
+atm/wrf/main/wrf_comp_mct.F.xiugai:      call mct_gsMap_init( gsMap_cc, gindex, mpicom_atm, WRFID, lsize, gsize)
+atm/wrf/main/wrf_comp_mct.F.xiugai:      TYpe(mct_gsMap), intent(in)   :: gsMap_c
+atm/wrf/main/wrf_comp_mct.F.xiugai:         call mct_gsMap_orderedPoints(gsMap_c, mytask, idata)
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:      type(mct_gsMap), pointer   :: gsMap_atm
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:      type(mct_gsMap), pointer   :: gsMap_cc  ! cam grid
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:        lsize = mct_gsMap_lsize(gsMap_atm, mpicom_atm)
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:        lsize = mct_gsMap_lsize(gsMap_cc, mpicom_atm)
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:    type(mct_gsMap), intent(out) :: GSMap_atm
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:    call mct_gsMap_init( gsMap_atm, gindex, mpicom_atm, ATMID, lsize, gsize)
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:    type(mct_gsMap), intent(in)   :: gsMap_a
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:         call mct_gsMap_orderedPoints(gsMap_a, mytask, idata)
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:    type(mct_gsMap), intent(out) :: GSMap_cc
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:    call mct_gsMap_init( gsMap_cc, gindex, mpicom_atm, ATMID, lsize, gsize)
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:    type(mct_gsMap), intent(in)   :: gsMap_c
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:         call mct_gsMap_orderedPoints(gsMap_a, mytask, idata)
+atm/wrf/main/wrf_comp_mct.F.0522.right:      type(mct_gsMap), pointer   :: gsMap_atm
+atm/wrf/main/wrf_comp_mct.F.0522.right:      type(mct_gsMap), pointer   :: gsMap_cc  ! cam grid
+atm/wrf/main/wrf_comp_mct.F.0522.right:        lsize = mct_gsMap_lsize(gsMap_atm, mpicom_atm)
+atm/wrf/main/wrf_comp_mct.F.0522.right:        lsize = mct_gsMap_lsize(gsMap_cc, mpicom_atm)
+atm/wrf/main/wrf_comp_mct.F.0522.right:       type(mct_gsMap), intent(out) :: GSMap_atm
+atm/wrf/main/wrf_comp_mct.F.0522.right:       call mct_gsMap_init( gsMap_atm, gindex, mpicom_atm, WRFID, lsize, gsize)
+atm/wrf/main/wrf_comp_mct.F.0522.right:      type(mct_gsMap), intent(in)   :: gsMap_a
+atm/wrf/main/wrf_comp_mct.F.0522.right:         call mct_gsMap_orderedPoints(gsMap_a, mytask, idata)
+atm/wrf/main/wrf_comp_mct.F.0522.right:      type(mct_gsMap), intent(out) :: GSMap_cc
+atm/wrf/main/wrf_comp_mct.F.0522.right:      call mct_gsMap_init( gsMap_cc, gindex, mpicom_atm, WRFID, lsize, gsize)
+atm/wrf/main/wrf_comp_mct.F.0522.right:      TYpe(mct_gsMap), intent(in)   :: gsMap_c
+atm/wrf/main/wrf_comp_mct.F.0522.right:         call mct_gsMap_orderedPoints(gsMap_c, mytask, idata)
+atm/wrf/main/wrf_comp_mct.F:      type(mct_gsMap), pointer   :: gsMap_atm
+atm/wrf/main/wrf_comp_mct.F:      type(mct_gsMap), pointer   :: gsMap_cc  ! cam grid
+atm/wrf/main/wrf_comp_mct.F:        lsize = mct_gsMap_lsize(gsMap_atm, mpicom_atm)
+atm/wrf/main/wrf_comp_mct.F:        lsize = mct_gsMap_lsize(gsMap_cc, mpicom_atm)
+atm/wrf/main/wrf_comp_mct.F:       type(mct_gsMap), intent(out) :: GSMap_atm
+atm/wrf/main/wrf_comp_mct.F:       call mct_gsMap_init( gsMap_atm, gindex, mpicom_atm, WRFID, lsize, gsize)
+atm/wrf/main/wrf_comp_mct.F:      type(mct_gsMap), intent(in)   :: gsMap_a
+atm/wrf/main/wrf_comp_mct.F:         call mct_gsMap_orderedPoints(gsMap_a, mytask, idata)
+atm/wrf/main/wrf_comp_mct.F:      type(mct_gsMap), intent(out) :: GSMap_cc
+atm/wrf/main/wrf_comp_mct.F:      call mct_gsMap_init( gsMap_cc, gindex, mpicom_atm, WRFID, lsize, gsize)
+atm/wrf/main/wrf_comp_mct.F:      TYpe(mct_gsMap), intent(in)   :: gsMap_c
+atm/wrf/main/wrf_comp_mct.F:         call mct_gsMap_orderedPoints(gsMap_c, mytask, idata)
+atm/datm/datm_comp_mod.F90:    type(mct_gsMap)        , pointer :: gsMap
+atm/datm/datm_comp_mod.F90:    lsize = mct_gsmap_lsize(gsmap,mpicom)
+atm/datm/datm_comp_mod.F90:   type(mct_gsMap)        , pointer :: gsMap
+atm/datm/datm_shr_mod.F90:   type(mct_gsmap) ,intent(in)    :: gsmap      ! decomp of wind,windd,qsat
+atm/datm/datm_shr_mod.F90:   type(mct_gsmap) ,intent(in)    :: gsmap      ! decomp of wind,windd,qsat
+atm/datm/datm_shr_mod.F90:   type(mct_gsmap) ,intent(in)    :: gsmapo     ! decomp of wind,windd,qsat
+atm/datm/datm_shr_mod.F90:   type(mct_gsmap)  :: gsmapi        ! input file gsmap
+atm/datm/datm_shr_mod.F90:   call mct_gsmap_init(gsmapi,start,length,0,mpicom,compid,gsize=gsizei,numel=numel)
+atm/datm/datm_shr_mod.F90:   lsizei = mct_gsmap_lsize(gsmapi,mpicom)
+atm/datm/datm_shr_mod.F90:   lsizeo = mct_gsmap_lsize(gsmapo,mpicom)
+atm/datm/datm_shr_mod.F90:   call mct_gsmap_clean(gsmapi)
+atm/datm/cpl_esmf/atm_comp_esmf.F90:   type(mct_gsMap)     :: gsmap
+atm/datm/cpl_esmf/atm_comp_mct.F90:   type(mct_gsMap)             , pointer :: gsMap
+atm/satm/cpl_esmf/atm_comp_mct.F90:    type(mct_gsMap)             , pointer :: gsMap
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    type(mct_gsMap),              pointer       :: gsMap_ocn
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    lsize = mct_gsMap_lsize(gsMap_ocn, mpicom_ocn)
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    type(mct_gsMap), intent(out) :: gsMap_ocn
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gsMap_init( gsMap_ocn, gindex, mpicom_ocn, OCNID, nlcols, ngcols )
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    type(mct_gsMap), intent(inout) :: gsMap_o
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gsMap_orderedPoints(gsMap_o, iam, idata)
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    type(mct_gsMap),              pointer       :: gsMap_ocn
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    lsize = mct_gsMap_lsize(gsMap_ocn, mpicom_ocn)
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    type(mct_gsMap), intent(out) :: gsMap_ocn
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gsMap_init( gsMap_ocn, gindex, mpicom_ocn, OCNID, nlcols, ngcols )
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    type(mct_gsMap), intent(inout) :: gsMap_o
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gsMap_orderedPoints(gsMap_o, iam, idata)
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    type(mct_gsMap)             , pointer :: gsMap_ice
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    lsize = mct_gsMap_lsize(gsMap_ice, mpicom_ice)
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    type(mct_gsMap), intent(out) :: gsMap_ice
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gsMap_init( gsMap_ice, gindex, mpicom_ice, ICEID, nlcols, ngcols )
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    type(mct_gsMap), intent(in)    :: gsMap_i
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gsMap_orderedPoints(gsMap_i, iam, idata)
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    type(mct_gsMap)             , pointer :: gsMap_ice
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    lsize = mct_gsMap_lsize(gsMap_ice, mpicom_ice)
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    type(mct_gsMap), intent(out) :: gsMap_ice
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gsMap_init( gsMap_ice, gindex, mpicom_ice, ICEID, nlcols, ngcols )
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    type(mct_gsMap), intent(in)    :: gsMap_i
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gsMap_orderedPoints(gsMap_i, iam, idata)
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    type(mct_gsMap),              pointer       :: gsMap_ocn
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    lsize = mct_gsMap_lsize(gsMap_ocn, mpicom_ocn)
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    type(mct_gsMap), intent(out) :: gsMap_ocn
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gsMap_init( gsMap_ocn, gindex, mpicom_ocn, OCNID, nlcols, ngcols )
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    type(mct_gsMap), intent(inout) :: gsMap_o
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gsMap_orderedPoints(gsMap_o, iam, idata)
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    type(mct_gsMap),              pointer       :: gsMap_ocn
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    lsize = mct_gsMap_lsize(gsMap_ocn, mpicom_ocn)
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    type(mct_gsMap), intent(out) :: gsMap_ocn
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gsMap_init( gsMap_ocn, gindex, mpicom_ocn, OCNID, nlcols, ngcols )
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    type(mct_gsMap), intent(inout) :: gsMap_o
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gsMap_orderedPoints(gsMap_o, iam, idata)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    type(mct_gsMap), pointer   :: gsMap_atm
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    type(mct_gsMap), pointer   :: gsMap_cc  !juanxiong he for wrf/cam coupling
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    type(mct_gsMap), pointer   :: gsMap_caca  !juanxiong he for geatm/cam coupling
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:       lsize = mct_gsMap_lsize(gsMap_atm, mpicom_atm)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:       lsize = mct_gsMap_lsize(gsMap_cc, mpicom_atm) !juanxiong he
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:       lsize = mct_gsMap_lsize(gsMap_caca, mpicom_atm) !juanxiong he
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    type(mct_gsMap), intent(out) :: GSMap_atm
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsMap_init( gsMap_atm, gindex, mpicom_atm, ATMID, nlcols, ngcols)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    type(mct_gsMap), intent(in)   :: gsMap_a
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsMap_orderedPoints(gsMap_a, iam, idata)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsmap_OrderedPoints(cdata_a%gsmap, iam, Dof)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    lnx = mct_gsmap_gsize(cdata_a%gsmap)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsmap_OrderedPoints(cdata_a%gsmap, iam, Dof)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    lnx = mct_gsmap_gsize(cdata_a%gsmap)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    type(mct_gsMap), intent(out) :: GSMap_cc
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsMap_init( gsMap_cc, gindex, mpicom_atm, ATMID, nlcols, ngcols)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    type(mct_gsMap), intent(in)   :: gsMap_c
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsMap_orderedPoints(gsMap_c, iam, idata)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsmap_OrderedPoints(cdata_c%gsmap, iam, Dof)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    lnx = mct_gsmap_gsize(cdata_c%gsmap)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsmap_OrderedPoints(cdata_c%gsmap, iam, Dof)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    lnx = mct_gsmap_gsize(cdata_c%gsmap)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsmap_OrderedPoints(cdata_c%gsmap, iam, Dof)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    lnx = mct_gsmap_gsize(cdata_c%gsmap)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsmap_OrderedPoints(cdata_c%gsmap, iam, Dof)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    lnx = mct_gsmap_gsize(cdata_c%gsmap)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsmap_OrderedPoints(cdata_c%gsmap, iam, Dof)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    lnx = mct_gsmap_gsize(cdata_c%gsmap)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsmap_OrderedPoints(cdata_c%gsmap, iam, Dof)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    lnx = mct_gsmap_gsize(cdata_c%gsmap)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    type(mct_gsMap), intent(out) :: GSMap_cc
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsMap_init( gsMap_cc, gindex, mpicom_atm, ATMID, nlcols, ngcols)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    type(mct_gsMap), intent(in)   :: gsMap_c
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsMap_orderedPoints(gsMap_c, iam, idata)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsmap_OrderedPoints(cdata_c%gsmap, iam, Dof)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    lnx = mct_gsmap_gsize(cdata_c%gsmap)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsmap_OrderedPoints(cdata_c%gsmap, iam, Dof)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    lnx = mct_gsmap_gsize(cdata_c%gsmap)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsmap_OrderedPoints(cdata_c%gsmap, iam, Dof)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    lnx = mct_gsmap_gsize(cdata_c%gsmap)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsmap_OrderedPoints(cdata_c%gsmap, iam, Dof)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    lnx = mct_gsmap_gsize(cdata_c%gsmap)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsmap_OrderedPoints(cdata_c%gsmap, iam, Dof)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    lnx = mct_gsmap_gsize(cdata_c%gsmap)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsmap_OrderedPoints(cdata_c%gsmap, iam, Dof)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    lnx = mct_gsmap_gsize(cdata_c%gsmap)
+atm/beifen_cam/cam/src/cpl_esmf/atm_comp_mct.F90:   type(mct_gsMap)             , pointer :: gsMap
+atm/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    type(mct_gsMap),              pointer       :: gsMap_ocn
+atm/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    lsize = mct_gsMap_lsize(gsMap_ocn, mpicom_ocn)
+atm/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    type(mct_gsMap), intent(out) :: gsMap_ocn
+atm/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gsMap_init( gsMap_ocn, gindex, mpicom_ocn, OCNID, nlcols, ngcols )
+atm/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    type(mct_gsMap), intent(inout) :: gsMap_o
+atm/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gsMap_orderedPoints(gsMap_o, iam, idata)
+atm/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    type(mct_gsMap),              pointer       :: gsMap_ocn
+atm/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    lsize = mct_gsMap_lsize(gsMap_ocn, mpicom_ocn)
+atm/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    type(mct_gsMap), intent(out) :: gsMap_ocn
+atm/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gsMap_init( gsMap_ocn, gindex, mpicom_ocn, OCNID, nlcols, ngcols )
+atm/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    type(mct_gsMap), intent(inout) :: gsMap_o
+atm/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gsMap_orderedPoints(gsMap_o, iam, idata)
+atm/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    type(mct_gsMap)             , pointer :: gsMap_ice
+atm/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    lsize = mct_gsMap_lsize(gsMap_ice, mpicom_ice)
+atm/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    type(mct_gsMap), intent(out) :: gsMap_ice
+atm/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gsMap_init( gsMap_ice, gindex, mpicom_ice, ICEID, nlcols, ngcols )
+atm/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    type(mct_gsMap), intent(in)    :: gsMap_i
+atm/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gsMap_orderedPoints(gsMap_i, iam, idata)
+atm/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    type(mct_gsMap)             , pointer :: gsMap_ice
+atm/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    lsize = mct_gsMap_lsize(gsMap_ice, mpicom_ice)
+atm/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    type(mct_gsMap), intent(out) :: gsMap_ice
+atm/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gsMap_init( gsMap_ice, gindex, mpicom_ice, ICEID, nlcols, ngcols )
+atm/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    type(mct_gsMap), intent(in)    :: gsMap_i
+atm/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gsMap_orderedPoints(gsMap_i, iam, idata)
+atm/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    type(mct_gsMap),              pointer       :: gsMap_ocn
+atm/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    lsize = mct_gsMap_lsize(gsMap_ocn, mpicom_ocn)
+atm/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    type(mct_gsMap), intent(out) :: gsMap_ocn
+atm/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gsMap_init( gsMap_ocn, gindex, mpicom_ocn, OCNID, nlcols, ngcols )
+atm/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    type(mct_gsMap), intent(inout) :: gsMap_o
+atm/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gsMap_orderedPoints(gsMap_o, iam, idata)
+atm/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    type(mct_gsMap),              pointer       :: gsMap_ocn
+atm/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    lsize = mct_gsMap_lsize(gsMap_ocn, mpicom_ocn)
+atm/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    type(mct_gsMap), intent(out) :: gsMap_ocn
+atm/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gsMap_init( gsMap_ocn, gindex, mpicom_ocn, OCNID, nlcols, ngcols )
+atm/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    type(mct_gsMap), intent(inout) :: gsMap_o
+atm/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gsMap_orderedPoints(gsMap_o, iam, idata)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    type(mct_gsMap), pointer   :: gsMap_atm
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    type(mct_gsMap), pointer   :: gsMap_cc  !juanxiong he for wrf/cam coupling
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    type(mct_gsMap), pointer   :: gsMap_caca  !juanxiong he for geatm/cam coupling
+atm/cam/src/cpl_mct/atm_comp_mct.F90:       lsize = mct_gsMap_lsize(gsMap_atm, mpicom_atm)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:       lsize = mct_gsMap_lsize(gsMap_cc, mpicom_atm) !juanxiong he
+atm/cam/src/cpl_mct/atm_comp_mct.F90:       lsize = mct_gsMap_lsize(gsMap_caca, mpicom_atm) !juanxiong he
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    type(mct_gsMap), intent(out) :: GSMap_atm
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsMap_init( gsMap_atm, gindex, mpicom_atm, ATMID, nlcols, ngcols)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    type(mct_gsMap), intent(in)   :: gsMap_a
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsMap_orderedPoints(gsMap_a, iam, idata)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsmap_OrderedPoints(cdata_a%gsmap, iam, Dof)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    lnx = mct_gsmap_gsize(cdata_a%gsmap)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsmap_OrderedPoints(cdata_a%gsmap, iam, Dof)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    lnx = mct_gsmap_gsize(cdata_a%gsmap)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    type(mct_gsMap), intent(out) :: GSMap_cc
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsMap_init( gsMap_cc, gindex, mpicom_atm, ATMID, nlcols, ngcols)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    type(mct_gsMap), intent(in)   :: gsMap_c
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsMap_orderedPoints(gsMap_c, iam, idata)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsmap_OrderedPoints(cdata_c%gsmap, iam, Dof)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    lnx = mct_gsmap_gsize(cdata_c%gsmap)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsmap_OrderedPoints(cdata_c%gsmap, iam, Dof)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    lnx = mct_gsmap_gsize(cdata_c%gsmap)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsmap_OrderedPoints(cdata_c%gsmap, iam, Dof)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    lnx = mct_gsmap_gsize(cdata_c%gsmap)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsmap_OrderedPoints(cdata_c%gsmap, iam, Dof)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    lnx = mct_gsmap_gsize(cdata_c%gsmap)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsmap_OrderedPoints(cdata_c%gsmap, iam, Dof)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    lnx = mct_gsmap_gsize(cdata_c%gsmap)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsmap_OrderedPoints(cdata_c%gsmap, iam, Dof)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    lnx = mct_gsmap_gsize(cdata_c%gsmap)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    type(mct_gsMap), intent(out) :: GSMap_cc
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsMap_init( gsMap_cc, gindex, mpicom_atm, ATMID, nlcols, ngcols)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    type(mct_gsMap), intent(in)   :: gsMap_c
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsMap_orderedPoints(gsMap_c, iam, idata)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsmap_OrderedPoints(cdata_c%gsmap, iam, Dof)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    lnx = mct_gsmap_gsize(cdata_c%gsmap)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsmap_OrderedPoints(cdata_c%gsmap, iam, Dof)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    lnx = mct_gsmap_gsize(cdata_c%gsmap)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsmap_OrderedPoints(cdata_c%gsmap, iam, Dof)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    lnx = mct_gsmap_gsize(cdata_c%gsmap)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsmap_OrderedPoints(cdata_c%gsmap, iam, Dof)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    lnx = mct_gsmap_gsize(cdata_c%gsmap)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsmap_OrderedPoints(cdata_c%gsmap, iam, Dof)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    lnx = mct_gsmap_gsize(cdata_c%gsmap)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gsmap_OrderedPoints(cdata_c%gsmap, iam, Dof)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    lnx = mct_gsmap_gsize(cdata_c%gsmap)
+atm/cam/src/cpl_esmf/atm_comp_mct.F90:   type(mct_gsMap)             , pointer :: gsMap
+atm/xatm/cpl_mct/atm_comp_mct.F90:    type(mct_gsMap)             , pointer :: gsMap
+atm/xatm/cpl_mct/atm_comp_mct.F90:    call mct_gsMap_init( gsMap, gindex, mpicom, COMPID, lsize, nxg*nyg)
+atm/xatm/cpl_esmf/atm_comp_mct.F90:    type(mct_gsMap)             , pointer :: gsMap
+b.txt:lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    use mct_mod     , only : mct_gsMap, mct_gGrid, mct_gGrid_importIAttr, &
+b.txt:lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    use mct_mod     , only : mct_gsMap, mct_gGrid, mct_gGrid_importIAttr, &
+b.txt:lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    use mct_mod     , only : mct_gsMap, mct_gGrid, mct_gGrid_importIAttr, &
+b.txt:lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    use mct_mod     , only : mct_gsMap, mct_gGrid, mct_gGrid_importIAttr, &
+chem/geatm/src.datamodel/geatm_comp_mct.f90:    type(mct_gsMap), pointer   :: gsMap_ge
+chem/geatm/src.datamodel/geatm_comp_mct.f90:       lsize = mct_gsMap_lsize(gsMap_ge, mpicom_atm)
+chem/geatm/src.datamodel/geatm_comp_mct.f90:      type(mct_gsMap), intent(out) :: GSMap_gege
+chem/geatm/src.datamodel/geatm_comp_mct.f90:      call mct_gsMap_init( gsMap_gege, gindex, local_com, GEAID, lsize, gsize)
+chem/geatm/src.datamodel/geatm_comp_mct.f90:      TYpe(mct_gsMap), intent(in)   :: gsMap_cc
+chem/geatm/src.datamodel/geatm_comp_mct.f90:         call mct_gsMap_orderedPoints(gsMap_cc, myid, idata)
+chem/geatm/src.version1/geatm_comp_mct.f90:    type(mct_gsMap), pointer   :: gsMap_ge
+chem/geatm/src.version1/geatm_comp_mct.f90:       lsize = mct_gsMap_lsize(gsMap_ge, mpicom_atm)
+chem/geatm/src.version1/geatm_comp_mct.f90:      type(mct_gsMap), intent(out) :: GSMap_gege
+chem/geatm/src.version1/geatm_comp_mct.f90:      call mct_gsMap_init( gsMap_gege, gindex, local_com, GEAID, lsize, gsize)
+chem/geatm/src.version1/geatm_comp_mct.f90:      TYpe(mct_gsMap), intent(in)   :: gsMap_cc
+chem/geatm/src.version1/geatm_comp_mct.f90:         call mct_gsMap_orderedPoints(gsMap_cc, myid, idata)
+chem/geatm/src/geatm_comp_mct.f90:    type(mct_gsMap), pointer   :: gsMap_ge
+chem/geatm/src/geatm_comp_mct.f90:       lsize = mct_gsMap_lsize(gsMap_ge, mpicom_atm)
+chem/geatm/src/geatm_comp_mct.f90:      type(mct_gsMap), intent(out) :: GSMap_gege
+chem/geatm/src/geatm_comp_mct.f90:      call mct_gsMap_init( gsMap_gege, gindex, local_com, GEAID, lsize, gsize)
+chem/geatm/src/geatm_comp_mct.f90:      TYpe(mct_gsMap), intent(in)   :: gsMap_cc
+chem/geatm/src/geatm_comp_mct.f90:         call mct_gsMap_orderedPoints(gsMap_cc, myid, idata)
+csm_share/shr/shr_strdata_mod.F90:    type(mct_gsmap) :: gsmap
+csm_share/shr/shr_strdata_mod.F90:    type(mct_gsmap) :: gsmapR(nStrMax)
+csm_share/shr/shr_strdata_mod.F90:  type(mct_gsmap)       ,intent(in),optional :: gsmap
+csm_share/shr/shr_strdata_mod.F90:      SDAT%lsizeR(n) = mct_gsmap_lsize(SDAT%gsmapR(n),mpicom)
+csm_share/shr/shr_strdata_mod.F90:      call mct_gsmap_OrderedPoints(SDAT%gsmapR(n), my_task, dof)
+csm_share/shr/shr_strdata_mod.F90:     lsize = mct_gsmap_lsize(gsmap,mpicom)
+csm_share/shr/shr_strdata_mod.F90:     call mct_gsmap_Copy(gsmap,SDAT%gsmap)
+csm_share/shr/shr_strdata_mod.F90:  SDAT%lsize = mct_gsmap_lsize(SDAT%gsmap,mpicom)
+csm_share/shr/shr_strdata_mod.F90:  call mct_gsmap_clean(SDAT%gsmap)
+csm_share/shr/shr_strdata_mod.F90:     call mct_gsmap_clean(SDAT%gsmapR(n))
+csm_share/shr/shr_strdata_mod.F90:   type(mct_gsmap)       ,intent(in)   :: gsmap
+csm_share/shr/shr_scam_mod.F90:      call mct_gsmap_clean(SCAMSDAT%gsmap)
+csm_share/shr/shr_dmodel_mod.F90:    type(mct_gsMap), intent(inout) :: gsmap
+csm_share/shr/shr_dmodel_mod.F90:       call mct_gsMap_init( gsMap, COMPID, npes, gsize, start, length, pe_loc)
+csm_share/shr/shr_dmodel_mod.F90:  type(mct_gsMap), intent(inout) :: gsMap
+csm_share/shr/shr_dmodel_mod.F90:  lsize = mct_gsMap_lsize(gsMap, mpicom)
+csm_share/shr/shr_dmodel_mod.F90:  call mct_gsMap_orderedPoints(gsMap, my_task, idata)
+csm_share/shr/shr_dmodel_mod.F90:  type(mct_gsMap)            ,intent(in)    :: gsMap
+csm_share/shr/shr_dmodel_mod.F90:  type(mct_gsMap) ,intent(in)    :: gsMap
+csm_share/shr/shr_dmodel_mod.F90:  gsize = mct_gsmap_gsize(gsMap)
+csm_share/shr/shr_dmodel_mod.F90:   type(mct_gsmap)     ,intent(in)  :: gsmap1   ! 1st gsmap
+csm_share/shr/shr_dmodel_mod.F90:   type(mct_gsmap)     ,intent(in)  :: gsmap2   ! 2nd gsmap
+csm_share/shr/shr_dmodel_mod.F90:    type(mct_gsmap), intent(in)    :: gsmapS
+csm_share/shr/shr_dmodel_mod.F90:    type(mct_gsmap), intent(in)    :: gsmapD
+csm_share/shr/shr_dmodel_mod.F90:    type(mct_gsmap), intent(in)    :: gsmapS
+csm_share/shr/shr_dmodel_mod.F90:    type(mct_gsmap), intent(in)    :: gsmapD
+csm_share/shr/shr_dmodel_mod.F90:    call mct_gsmap_orderedPoints(gsmapD,my_task,points)
+csm_share/shr/shr_dmodel_mod.F90:  type(mct_gsmap), intent(in)    :: gsmap
+csm_share/shr/shr_dmodel_mod.F90:  lsize = mct_gsMap_lsize(gsMap, mpicom)
+csm_share/shr/shr_dmodel_mod.F90:  call mct_gsMap_orderedPoints(gsMap, my_task, idata)
+csm_share/shr/shr_mct_mod.F90:   type(mct_gsMap),intent(in)            :: gsMapX
+csm_share/shr/shr_mct_mod.F90:   type(mct_gsMap),intent(in)            :: gsMapY
+csm_share/shr/shr_mct_mod.F90:   lsize = mct_gsMap_lsize(gsMapX, mpicom)
+csm_share/shr/shr_mct_mod.F90:   lsize = mct_gsMap_lsize(gsMapY, mpicom)
+csm_share/shr/shr_mct_mod.F90:   type(mct_gsMap) ,intent(in) ,target    :: SgsMap  ! src gsmap
+csm_share/shr/shr_mct_mod.F90:   type(mct_gSMap) ,intent(in) ,target    :: DgsMap  ! dst gsmap
+csm_share/shr/shr_mct_mod.F90:   type(mct_gsMap),pointer :: mygsmap ! pointer to one of the gsmaps
+csm_share/shr/shr_mct_mod.F90:   type(mct_gsmap) :: gsmap
+csm_share/shr/shr_mct_mod.F90:   call mct_gsmap_init(gsmap,npes,start,count,pe_loc,0,mpicom,compid,ns)
+csm_share/shr/shr_mct_mod.F90:   call mct_gsmap_clean(gsmap)
+csm_share/shr/mct_mod.F90:   use m_GlobalSegMap       ,only: mct_gsMap              => GlobalSegMap
+csm_share/shr/mct_mod.F90:   use m_GlobalSegMap       ,only: mct_gsMap_init         => init
+csm_share/shr/mct_mod.F90:   use m_GlobalSegMap       ,only: mct_gsMap_clean        => clean
+csm_share/shr/mct_mod.F90:   use m_GlobalSegMap       ,only: mct_gsMap_lsize        => lsize
+csm_share/shr/mct_mod.F90:   use m_GlobalSegMap       ,only: mct_gsMap_gsize        => gsize
+csm_share/shr/mct_mod.F90:   use m_GlobalSegMap       ,only: mct_gsMap_gstorage     => GlobalStorage
+csm_share/shr/mct_mod.F90:   use m_GlobalSegMap       ,only: mct_gsMap_ngseg        => ngseg
+csm_share/shr/mct_mod.F90:   use m_GlobalSegMap       ,only: mct_gsMap_nlseg        => nlseg
+csm_share/shr/mct_mod.F90:   use m_GlobalSegMap       ,only: mct_gsMap_maxnlseg     => max_nlseg
+csm_share/shr/mct_mod.F90:   use m_GlobalSegMap       ,only: mct_gsMap_activepes    => active_pes
+csm_share/shr/mct_mod.F90:   use m_GlobalSegMap       ,only: mct_gsMap_copy         => copy
+csm_share/shr/mct_mod.F90:   use m_GlobalSegMap       ,only: mct_gsMap_increasing   => increasing
+csm_share/shr/mct_mod.F90:   use m_GlobalSegMap       ,only: mct_gsMap_orderedPoints=> OrderedPoints
+csm_share/shr/mct_mod.F90:   use m_GlobalSegMapComms  ,only: mct_gsMap_bcast        => bcast 
+csm_share/shr/shr_pcdf_mod.F90:  type(mct_gsmap)  , optional, intent(in)    :: gsmap    ! decomp for all data
+csm_share/shr/shr_pcdf_mod.F90:     lsize = mct_gsmap_lsize(gsmap,mpicom)
+csm_share/shr/shr_pcdf_mod.F90:     gsize = mct_gsmap_gsize(gsmap)
+csm_share/shr/shr_pcdf_mod.F90:     call mct_gsmap_OrderedPoints(gsmap, iam, ldof)
+dead_share/dead_mct_mod.F90:    type(mct_gsMap), intent(in)   :: gsMap
+dead_share/dead_mct_mod.F90:         lsize=mct_gsMap_lsize(gsMap, mpicom) )
+dead_share/dead_mct_mod.F90:    call mct_gsMap_orderedPoints(gsMap, my_task, idata)
+drv/driver/mrg_x2ge_mct.F90:    type(mct_gsmap), pointer :: gsMap_w
+drv/driver/mrg_x2ge_mct.F90:    lsize = mct_GSMap_lsize(GSMap_w, mpicom)
+drv/driver/mrg_x2i_mct.F90:    type(mct_gsMap), pointer        :: gsMap_ice
+drv/driver/mrg_x2i_mct.F90:               lsize=mct_gsMap_lsize(gsMap_ice, mpicom))
+drv/driver/mrg_x2i_mct.F90:               lsize=mct_gsMap_lsize(gsMap_ice, mpicom))
+drv/driver/map_ocnocn_mct.F90:    type(mct_gsmap),pointer :: gsmap_cc
+drv/driver/map_ocnocn_mct.F90:    type(mct_gsmap),pointer :: gsmap_cx
+drv/driver/seq_domain_mct.F90:    type(mct_gsMap)  , pointer :: gsMap_a    ! atm global seg map 
+drv/driver/seq_domain_mct.F90:    type(mct_gsMap)  , pointer :: gsMap_i    ! ice global seg map 
+drv/driver/seq_domain_mct.F90:    type(mct_gsMap)  , pointer :: gsMap_l    ! lnd global seg map 
+drv/driver/seq_domain_mct.F90:    type(mct_gsMap)  , pointer :: gsMap_o    ! ocn global seg map 
+drv/driver/seq_domain_mct.F90:    type(mct_gsMap)  , pointer :: gsMap_r    ! ocn global seg map 
+drv/driver/seq_domain_mct.F90:    type(mct_gsMap)  , pointer :: gsMap_g    ! glc global seg map 
+drv/driver/seq_domain_mct.F90:    type(mct_gsMap)  , pointer :: gsMap_s    ! sno global seg map 
+drv/driver/seq_domain_mct.F90:    gatmsize = mct_gsMap_gsize(gsMap_a)
+drv/driver/seq_domain_mct.F90:       glndsize = mct_gsMap_gsize(gsMap_l) 
+drv/driver/seq_domain_mct.F90:       gocnsize = mct_gsMap_gsize(gsMap_o)
+drv/driver/seq_domain_mct.F90:       gicesize = mct_gsMap_gsize(gsMap_i) 
+drv/driver/seq_domain_mct.F90:       gglcsize = mct_gsMap_gsize(gsMap_g) 
+drv/driver/seq_domain_mct.F90:       gsnosize = mct_gsMap_gsize(gsMap_s) 
+drv/driver/seq_domain_mct.F90:       grofsize = mct_gsMap_gsize(gsMap_r)
+drv/driver/map_rofocn_mct.F90:    type(mct_gsMap), pointer :: gsMap_r           ! runoff gsMap
+drv/driver/map_rofocn_mct.F90:    type(mct_gsMap), pointer :: gsMap_o           ! ocn gsMap
+drv/driver/map_rofocn_mct.F90:!       lsize = mct_gsMap_lsize(gsMap_o, mpicom)
+drv/driver/map_rofocn_mct.F90:!       lsize = mct_gsMap_lsize(gsMap_r, mpicom)
+drv/driver/map_rofocn_mct.F90:       lsize = mct_gsMap_lsize(gsMap_r, mpicom)
+drv/driver/map_wrfcam_mct.F90:    type(mct_gsMap), pointer :: gsMap_w           ! atm gsMap
+drv/driver/map_wrfcam_mct.F90:    type(mct_gsMap), pointer :: gsMap_c           ! lnd gsMap
+drv/driver/map_wrfcam_mct.F90:    type(mct_gsMap), pointer :: gsMap_w           ! atm gsMap
+drv/driver/map_wrfcam_mct.F90:    type(mct_gsMap), pointer :: gsMap_c           ! lnd gsMap
+drv/driver/map_atmlnd_mct.F90:    type(mct_gsMap), pointer :: gsMap_a           ! atm gsMap
+drv/driver/map_atmlnd_mct.F90:    type(mct_gsMap), pointer :: gsMap_l           ! lnd gsMap
+drv/driver/map_atmlnd_mct.F90:    lsize = mct_gsMap_lsize(gsMap_a, mpicom)
+drv/driver/map_atmlnd_mct.F90:    lsize = mct_gsMap_lsize(gsMap_l, mpicom)
+drv/driver/map_atmlnd_mct.F90:    type(mct_gsMap), pointer :: gsMap_a           ! atm gsMap
+drv/driver/map_atmlnd_mct.F90:    type(mct_gsMap), pointer :: gsMap_l           ! lnd gsMap
+drv/driver/mrg_x2l_mct.F90:    type(mct_GsMap), pointer        :: GSMap_lnd
+drv/driver/mrg_x2l_mct.F90:         lsize=mct_gsMap_lsize(gsMap_lnd, mpicom))
+drv/driver/map_camcam_mct.F90:    type(mct_gsmap),pointer :: gsmap_cc
+drv/driver/map_camcam_mct.F90:    type(mct_gsmap),pointer :: gsmap_cx
+drv/driver/map_rofrof_mct.F90:    type(mct_gsmap),pointer :: gsmap_cc
+drv/driver/map_rofrof_mct.F90:    type(mct_gsmap),pointer :: gsmap_cx
+drv/driver/map_iceocn_mct.F90:    type(mct_gsMap), pointer :: gsMap_i           ! ice gsMap
+drv/driver/map_iceocn_mct.F90:    type(mct_gsMap), pointer :: gsMap_o           ! ocn gsMap
+drv/driver/map_iceocn_mct.F90:    ocnsize = mct_gsMap_gsize(gsMap_o)
+drv/driver/map_iceocn_mct.F90:    icesize = mct_gsMap_gsize(gsMap_i)
+drv/driver/map_iceocn_mct.F90:    lsize = mct_gsMap_lsize(gsMap_o, mpicom)
+drv/driver/map_iceocn_mct.F90:    lsize = mct_gsMap_lsize(gsMap_i, mpicom)
+drv/driver/map_iceocn_mct.F90:    type(mct_gsMap), pointer :: gsMap_i           ! ice gsMap
+drv/driver/map_iceocn_mct.F90:    type(mct_gsMap), pointer :: gsMap_o           ! ocn gsMap
+drv/driver/map_iceocn_mct.F90:    ocnsize = mct_gsMap_gsize(gsMap_o)
+drv/driver/map_iceocn_mct.F90:    icesize = mct_gsMap_gsize(gsMap_i)
+drv/driver/map_geagea_mct.F90:    type(mct_gsmap),pointer :: gsmap_cc
+drv/driver/map_geagea_mct.F90:    type(mct_gsmap),pointer :: gsmap_cx
+drv/driver/mrg_x2g_mct.F90:    type(mct_GsMap), pointer        :: GSMap_glc
+drv/driver/mrg_x2g_mct.F90:         lsize=mct_gsMap_lsize(gsMap_glc, mpicom))
+drv/driver/seq_hist_mod.F90:   type(mct_gsMap),pointer :: gsmap
+drv/driver/seq_hist_mod.F90:   type(mct_gsMap),pointer :: gsmap
+drv/driver/seq_hist_mod.F90:   type(mct_gsMap),pointer :: gsmap
+drv/driver/seq_hist_mod.F90:   type(mct_gsmap) , intent(in) :: gsmap      ! gsmap
+drv/driver/map_snosno_mct.F90:    type(mct_gsmap),pointer :: gsmap_cc
+drv/driver/map_snosno_mct.F90:    type(mct_gsmap),pointer :: gsmap_cx
+drv/driver/map_geacam_mct.F90:    type(mct_gsMap), pointer :: gsMap_w           ! atm gsMap
+drv/driver/map_geacam_mct.F90:    type(mct_gsMap), pointer :: gsMap_c           ! lnd gsMap
+drv/driver/map_geacam_mct.F90:    type(mct_gsMap), pointer :: gsMap_w           ! atm gsMap
+drv/driver/map_geacam_mct.F90:    type(mct_gsMap), pointer :: gsMap_c           ! lnd gsMap
+drv/driver/mrg_x2c_mct.F90:    type(mct_gsmap), pointer :: gsMap_a
+drv/driver/mrg_x2c_mct.F90:    lsize = mct_GSMap_lsize(GSMap_a, mpicom)
+drv/driver/mrg_x2ca_mct.F90:    type(mct_gsmap), pointer :: gsMap_a
+drv/driver/mrg_x2ca_mct.F90:    lsize = mct_GSMap_lsize(GSMap_a, mpicom)
+drv/driver/map_atmice_mct.F90:    type(mct_gsMap), pointer :: gsMap_a
+drv/driver/map_atmice_mct.F90:    type(mct_gsMap), pointer :: gsMap_i
+drv/driver/map_atmice_mct.F90:    type(mct_gsMap), pointer :: gsMap_i           ! ice gsMap
+drv/driver/map_atmice_mct.F90:    type(mct_gsMap), pointer :: gsMap_a           ! atm gsMap
+drv/driver/map_wrfwrf_mct.F90:    type(mct_gsmap),pointer :: gsmap_cc
+drv/driver/map_wrfwrf_mct.F90:    type(mct_gsmap),pointer :: gsmap_cx
+drv/driver/map_atmatm_mct.F90:    type(mct_gsmap),pointer :: gsmap_cc
+drv/driver/map_atmatm_mct.F90:    type(mct_gsmap),pointer :: gsmap_cx
+drv/driver/mrg_x2w_mct.F90:    type(mct_gsmap), pointer :: gsMap_w
+drv/driver/mrg_x2w_mct.F90:    lsize = mct_GSMap_lsize(GSMap_w, mpicom)
+drv/driver/map_iceice_mct.F90:    type(mct_gsmap),pointer :: gsmap_cc
+drv/driver/map_iceice_mct.F90:    type(mct_gsmap),pointer :: gsmap_cx
+drv/driver/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_aa    ! on component pes
+drv/driver/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_ll
+drv/driver/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_oo
+drv/driver/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_ii
+drv/driver/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_rr
+drv/driver/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_gg
+drv/driver/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_ss
+drv/driver/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_ww   !juanxiong he
+drv/driver/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_cc   !juanxiong he
+drv/driver/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_mm   !juanxiong he
+drv/driver/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_gege   !juanxiong he
+drv/driver/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_caca   !juanxiong he
+drv/driver/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_ax    ! on cpl pes
+drv/driver/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_lx
+drv/driver/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_ox
+drv/driver/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_ix
+drv/driver/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_rx
+drv/driver/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_gx
+drv/driver/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_sx
+drv/driver/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_cx  !juanxiong he 
+drv/driver/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_wx  !juanxiong he
+drv/driver/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_mx   !juanxiong he
+drv/driver/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_cax  !juanxiong he 
+drv/driver/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_gex  !juanxiong he
+drv/driver/.svn/text-base/mrg_x2a_mct.F90.svn-base:    type(mct_gsmap), pointer :: gsMap_a
+drv/driver/.svn/text-base/mrg_x2a_mct.F90.svn-base:    lsize = mct_GSMap_lsize(GSMap_a, mpicom)
+drv/driver/.svn/text-base/map_iceocn_mct.F90.svn-base:    type(mct_gsMap), pointer :: gsMap_i           ! ice gsMap
+drv/driver/.svn/text-base/map_iceocn_mct.F90.svn-base:    type(mct_gsMap), pointer :: gsMap_o           ! ocn gsMap
+drv/driver/.svn/text-base/map_iceocn_mct.F90.svn-base:    ocnsize = mct_gsMap_gsize(gsMap_o)
+drv/driver/.svn/text-base/map_iceocn_mct.F90.svn-base:    icesize = mct_gsMap_gsize(gsMap_i)
+drv/driver/.svn/text-base/map_iceocn_mct.F90.svn-base:    lsize = mct_gsMap_lsize(gsMap_o, mpicom)
+drv/driver/.svn/text-base/map_iceocn_mct.F90.svn-base:    lsize = mct_gsMap_lsize(gsMap_i, mpicom)
+drv/driver/.svn/text-base/map_iceocn_mct.F90.svn-base:    type(mct_gsMap), pointer :: gsMap_i           ! ice gsMap
+drv/driver/.svn/text-base/map_iceocn_mct.F90.svn-base:    type(mct_gsMap), pointer :: gsMap_o           ! ocn gsMap
+drv/driver/.svn/text-base/map_iceocn_mct.F90.svn-base:    ocnsize = mct_gsMap_gsize(gsMap_o)
+drv/driver/.svn/text-base/map_iceocn_mct.F90.svn-base:    icesize = mct_gsMap_gsize(gsMap_i)
+drv/driver/.svn/text-base/map_atmatm_mct.F90.svn-base:    type(mct_gsmap),pointer :: gsmap_cc
+drv/driver/.svn/text-base/map_atmatm_mct.F90.svn-base:    type(mct_gsmap),pointer :: gsmap_cx
+drv/driver/.svn/text-base/seq_flux_mct.F90.svn-base:  type(mct_gsMap) :: gsmap_ae, gsmap_oe              ! gsmaps for atm/ocn on exch grid
+drv/driver/.svn/text-base/seq_flux_mct.F90.svn-base:    type(mct_gsMap), pointer        :: gsMap
+drv/driver/.svn/text-base/seq_flux_mct.F90.svn-base:    nloc = mct_gsMap_lsize(gsMap, mpicom)
+drv/driver/.svn/text-base/seq_flux_mct.F90.svn-base:    type(mct_gsMap), pointer        :: gsmap_a
+drv/driver/.svn/text-base/seq_flux_mct.F90.svn-base:    type(mct_gsMap), pointer        :: gsmap_o
+drv/driver/.svn/text-base/seq_flux_mct.F90.svn-base:    nloc_a  = mct_gsmap_lsize(gsmap_a,mpicom_a)
+drv/driver/.svn/text-base/seq_flux_mct.F90.svn-base:    nloc_o  = mct_gsmap_lsize(gsmap_o,mpicom_a)
+drv/driver/.svn/text-base/seq_flux_mct.F90.svn-base:    nloc_ae = mct_gsmap_lsize(gsmap_ae,mpicom_a)
+drv/driver/.svn/text-base/seq_flux_mct.F90.svn-base:    nloc_oe = mct_gsmap_lsize(gsmap_oe,mpicom_a)
+drv/driver/.svn/text-base/seq_flux_mct.F90.svn-base:    call mct_gsmap_clean(gsmap_ae)
+drv/driver/.svn/text-base/seq_flux_mct.F90.svn-base:    call mct_gsmap_clean(gsmap_oe)
+drv/driver/.svn/text-base/seq_flux_mct.F90.svn-base:    type(mct_gsmap),pointer :: gsmap_a
+drv/driver/.svn/text-base/seq_flux_mct.F90.svn-base:    type(mct_gsmap),pointer :: gsmap_o
+drv/driver/.svn/text-base/seq_rest_mod.F90.svn-base:   type(mct_gsMap),pointer :: gsmap
+drv/driver/.svn/text-base/seq_rest_mod.F90.svn-base:   type(mct_gsMap),pointer :: gsmap
+drv/driver/.svn/text-base/map_rofrof_mct.F90.svn-base:    type(mct_gsmap),pointer :: gsmap_cc
+drv/driver/.svn/text-base/map_rofrof_mct.F90.svn-base:    type(mct_gsmap),pointer :: gsmap_cx
+drv/driver/.svn/text-base/mrg_x2g_mct.F90.svn-base:    type(mct_GsMap), pointer        :: GSMap_glc
+drv/driver/.svn/text-base/mrg_x2g_mct.F90.svn-base:         lsize=mct_gsMap_lsize(gsMap_glc, mpicom))
+drv/driver/.svn/text-base/seq_hist_mod.F90.svn-base:   type(mct_gsMap),pointer :: gsmap
+drv/driver/.svn/text-base/seq_hist_mod.F90.svn-base:   type(mct_gsMap),pointer :: gsmap
+drv/driver/.svn/text-base/seq_hist_mod.F90.svn-base:   type(mct_gsMap),pointer :: gsmap
+drv/driver/.svn/text-base/seq_hist_mod.F90.svn-base:   type(mct_gsmap) , intent(in) :: gsmap      ! gsmap
+drv/driver/.svn/text-base/map_atmice_mct.F90.svn-base:    type(mct_gsMap), pointer :: gsMap_a
+drv/driver/.svn/text-base/map_atmice_mct.F90.svn-base:    type(mct_gsMap), pointer :: gsMap_i
+drv/driver/.svn/text-base/map_atmice_mct.F90.svn-base:    type(mct_gsMap), pointer :: gsMap_i           ! ice gsMap
+drv/driver/.svn/text-base/map_atmice_mct.F90.svn-base:    type(mct_gsMap), pointer :: gsMap_a           ! atm gsMap
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:    type(mct_gsMap)  , pointer :: gsMap_a    ! atm global seg map 
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:    type(mct_gsMap)  , pointer :: gsMap_i    ! ice global seg map 
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:    type(mct_gsMap)  , pointer :: gsMap_l    ! lnd global seg map 
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:    type(mct_gsMap)  , pointer :: gsMap_o    ! ocn global seg map 
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:    type(mct_gsMap)  , pointer :: gsMap_r    ! ocn global seg map 
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:    type(mct_gsMap)  , pointer :: gsMap_g    ! glc global seg map 
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:    type(mct_gsMap)  , pointer :: gsMap_s    ! sno global seg map 
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:    gatmsize = mct_gsMap_gsize(gsMap_a)
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:       glndsize = mct_gsMap_gsize(gsMap_l) 
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:       gocnsize = mct_gsMap_gsize(gsMap_o)
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:       gicesize = mct_gsMap_gsize(gsMap_i) 
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:       gglcsize = mct_gsMap_gsize(gsMap_g) 
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:       gsnosize = mct_gsMap_gsize(gsMap_s) 
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:       grofsize = mct_gsMap_gsize(gsMap_r)
+drv/driver/.svn/text-base/mrg_x2i_mct.F90.svn-base:    type(mct_gsMap), pointer        :: gsMap_ice
+drv/driver/.svn/text-base/mrg_x2i_mct.F90.svn-base:               lsize=mct_gsMap_lsize(gsMap_ice, mpicom))
+drv/driver/.svn/text-base/mrg_x2i_mct.F90.svn-base:               lsize=mct_gsMap_lsize(gsMap_ice, mpicom))
+drv/driver/.svn/text-base/mrg_x2o_mct.F90.svn-base:    type(mct_gsMap), pointer       :: gsMap_ocn
+drv/driver/.svn/text-base/mrg_x2o_mct.F90.svn-base:               lsize=MCT_GSMap_lsize(GSMap_ocn, mpicom))
+drv/driver/.svn/text-base/mrg_x2o_mct.F90.svn-base:               lsize=mct_GSMap_lsize(GSMap_ocn, mpicom))
+drv/driver/.svn/text-base/mrg_x2o_mct.F90.svn-base:               lsize=mct_GSMap_lsize(GSMap_ocn, mpicom))
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:    type(mct_gsMap), pointer :: gsmap_new           ! new gsMap
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:    type(mct_gsMap), pointer :: gsmap_old           ! old gsMap
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:    type(mct_gsMap)          :: gsmap_new_join     ! gsmap_new on joined id
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:    type(mct_gsMap)          :: gsmap_old_join     ! gsmap_old on joined id
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:    lsize = mct_gsMap_lsize(gsmap_new_join, mpicom_join)
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:    call mct_gsMap_clean(gsmap_old_join)
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:    call mct_gsMap_clean(gsmap_new_join)
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:      lsize = mct_gsMap_lsize(gsMap_new,mpicom_new)
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:    type(mct_gsMap), intent(IN) :: gsmapi
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:    type(mct_gsMap), intent(OUT):: gsmapo
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:          call mct_gsmap_init(gsmapo,compido,ngseg,gsize,start,length,peloc)
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:    call mct_gsmap_bcast(gsmapo, mrankog, mpicomo)
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:    type(mct_gsMap), intent(IN) :: gsmapi
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:    type(mct_gsMap), intent(OUT):: gsmapo
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:       call mct_gsMap_activepes(gsmapi,apesi)
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:          call mct_gsMap_copy(gsmapi,gsmapo)
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:          call mct_gsmap_init(gsmapo,ngsego,start,length,peloc,0,mpicomo,compido,gsizeo)
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:          call mct_gsmap_init(gsmapo,lindex,mpicomo,compido,size(lindex),gsizeo)
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:             mct_gsmap_ngseg(gsmapo),mct_gsmap_gsize(gsmapo)
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:          call mct_gsmap_activepes(gsmapo,apeso)
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:             mct_gsmap_ngseg(gsmapo)/msizeo,mct_gsmap_ngseg(gsmapo)/apeso
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:             mct_gsmap_nlseg(gsmapo,0),mct_gsmap_maxnlseg(gsmapo)
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:!p       if (.not. mct_gsmap_increasing(gsmapo) ) then
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:  type(mct_gsMap), intent(IN):: gsmap1
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:  type(mct_gsMap), intent(IN):: gsmap2
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:     if (mct_gsMap_gsize(gsmap1) /= mct_gsMap_gsize(gsmap2)) identical = .false.
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:     if (mct_gsMap_ngseg(gsmap1) /= mct_gsMap_ngseg(gsmap2)) identical = .false.
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:     do n = 1,mct_gsMap_ngseg(gsmap1)
+drv/driver/.svn/text-base/seq_diag_mct.F90.svn-base:   type(mct_gsMap)   ,pointer :: gsmap
+drv/driver/.svn/text-base/map_atmlnd_mct.F90.svn-base:    type(mct_gsMap), pointer :: gsMap_a           ! atm gsMap
+drv/driver/.svn/text-base/map_atmlnd_mct.F90.svn-base:    type(mct_gsMap), pointer :: gsMap_l           ! lnd gsMap
+drv/driver/.svn/text-base/map_atmlnd_mct.F90.svn-base:    lsize = mct_gsMap_lsize(gsMap_a, mpicom)
+drv/driver/.svn/text-base/map_atmlnd_mct.F90.svn-base:    lsize = mct_gsMap_lsize(gsMap_l, mpicom)
+drv/driver/.svn/text-base/map_atmlnd_mct.F90.svn-base:    type(mct_gsMap), pointer :: gsMap_a           ! atm gsMap
+drv/driver/.svn/text-base/map_atmlnd_mct.F90.svn-base:    type(mct_gsMap), pointer :: gsMap_l           ! lnd gsMap
+drv/driver/.svn/text-base/mrg_x2s_mct.F90.svn-base:    type(mct_GsMap), pointer        :: GSMap_sno
+drv/driver/.svn/text-base/mrg_x2s_mct.F90.svn-base:         lsize=mct_gsMap_lsize(gsMap_sno, mpicom))
+drv/driver/.svn/text-base/map_atmocn_mct.F90.svn-base:    type(mct_gsMap), pointer :: gsMap_a
+drv/driver/.svn/text-base/map_atmocn_mct.F90.svn-base:    type(mct_gsMap), pointer :: gsMap_o
+drv/driver/.svn/text-base/map_atmocn_mct.F90.svn-base:       lsize = mct_gsMap_lsize(gsMap_a, mpicom)
+drv/driver/.svn/text-base/map_atmocn_mct.F90.svn-base:       lsize = mct_gsMap_lsize(gsMap_o, mpicom)
+drv/driver/.svn/text-base/map_atmocn_mct.F90.svn-base:       lsize = mct_gsMap_lsize(gsMap_a, mpicom)
+drv/driver/.svn/text-base/map_atmocn_mct.F90.svn-base:       lsize = mct_gsMap_lsize(gsMap_o, mpicom)
+drv/driver/.svn/text-base/map_atmocn_mct.F90.svn-base:    type(mct_gsMap), pointer :: gsMap_o           ! ocn gsMap
+drv/driver/.svn/text-base/map_atmocn_mct.F90.svn-base:    type(mct_gsMap), pointer :: gsMap_a           ! atm gsMap
+drv/driver/.svn/text-base/map_atmocn_mct.F90.svn-base:       lsize = mct_gsMap_lsize(gsMap_o, mpicom)
+drv/driver/.svn/text-base/map_atmocn_mct.F90.svn-base:       lsize = mct_gsMap_lsize(gsMap_a, mpicom)
+drv/driver/.svn/text-base/map_atmocn_mct.F90.svn-base:    type(mct_gsMap), pointer :: gsmap_a
+drv/driver/.svn/text-base/map_atmocn_mct.F90.svn-base:   type(mct_gsMap),pointer      :: gsmapi  ! input gsmap
+drv/driver/.svn/text-base/map_atmocn_mct.F90.svn-base:     call mct_gsMap_orderedPoints(gsMapi, mype, gindex)
+drv/driver/.svn/text-base/ccsm_comp_mod.F90.svn-base:   type(mct_gsMap)  :: gsMap_aa    ! on component pes
+drv/driver/.svn/text-base/ccsm_comp_mod.F90.svn-base:   type(mct_gsMap)  :: gsMap_ll
+drv/driver/.svn/text-base/ccsm_comp_mod.F90.svn-base:   type(mct_gsMap)  :: gsMap_oo
+drv/driver/.svn/text-base/ccsm_comp_mod.F90.svn-base:   type(mct_gsMap)  :: gsMap_ii
+drv/driver/.svn/text-base/ccsm_comp_mod.F90.svn-base:   type(mct_gsMap)  :: gsMap_rr
+drv/driver/.svn/text-base/ccsm_comp_mod.F90.svn-base:   type(mct_gsMap)  :: gsMap_gg
+drv/driver/.svn/text-base/ccsm_comp_mod.F90.svn-base:   type(mct_gsMap)  :: gsMap_ss
+drv/driver/.svn/text-base/ccsm_comp_mod.F90.svn-base:   type(mct_gsMap)  :: gsMap_ax    ! on cpl pes
+drv/driver/.svn/text-base/ccsm_comp_mod.F90.svn-base:   type(mct_gsMap)  :: gsMap_lx
+drv/driver/.svn/text-base/ccsm_comp_mod.F90.svn-base:   type(mct_gsMap)  :: gsMap_ox
+drv/driver/.svn/text-base/ccsm_comp_mod.F90.svn-base:   type(mct_gsMap)  :: gsMap_ix
+drv/driver/.svn/text-base/ccsm_comp_mod.F90.svn-base:   type(mct_gsMap)  :: gsMap_rx
+drv/driver/.svn/text-base/ccsm_comp_mod.F90.svn-base:   type(mct_gsMap)  :: gsMap_gx
+drv/driver/.svn/text-base/ccsm_comp_mod.F90.svn-base:   type(mct_gsMap)  :: gsMap_sx
+drv/driver/.svn/text-base/map_rofocn_mct.F90.svn-base:    type(mct_gsMap), pointer :: gsMap_r           ! runoff gsMap
+drv/driver/.svn/text-base/map_rofocn_mct.F90.svn-base:    type(mct_gsMap), pointer :: gsMap_o           ! ocn gsMap
+drv/driver/.svn/text-base/map_rofocn_mct.F90.svn-base:!       lsize = mct_gsMap_lsize(gsMap_o, mpicom)
+drv/driver/.svn/text-base/map_rofocn_mct.F90.svn-base:!       lsize = mct_gsMap_lsize(gsMap_r, mpicom)
+drv/driver/.svn/text-base/map_rofocn_mct.F90.svn-base:       lsize = mct_gsMap_lsize(gsMap_r, mpicom)
+drv/driver/.svn/text-base/map_glcglc_mct.F90.svn-base:    type(mct_gsmap),pointer :: gsmap_cc
+drv/driver/.svn/text-base/map_glcglc_mct.F90.svn-base:    type(mct_gsmap),pointer :: gsmap_cx
+drv/driver/.svn/text-base/map_snosno_mct.F90.svn-base:    type(mct_gsmap),pointer :: gsmap_cc
+drv/driver/.svn/text-base/map_snosno_mct.F90.svn-base:    type(mct_gsmap),pointer :: gsmap_cx
+drv/driver/.svn/text-base/mrg_x2l_mct.F90.svn-base:    type(mct_GsMap), pointer        :: GSMap_lnd
+drv/driver/.svn/text-base/mrg_x2l_mct.F90.svn-base:         lsize=mct_gsMap_lsize(gsMap_lnd, mpicom))
+drv/driver/.svn/text-base/map_snoglc_mct.F90.svn-base:    type(mct_gsMap), pointer :: gsMap_s           ! sno gsMap
+drv/driver/.svn/text-base/map_snoglc_mct.F90.svn-base:    type(mct_gsMap), pointer :: gsMap_g           ! glc gsMap
+drv/driver/.svn/text-base/map_snoglc_mct.F90.svn-base:    glcsize = mct_gsMap_gsize(gsMap_g)
+drv/driver/.svn/text-base/map_snoglc_mct.F90.svn-base:    snosize = mct_gsMap_gsize(gsMap_s)
+drv/driver/.svn/text-base/map_snoglc_mct.F90.svn-base:    type(mct_gsMap), pointer :: gsMap_s           ! sno gsMap
+drv/driver/.svn/text-base/map_snoglc_mct.F90.svn-base:    type(mct_gsMap), pointer :: gsMap_g           ! glc gsMap
+drv/driver/.svn/text-base/map_snoglc_mct.F90.svn-base:    glcsize = mct_gsMap_gsize(gsMap_g)
+drv/driver/.svn/text-base/map_snoglc_mct.F90.svn-base:    snosize = mct_gsMap_gsize(gsMap_s)
+drv/driver/.svn/text-base/map_snoglc_mct.F90.svn-base:    lsize = mct_gsMap_lsize(gsMap_s, mpicom)
+drv/driver/.svn/text-base/map_snoglc_mct.F90.svn-base:    lsize = mct_gsMap_lsize(gsMap_g, mpicom)
+drv/driver/.svn/text-base/map_ocnocn_mct.F90.svn-base:    type(mct_gsmap),pointer :: gsmap_cc
+drv/driver/.svn/text-base/map_ocnocn_mct.F90.svn-base:    type(mct_gsmap),pointer :: gsmap_cx
+drv/driver/.svn/text-base/map_lndlnd_mct.F90.svn-base:    type(mct_gsmap),pointer :: gsmap_cc
+drv/driver/.svn/text-base/map_lndlnd_mct.F90.svn-base:    type(mct_gsmap),pointer :: gsmap_cx
+drv/driver/.svn/text-base/map_iceice_mct.F90.svn-base:    type(mct_gsmap),pointer :: gsmap_cc
+drv/driver/.svn/text-base/map_iceice_mct.F90.svn-base:    type(mct_gsmap),pointer :: gsmap_cx
+drv/driver/map_snoglc_mct.F90:    type(mct_gsMap), pointer :: gsMap_s           ! sno gsMap
+drv/driver/map_snoglc_mct.F90:    type(mct_gsMap), pointer :: gsMap_g           ! glc gsMap
+drv/driver/map_snoglc_mct.F90:    glcsize = mct_gsMap_gsize(gsMap_g)
+drv/driver/map_snoglc_mct.F90:    snosize = mct_gsMap_gsize(gsMap_s)
+drv/driver/map_snoglc_mct.F90:    type(mct_gsMap), pointer :: gsMap_s           ! sno gsMap
+drv/driver/map_snoglc_mct.F90:    type(mct_gsMap), pointer :: gsMap_g           ! glc gsMap
+drv/driver/map_snoglc_mct.F90:    glcsize = mct_gsMap_gsize(gsMap_g)
+drv/driver/map_snoglc_mct.F90:    snosize = mct_gsMap_gsize(gsMap_s)
+drv/driver/map_snoglc_mct.F90:    lsize = mct_gsMap_lsize(gsMap_s, mpicom)
+drv/driver/map_snoglc_mct.F90:    lsize = mct_gsMap_lsize(gsMap_g, mpicom)
+drv/driver/map_lndlnd_mct.F90:    type(mct_gsmap),pointer :: gsmap_cc
+drv/driver/map_lndlnd_mct.F90:    type(mct_gsmap),pointer :: gsmap_cx
+drv/driver/map_atmocn_mct.F90:    type(mct_gsMap), pointer :: gsMap_a
+drv/driver/map_atmocn_mct.F90:    type(mct_gsMap), pointer :: gsMap_o
+drv/driver/map_atmocn_mct.F90:       lsize = mct_gsMap_lsize(gsMap_a, mpicom)
+drv/driver/map_atmocn_mct.F90:       lsize = mct_gsMap_lsize(gsMap_o, mpicom)
+drv/driver/map_atmocn_mct.F90:       lsize = mct_gsMap_lsize(gsMap_a, mpicom)
+drv/driver/map_atmocn_mct.F90:       lsize = mct_gsMap_lsize(gsMap_o, mpicom)
+drv/driver/map_atmocn_mct.F90:    type(mct_gsMap), pointer :: gsMap_o           ! ocn gsMap
+drv/driver/map_atmocn_mct.F90:    type(mct_gsMap), pointer :: gsMap_a           ! atm gsMap
+drv/driver/map_atmocn_mct.F90:       lsize = mct_gsMap_lsize(gsMap_o, mpicom)
+drv/driver/map_atmocn_mct.F90:       lsize = mct_gsMap_lsize(gsMap_a, mpicom)
+drv/driver/map_atmocn_mct.F90:    type(mct_gsMap), pointer :: gsmap_a
+drv/driver/map_atmocn_mct.F90:   type(mct_gsMap),pointer      :: gsmapi  ! input gsmap
+drv/driver/map_atmocn_mct.F90:     call mct_gsMap_orderedPoints(gsMapi, mype, gindex)
+drv/driver/seq_rearr_mod.F90:    type(mct_gsMap), pointer :: gsmap_new           ! new gsMap
+drv/driver/seq_rearr_mod.F90:    type(mct_gsMap), pointer :: gsmap_old           ! old gsMap
+drv/driver/seq_rearr_mod.F90:    type(mct_gsMap)          :: gsmap_new_join     ! gsmap_new on joined id
+drv/driver/seq_rearr_mod.F90:    type(mct_gsMap)          :: gsmap_old_join     ! gsmap_old on joined id
+drv/driver/seq_rearr_mod.F90:    lsize = mct_gsMap_lsize(gsmap_new_join, mpicom_join)
+drv/driver/seq_rearr_mod.F90:    call mct_gsMap_clean(gsmap_old_join)
+drv/driver/seq_rearr_mod.F90:    call mct_gsMap_clean(gsmap_new_join)
+drv/driver/seq_rearr_mod.F90:      lsize = mct_gsMap_lsize(gsMap_new,mpicom_new)
+drv/driver/seq_rearr_mod.F90:    type(mct_gsMap), intent(IN) :: gsmapi
+drv/driver/seq_rearr_mod.F90:    type(mct_gsMap), intent(OUT):: gsmapo
+drv/driver/seq_rearr_mod.F90:          call mct_gsmap_init(gsmapo,compido,ngseg,gsize,start,length,peloc)
+drv/driver/seq_rearr_mod.F90:    call mct_gsmap_bcast(gsmapo, mrankog, mpicomo)
+drv/driver/seq_rearr_mod.F90:    type(mct_gsMap), intent(IN) :: gsmapi
+drv/driver/seq_rearr_mod.F90:    type(mct_gsMap), intent(OUT):: gsmapo
+drv/driver/seq_rearr_mod.F90:       call mct_gsMap_activepes(gsmapi,apesi)
+drv/driver/seq_rearr_mod.F90:          call mct_gsMap_copy(gsmapi,gsmapo)
+drv/driver/seq_rearr_mod.F90:          call mct_gsmap_init(gsmapo,ngsego,start,length,peloc,0,mpicomo,compido,gsizeo)
+drv/driver/seq_rearr_mod.F90:          call mct_gsmap_init(gsmapo,lindex,mpicomo,compido,size(lindex),gsizeo)
+drv/driver/seq_rearr_mod.F90:             mct_gsmap_ngseg(gsmapo),mct_gsmap_gsize(gsmapo)
+drv/driver/seq_rearr_mod.F90:          call mct_gsmap_activepes(gsmapo,apeso)
+drv/driver/seq_rearr_mod.F90:             mct_gsmap_ngseg(gsmapo)/msizeo,mct_gsmap_ngseg(gsmapo)/apeso
+drv/driver/seq_rearr_mod.F90:             mct_gsmap_nlseg(gsmapo,0),mct_gsmap_maxnlseg(gsmapo)
+drv/driver/seq_rearr_mod.F90:!p       if (.not. mct_gsmap_increasing(gsmapo) ) then
+drv/driver/seq_rearr_mod.F90:  type(mct_gsMap), intent(IN):: gsmap1
+drv/driver/seq_rearr_mod.F90:  type(mct_gsMap), intent(IN):: gsmap2
+drv/driver/seq_rearr_mod.F90:     if (mct_gsMap_gsize(gsmap1) /= mct_gsMap_gsize(gsmap2)) identical = .false.
+drv/driver/seq_rearr_mod.F90:     if (mct_gsMap_ngseg(gsmap1) /= mct_gsMap_ngseg(gsmap2)) identical = .false.
+drv/driver/seq_rearr_mod.F90:     do n = 1,mct_gsMap_ngseg(gsmap1)
+drv/driver/mrg_x2o_mct.F90:    type(mct_gsMap), pointer       :: gsMap_ocn
+drv/driver/mrg_x2o_mct.F90:               lsize=MCT_GSMap_lsize(GSMap_ocn, mpicom))
+drv/driver/mrg_x2o_mct.F90:               lsize=mct_GSMap_lsize(GSMap_ocn, mpicom))
+drv/driver/mrg_x2o_mct.F90:               lsize=mct_GSMap_lsize(GSMap_ocn, mpicom))
+drv/driver/seq_flux_mct.F90:  type(mct_gsMap) :: gsmap_ae, gsmap_oe              ! gsmaps for atm/ocn on exch grid
+drv/driver/seq_flux_mct.F90:    type(mct_gsMap), pointer        :: gsMap
+drv/driver/seq_flux_mct.F90:    nloc = mct_gsMap_lsize(gsMap, mpicom)
+drv/driver/seq_flux_mct.F90:    type(mct_gsMap), pointer        :: gsmap_a
+drv/driver/seq_flux_mct.F90:    type(mct_gsMap), pointer        :: gsmap_o
+drv/driver/seq_flux_mct.F90:    nloc_a  = mct_gsmap_lsize(gsmap_a,mpicom_a)
+drv/driver/seq_flux_mct.F90:    nloc_o  = mct_gsmap_lsize(gsmap_o,mpicom_a)
+drv/driver/seq_flux_mct.F90:    nloc_ae = mct_gsmap_lsize(gsmap_ae,mpicom_a)
+drv/driver/seq_flux_mct.F90:    nloc_oe = mct_gsmap_lsize(gsmap_oe,mpicom_a)
+drv/driver/seq_flux_mct.F90:    call mct_gsmap_clean(gsmap_ae)
+drv/driver/seq_flux_mct.F90:    call mct_gsmap_clean(gsmap_oe)
+drv/driver/seq_flux_mct.F90:    type(mct_gsmap),pointer :: gsmap_a
+drv/driver/seq_flux_mct.F90:    type(mct_gsmap),pointer :: gsmap_o
+drv/driver/seq_diag_mct.F90:   type(mct_gsMap)   ,pointer :: gsmap
+drv/driver/map_glcglc_mct.F90:    type(mct_gsmap),pointer :: gsmap_cc
+drv/driver/map_glcglc_mct.F90:    type(mct_gsmap),pointer :: gsmap_cx
+drv/driver/map_gcamcam_mct.F90:    type(mct_gsmap),pointer :: gsmap_cc
+drv/driver/map_gcamcam_mct.F90:    type(mct_gsmap),pointer :: gsmap_cx
+drv/driver/seq_rest_mod.F90:   type(mct_gsMap),pointer :: gsmap
+drv/driver/seq_rest_mod.F90:   type(mct_gsMap),pointer :: gsmap
+drv/driver/mrg_x2a_mct.F90:    type(mct_gsmap), pointer :: gsMap_a
+drv/driver/mrg_x2a_mct.F90:    lsize = mct_GSMap_lsize(GSMap_a, mpicom)
+drv/driver/mrg_x2s_mct.F90:    type(mct_GsMap), pointer        :: GSMap_sno
+drv/driver/mrg_x2s_mct.F90:         lsize=mct_gsMap_lsize(gsMap_sno, mpicom))
+drv/shr_esmf/esmf2mct_mod.F90:    type(mct_gsMap), intent(out)            :: gsmap
+drv/shr_esmf/esmf2mct_mod.F90:    type(mct_gsMap), intent(out)            :: gsmap
+drv/shr_esmf/esmf2mct_mod.F90:        call mct_gsMap_init(gsMap, gindex, mpicom, COMPID, dsize, gsize)
+drv/shr_esmf/esmf2mct_mod.F90:        call mct_gsMap_init(gsMap, gindex, mpicom, COMPID, dsize)
+drv/shr_esmf/esmf2mct_mod.F90:    type(mct_gsMap), intent(out)            :: gsmap
+drv/shr_esmf/esmf2mct_mod.F90:        call mct_gsMap_init(gsMap, gindex, mpicom, COMPID, dsize, gsize)
+drv/shr_esmf/esmf2mct_mod.F90:        call mct_gsMap_init(gsMap, gindex, mpicom, COMPID, dsize)
+drv/shr_esmf/esmf2mct_mod.F90:    type(mct_gsMap), intent(out)            :: gsmap
+drv/shr_esmf/mct2esmf_mod.F90:    type(mct_gsMap), intent(in)             :: gsMap
+drv/shr_esmf/mct2esmf_mod.F90:    listsize = mct_gsMap_lsize(gsMap, comm=mct_comm_id)
+drv/shr_esmf/mct2esmf_mod.F90:    call mct_gsMap_OrderedPoints(gsMap, PEno=lpet, Points=gindex)
+drv/shr_esmf/mct2esmf_mod.F90:    type(mct_gsMap), intent(in)             :: gsMap
+drv/shr_esmf/mct2esmf_mod.F90:    type(mct_gsMap), intent(in)             :: gsMap
+drv/shr_esmf/mct2esmf_mod.F90:    type(mct_gsMap), intent(in)             :: gsmap
+drv/shr_esmf/mct2esmf_mod.F90:    type(mct_gsMap), intent(in)             :: gsMap
+drv/shr_esmf/mct2esmf_mod.F90:    type(mct_gsMap), intent(in)             :: gsMap
+drv/shr_esmf/.svn/text-base/esmf2mct_mod.F90.svn-base:    type(mct_gsMap), intent(out)            :: gsmap
+drv/shr_esmf/.svn/text-base/esmf2mct_mod.F90.svn-base:    type(mct_gsMap), intent(out)            :: gsmap
+drv/shr_esmf/.svn/text-base/esmf2mct_mod.F90.svn-base:        call mct_gsMap_init(gsMap, gindex, mpicom, COMPID, dsize, gsize)
+drv/shr_esmf/.svn/text-base/esmf2mct_mod.F90.svn-base:        call mct_gsMap_init(gsMap, gindex, mpicom, COMPID, dsize)
+drv/shr_esmf/.svn/text-base/esmf2mct_mod.F90.svn-base:    type(mct_gsMap), intent(out)            :: gsmap
+drv/shr_esmf/.svn/text-base/esmf2mct_mod.F90.svn-base:        call mct_gsMap_init(gsMap, gindex, mpicom, COMPID, dsize, gsize)
+drv/shr_esmf/.svn/text-base/esmf2mct_mod.F90.svn-base:        call mct_gsMap_init(gsMap, gindex, mpicom, COMPID, dsize)
+drv/shr_esmf/.svn/text-base/esmf2mct_mod.F90.svn-base:    type(mct_gsMap), intent(out)            :: gsmap
+drv/shr_esmf/.svn/text-base/mct2esmf_mod.F90.svn-base:    type(mct_gsMap), intent(in)             :: gsMap
+drv/shr_esmf/.svn/text-base/mct2esmf_mod.F90.svn-base:    listsize = mct_gsMap_lsize(gsMap, comm=mct_comm_id)
+drv/shr_esmf/.svn/text-base/mct2esmf_mod.F90.svn-base:    call mct_gsMap_OrderedPoints(gsMap, PEno=lpet, Points=gindex)
+drv/shr_esmf/.svn/text-base/mct2esmf_mod.F90.svn-base:    type(mct_gsMap), intent(in)             :: gsMap
+drv/shr_esmf/.svn/text-base/mct2esmf_mod.F90.svn-base:    type(mct_gsMap), intent(in)             :: gsMap
+drv/shr_esmf/.svn/text-base/mct2esmf_mod.F90.svn-base:    type(mct_gsMap), intent(in)             :: gsmap
+drv/shr_esmf/.svn/text-base/mct2esmf_mod.F90.svn-base:    type(mct_gsMap), intent(in)             :: gsMap
+drv/shr_esmf/.svn/text-base/mct2esmf_mod.F90.svn-base:    type(mct_gsMap), intent(in)             :: gsMap
+drv/shr/seq_cdata_mod.F90:    type(mct_gsMap)  ,pointer :: gsMap       ! decomp info
+drv/shr/seq_cdata_mod.F90:    type(mct_gsMap)     ,intent(in),target   :: gsMap      ! decomp
+drv/shr/seq_cdata_mod.F90:    type(mct_gsMap)  ,optional,pointer :: gsMap      ! decomp
+drv/shr/seq_cdata_mod.F90:      write(logunit,*) '  gsMap gsize = ',mct_gsMap_gsize(cdata%gsMap)
+drv/shr/seq_cdata_mod.F90:      write(logunit,*) '  gsMap lsize = ',mct_gsMap_lsize(cdata%gsMap,cdata%mpicom)
+drv/shr/.svn/text-base/seq_cdata_mod.F90.svn-base:    type(mct_gsMap)  ,pointer :: gsMap       ! decomp info
+drv/shr/.svn/text-base/seq_cdata_mod.F90.svn-base:    type(mct_gsMap)     ,intent(in),target   :: gsMap      ! decomp
+drv/shr/.svn/text-base/seq_cdata_mod.F90.svn-base:    type(mct_gsMap)  ,optional,pointer :: gsMap      ! decomp
+drv/shr/.svn/text-base/seq_cdata_mod.F90.svn-base:      write(logunit,*) '  gsMap gsize = ',mct_gsMap_gsize(cdata%gsMap)
+drv/shr/.svn/text-base/seq_cdata_mod.F90.svn-base:      write(logunit,*) '  gsMap lsize = ',mct_gsMap_lsize(cdata%gsMap,cdata%mpicom)
+drv/shr/.svn/text-base/seq_io_mod.F90.svn-base:    type(mct_gsMap), intent(in) :: gsmap
+drv/shr/.svn/text-base/seq_io_mod.F90.svn-base:    ng = mct_gsmap_gsize(gsmap)
+drv/shr/.svn/text-base/seq_io_mod.F90.svn-base:       call mct_gsmap_OrderedPoints(gsmap, iam, Dof)
+drv/shr/.svn/text-base/seq_io_mod.F90.svn-base:    type(mct_gsMap), intent(in) :: gsmap
+drv/shr/.svn/text-base/seq_io_mod.F90.svn-base:    call mct_gsmap_OrderedPoints(gsmap, iam, Dof)
+drv/shr/.svn/text-base/seq_io_mod.F90.svn-base:             if (ng /= mct_gsmap_gsize(gsmap)) then
+drv/shr/.svn/text-base/seq_io_mod.F90.svn-base:                     lnx,lny,mct_gsmap_gsize(gsmap)
+drv/shr/seq_io_mod.F90:    type(mct_gsMap), intent(in) :: gsmap
+drv/shr/seq_io_mod.F90:    ng = mct_gsmap_gsize(gsmap)
+drv/shr/seq_io_mod.F90:       call mct_gsmap_OrderedPoints(gsmap, iam, Dof)
+drv/shr/seq_io_mod.F90:    type(mct_gsMap), intent(in) :: gsmap
+drv/shr/seq_io_mod.F90:    call mct_gsmap_OrderedPoints(gsmap, iam, Dof)
+drv/shr/seq_io_mod.F90:             if (ng /= mct_gsmap_gsize(gsmap)) then
+drv/shr/seq_io_mod.F90:                     lnx,lny,mct_gsmap_gsize(gsmap)
+glc/sglc/cpl_esmf/glc_comp_mct.F90:    type(mct_gsMap)             , pointer :: gsMap
+glc/xglc/cpl_mct/glc_comp_mct.F90:    type(mct_gsMap)             , pointer :: gsMap
+glc/xglc/cpl_mct/glc_comp_mct.F90:    call mct_gsMap_init( gsMap, gindex, mpicom, COMPID, lsize, nxg*nyg)
+glc/xglc/cpl_esmf/glc_comp_mct.F90:    type(mct_gsMap)             , pointer :: gsMap
+glc/cism/drivers/cpl_mct/glc_comp_mct.F90:    type(mct_gsMap), pointer :: gsMap
+glc/cism/drivers/cpl_mct/glc_comp_mct.F90:    type(mct_gsMap), intent(out) :: gsMap_g
+glc/cism/drivers/cpl_mct/glc_comp_mct.F90:    call mct_gsMap_init( gsMap_g, gindex, mpicom_g, GLCID, lsize, gsize )
+glc/cism/drivers/cpl_mct/glc_comp_mct.F90:    type(mct_gsMap), intent(inout) :: gsMap_g
+glc/cism/drivers/cpl_mct/glc_comp_mct.F90:    call mct_gsMap_orderedPoints(gsMap_g, my_task, idata)
+ice/dice/dice_comp_mod.F90:    type(mct_gsMap)        , pointer :: gsmap
+ice/dice/dice_comp_mod.F90:    lsize = mct_gsmap_lsize(gsmap,mpicom)
+ice/dice/dice_comp_mod.F90:   type(mct_gsMap)        , pointer :: gsmap
+ice/dice/cpl_esmf/ice_comp_esmf.F90:   type(mct_gsMap)     :: gsmap
+ice/dice/cpl_esmf/ice_comp_mct.F90:   type(mct_gsMap)             , pointer :: gsMap
+ice/sice/cpl_esmf/ice_comp_mct.F90:    type(mct_gsMap)             , pointer :: gsMap
+ice/xice/cpl_mct/ice_comp_mct.F90:    type(mct_gsMap)             , pointer :: gsMap
+ice/xice/cpl_mct/ice_comp_mct.F90:    call mct_gsMap_init( gsMap, gindex, mpicom, COMPID, lsize, nxg*nyg)
+ice/xice/cpl_esmf/ice_comp_mct.F90:    type(mct_gsMap)             , pointer :: gsMap
+ice/cice/docs/RefGuide/html/ice__comp__mct_8F90_source.html:<a name="l00128"></a>00128     <span class="keywordtype">type(</span>mct_gsMap<span class="keywordtype">)</span>             , <span class="keywordtype">pointer</span> :: gsMap_ice
+ice/cice/docs/RefGuide/html/ice__comp__mct_8F90_source.html:<a name="l00290"></a>00290     lsize = mct_gsMap_lsize(gsMap_ice, mpicom_ice)
+ice/cice/docs/RefGuide/html/ice__comp__mct_8F90_source.html:<a name="l00713"></a>00713     <span class="keywordtype">type(</span>mct_gsMap<span class="keywordtype">)</span>, <span class="keywordtype">intent(inout)</span> :: gsMap_ice
+ice/cice/docs/RefGuide/html/ice__comp__mct_8F90_source.html:<a name="l00774"></a>00774     call mct_gsMap_init( gsMap_ice, gindex, mpicom_ice, ICEID, lsize, gsize )
+ice/cice/docs/RefGuide/html/ice__comp__mct_8F90_source.html:<a name="l01247"></a>01247     <span class="keywordtype">type(</span>mct_gsMap<span class="keywordtype">)</span>, <span class="keywordtype">intent(in)</span>    :: gsMap_i
+ice/cice/docs/RefGuide/html/ice__comp__mct_8F90_source.html:<a name="l01271"></a>01271     call mct_gsMap_orderedPoints(gsMap_i, <a class="code" href="namespaceice__communicate.html#a70e729e746e2e5ec592ccba505136002">my_task</a>, idata)
+ice/cice/docs/RefGuide/html/namespaceice__comp__mct.html:          <td class="paramtype">type(mct_gsMap),intent(in)&nbsp;</td>
+ice/cice/docs/RefGuide/html/namespaceice__comp__mct.html:          <td class="paramtype">type(mct_gsMap),intent(inout)&nbsp;</td>
+ice/cice/src/drivers/cpl_share/ice_prescribed_mod.F90:   type(mct_gsMap) :: gsmap
+ice/cice/src/drivers/cpl_mct/ice_comp_mct.F90:    type(mct_gsMap)             , pointer :: gsMap_ice
+ice/cice/src/drivers/cpl_mct/ice_comp_mct.F90:    lsize = mct_gsMap_lsize(gsMap_ice, MPI_COMM_ICE)
+ice/cice/src/drivers/cpl_mct/ice_comp_mct.F90:    type(mct_gsMap)        , pointer :: gsMap_i
+ice/cice/src/drivers/cpl_mct/ice_comp_mct.F90:    type(mct_gsMap), intent(inout) :: gsMap_ice
+ice/cice/src/drivers/cpl_mct/ice_comp_mct.F90:    call mct_gsMap_init( gsMap_ice, gindex, mpicom, ID, lsize, gsize )
+ice/cice/src/drivers/cpl_mct/ice_comp_mct.F90:    type(mct_gsMap), intent(in)    :: gsMap_i
+ice/cice/src/drivers/cpl_mct/ice_comp_mct.F90:    call mct_gsMap_orderedPoints(gsMap_i, my_task, idata)
+ice/cice/src/drivers/cpl_esmf/ice_comp_esmf.F90:  type(mct_gsmap),save :: gsmap_i
+ice/cice/src/drivers/cpl_esmf/ice_comp_mct.F90:   type(mct_gsMap)             , pointer :: gsMap
+lnd/clm/src/riverroute/RunoffMod.F90:  type(mct_gsMap)    ,target ,public :: gsMap_rtm_gdc2glo
+lnd/clm/src/riverroute/RtmMod.F90:    call mct_gsMap_init( gsMap_rtm_gdc2glo, runoff%gindex, mpicom, comp_id, lsize, gsize )
+lnd/clm/src/riverroute/RtmMod.F90:    ns = mct_gsMap_lsize(gsmap_lnd_gdc2glo, mpicom)
+lnd/clm/src/riverroute/RtmMod.F90:    ns = mct_gsMap_lsize(gsMap_rtm_gdc2glo, mpicom)
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    type(mct_gsMap),         pointer :: GSMap_lnd    ! Land model MCT GS map
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    type(mct_gsMap),         pointer :: GSMap_rof    ! Runoff model MCT GS map
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    type(mct_gsMap),         pointer :: GSMap_sno
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    lsize = mct_gsMap_lsize(gsMap_lnd, mpicom_lnd)
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    lsize = mct_gsMap_lsize(gsMap_rof, mpicom_lnd)
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:       lsize = mct_gsMap_lsize(gsMap_sno, mpicom_lnd)
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    use mct_mod      , only : mct_gsMap, mct_gsMap_init
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    type(mct_gsMap), intent(out) :: gsMap_lnd     ! Resulting MCT GS map for the land model
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gsMap_init( gsMap_lnd, gindex, mpicom_lnd, LNDID, lsize, gsize )
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    use mct_mod     , only : mct_gsMap, mct_gGrid, mct_gGrid_importIAttr, &
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:                             mct_gsMap_orderedPoints
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    type(mct_gsMap), intent(inout) :: gsMap_l   ! Output land model MCT GS map
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gsMap_orderedPoints(gsMap_l, iam, idata)
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    use mct_mod     , only : mct_gsMap, mct_gsMap_init
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    type(mct_gsMap), intent(out) :: gsMap_r     ! MCT GS map for runoff model data
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gsMap_init( gsMap_r, gindex, mpicom_l, LNDID, lsize, gsize )
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    use mct_mod     , only : mct_gsMap, mct_gGrid, mct_gGrid_importIAttr, &
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:                             mct_gsMap_orderedPoints
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    type(mct_gsMap), intent(inout) :: gsMap_r     ! Output MCT GS map for runoff model
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gsMap_orderedPoints(gsMap_r, iam, idata)
+lnd/clm/src/cpl_esmf/lnd_comp_mct.F90:   type(mct_gsMap)             , pointer :: gsmap_l
+lnd/clm/src/cpl_esmf/lnd_comp_mct.F90:   type(mct_gsMap)             , pointer :: gsmap_r
+lnd/clm/src/cpl_esmf/lnd_comp_mct.F90:   type(mct_gsMap)             , pointer :: gsmap_s
+lnd/clm/src/main/decompMod.F90:  type(mct_gsMap)  ,public,target :: gsMap_atm_gdc2glo
+lnd/clm/src/main/decompMod.F90:  type(mct_gsMap)  ,public,target :: gsMap_lnd_gdc2glo
+lnd/clm/src/main/decompMod.F90:  type(mct_gsMap)  ,public,target :: gsMap_gce_gdc2glo
+lnd/clm/src/main/decompMod.F90:  type(mct_gsMap)  ,public,target :: gsMap_lun_gdc2glo
+lnd/clm/src/main/decompMod.F90:  type(mct_gsMap)  ,public,target :: gsMap_col_gdc2glo
+lnd/clm/src/main/decompMod.F90:  type(mct_gsMap)  ,public,target :: gsMap_pft_gdc2glo
+lnd/clm/src/main/decompMod.F90:    type(mct_gsmap), pointer :: gsmap
+lnd/clm/src/main/decompInitMod.F90:    call mct_gsMap_init(gsMap_atm_gdc2glo, gindex, mpicom, comp_id, lsize, gsize )
+lnd/clm/src/main/decompInitMod.F90:       write(iulog,*) '  atm gsmap glo num of segs = ',mct_gsMap_ngseg(gsMap_atm_gdc2glo)
+lnd/clm/src/main/decompInitMod.F90:          write(iulog,*)'proc= ',pid,' atm ngseg   = ',mct_gsMap_ngseg(gsMap_atm_gdc2glo), &
+lnd/clm/src/main/decompInitMod.F90:               ' atm nlseg   = ',mct_gsMap_nlseg(gsMap_atm_gdc2glo,iam)
+lnd/clm/src/main/decompInitMod.F90:    call mct_gsMap_init(gsMap_lnd_gdc2glo, gindex, mpicom, comp_id, lsize, gsize )
+lnd/clm/src/main/decompInitMod.F90:       write(iulog,*) '  lnd gsmap glo num of segs = ',mct_gsMap_ngseg(gsMap_lnd_gdc2glo)
+lnd/clm/src/main/decompInitMod.F90:       write(iulog,*) '  atm gsmap glo num of segs = ',mct_gsMap_ngseg(gsMap_atm_gdc2glo)
+lnd/clm/src/main/decompInitMod.F90:    type(mct_gsmap),pointer :: gsmap
+lnd/clm/src/main/decompInitMod.F90:    ng = mct_gsmap_gsize(gsmap_lnd_gdc2glo)
+lnd/clm/src/main/decompInitMod.F90:      call mct_gsMap_init(gsMap, gindex, mpicom, comp_id, lsize, gsize )
+lnd/clm/src/main/decompInitMod.F90:      ntest = mct_gsMap_gsize(gsMap)
+lnd/clm/src/main/decompInitMod.F90:       write(iulog,*) '  atm gsmap glo num of segs = ',mct_gsMap_ngseg(gsMap_atm_gdc2glo)
+lnd/clm/src/main/decompInitMod.F90:       write(iulog,*) '  lnd gsmap glo num of segs = ',mct_gsMap_ngseg(gsMap_lnd_gdc2glo)
+lnd/clm/src/main/decompInitMod.F90:       write(iulog,*) '  gce gsmap glo num of segs = ',mct_gsMap_ngseg(gsMap_gce_gdc2glo)
+lnd/clm/src/main/decompInitMod.F90:       write(iulog,*) '  lun gsmap glo num of segs = ',mct_gsMap_ngseg(gsMap_lun_gdc2glo)
+lnd/clm/src/main/decompInitMod.F90:       write(iulog,*) '  col gsmap glo num of segs = ',mct_gsMap_ngseg(gsMap_col_gdc2glo)
+lnd/clm/src/main/decompInitMod.F90:       write(iulog,*) '  pft gsmap glo num of segs = ',mct_gsMap_ngseg(gsMap_pft_gdc2glo)
+lnd/clm/src/main/decompInitMod.F90:          write(iulog,*)'proc= ',pid,' atm ngseg   = ',mct_gsMap_ngseg(gsMap_atm_gdc2glo), &
+lnd/clm/src/main/decompInitMod.F90:               ' atm nlseg   = ',mct_gsMap_nlseg(gsMap_atm_gdc2glo,iam)
+lnd/clm/src/main/decompInitMod.F90:          write(iulog,*)'proc= ',pid,' lnd ngseg   = ',mct_gsMap_ngseg(gsMap_lnd_gdc2glo), &
+lnd/clm/src/main/decompInitMod.F90:               ' lnd nlseg   = ',mct_gsMap_nlseg(gsMap_lnd_gdc2glo,iam)
+lnd/clm/src/main/decompInitMod.F90:          write(iulog,*)'proc= ',pid,' gce ngseg   = ',mct_gsMap_ngseg(gsMap_gce_gdc2glo), &
+lnd/clm/src/main/decompInitMod.F90:               ' gce nlseg   = ',mct_gsMap_nlseg(gsMap_gce_gdc2glo,iam)
+lnd/clm/src/main/decompInitMod.F90:          write(iulog,*)'proc= ',pid,' lun ngseg   = ',mct_gsMap_ngseg(gsMap_lun_gdc2glo), &
+lnd/clm/src/main/decompInitMod.F90:               ' lun nlseg   = ',mct_gsMap_nlseg(gsMap_lun_gdc2glo,iam)
+lnd/clm/src/main/decompInitMod.F90:          write(iulog,*)'proc= ',pid,' col ngseg   = ',mct_gsMap_ngseg(gsMap_col_gdc2glo), &
+lnd/clm/src/main/decompInitMod.F90:               ' col nlseg   = ',mct_gsMap_nlseg(gsMap_col_gdc2glo,iam)
+lnd/clm/src/main/decompInitMod.F90:          write(iulog,*)'proc= ',pid,' pft ngseg   = ',mct_gsMap_ngseg(gsMap_pft_gdc2glo), &
+lnd/clm/src/main/decompInitMod.F90:               ' pft nlseg   = ',mct_gsMap_nlseg(gsMap_pft_gdc2glo,iam)
+lnd/clm/src/main/ncdio_pio.F90:    type(mct_gsMap),pointer       :: gsmap   ! global seg map
+lnd/clm/src/main/ncdio_pio.F90:       gsmap_lsize = mct_gsmap_lsize(gsmap,mpicom)
+lnd/clm/src/main/ncdio_pio.F90:       gsmap_gsize = mct_gsmap_gsize(gsmap)
+lnd/clm/src/main/ncdio_pio.F90:       call mct_gsmap_OP(gsmap,iam,gsmOP)
+lnd/clm/src/main/ndepStreamMod.F90:    lsize = mct_gsMap_lsize(gsmap_lnd_gdc2glo, mpicom)
+lnd/clm/src/main/ndepStreamMod.F90:    call mct_gsMap_orderedPoints(gsmap_lnd_gdc2glo, iam, idata)
+lnd/clm/src/main/spmdGathScatMod.F90:    type(mct_gsMap),pointer       :: gsmap   ! global seg map
+lnd/clm/src/main/spmdGathScatMod.F90:    type(mct_gsMap),pointer       :: gsmap   ! global seg map
+lnd/clm/src/main/spmdGathScatMod.F90:    type(mct_gsMap),pointer       :: gsmap   ! global seg map
+lnd/clm/src/main/spmdGathScatMod.F90:    type(mct_gsMap),pointer       :: gsmap   ! global seg map
+lnd/clm/src/main/clm_mct_mod.F90:   use m_GlobalSegMap       ,only: mct_gsMap              => GlobalSegMap
+lnd/clm/src/main/clm_mct_mod.F90:   use m_GlobalSegMap       ,only: mct_gsMap_init         => init
+lnd/clm/src/main/clm_mct_mod.F90:   use m_GlobalSegMap       ,only: mct_gsMap_clean        => clean
+lnd/clm/src/main/clm_mct_mod.F90:   use m_GlobalSegMap       ,only: mct_gsMap_lsize        => lsize
+lnd/clm/src/main/clm_mct_mod.F90:   use m_GlobalSegMap       ,only: mct_gsMap_gsize        => gsize
+lnd/clm/src/main/clm_mct_mod.F90:   use m_GlobalSegMap       ,only: mct_gsMap_ngseg        => ngseg
+lnd/clm/src/main/clm_mct_mod.F90:   use m_GlobalSegMap       ,only: mct_gsMap_nlseg        => nlseg
+lnd/clm/src/main/clm_mct_mod.F90:   use m_GlobalSegMap       ,only: mct_gsMap_OP           => OrderedPoints
+lnd/clm/src/main/clm_mct_mod.F90:   use m_GlobalSegMap       ,only: mct_gsMap_pelocs       => pelocs
+lnd/dlnd/dlnd_comp_mod.F90:    type(mct_gsMap)        , pointer :: gsMap_l
+lnd/dlnd/dlnd_comp_mod.F90:    type(mct_gsMap)        , pointer :: gsMap_r
+lnd/dlnd/dlnd_comp_mod.F90:    type(mct_gsMap)        , pointer :: gsMap_s
+lnd/dlnd/dlnd_comp_mod.F90:    lsize_l = mct_gsmap_lsize(gsmap_l,mpicom)
+lnd/dlnd/dlnd_comp_mod.F90:    lsize_r = mct_gsmap_lsize(gsmap_r,mpicom)
+lnd/dlnd/dlnd_comp_mod.F90:    lsize_s = mct_gsmap_lsize(gsmap_s,mpicom)
+lnd/dlnd/dlnd_comp_mod.F90:   type(mct_gsMap)        , pointer :: gsMap_l
+lnd/dlnd/dlnd_comp_mod.F90:   type(mct_gsMap)        , pointer :: gsMap_r
+lnd/dlnd/dlnd_comp_mod.F90:   type(mct_gsMap)        , pointer :: gsMap_s
+lnd/dlnd/cpl_esmf/lnd_comp_esmf.F90:   type(mct_gsMap)     :: gsmap_l
+lnd/dlnd/cpl_esmf/lnd_comp_esmf.F90:   type(mct_gsMap)     :: gsmap_r
+lnd/dlnd/cpl_esmf/lnd_comp_esmf.F90:   type(mct_gsMap)     :: gsmap_s
+lnd/dlnd/cpl_esmf/lnd_comp_mct.F90:   type(mct_gsMap)             , pointer :: gsmap_l
+lnd/dlnd/cpl_esmf/lnd_comp_mct.F90:   type(mct_gsMap)             , pointer :: gsmap_r
+lnd/dlnd/cpl_esmf/lnd_comp_mct.F90:   type(mct_gsMap)             , pointer :: gsmap_s
+lnd/slnd/cpl_esmf/lnd_comp_mct.F90:    type(mct_gsMap)             , pointer :: gsMap
+lnd/colm/src/mainc/colm_cpl7.F90:!     call mct_gsMap_init(gsMap_atm_gdc2glo, gindex, mpicom, comp_id, lsize, gsize )
+lnd/colm/src/mainc/colm_cpl7.F90:!     call mct_gsMap_init(gsMap_lnd_gdc2glo, gindex, mpicom, comp_id, lsize, gsize )
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    type(mct_gsMap),         pointer :: GSMap_lnd    ! Land model MCT GS map
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    type(mct_gsMap),         pointer :: GSMap_rof    ! Runoff model MCT GS map
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    type(mct_gsMap),         pointer :: GSMap_sno
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    lsize = mct_gsMap_lsize(gsMap_lnd, mpicom_lnd)
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    lsize = mct_gsMap_lsize(gsMap_rof, mpicom_lnd)
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:!      lsize = mct_gsMap_lsize(gsMap_sno, mpicom_lnd)
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    use mct_mod      , only : mct_gsMap, mct_gsMap_init
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    type(mct_gsMap), intent(out) :: gsMap_lnd     ! Resulting MCT GS map for the land model
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gsMap_init( gsMap_lnd, gindex, mpicom_lnd, LNDID, lsize, gsize )
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    use mct_mod     , only : mct_gsMap, mct_gGrid, mct_gGrid_importIAttr, &
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:                             mct_gsMap_orderedPoints
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    type(mct_gsMap), intent(inout) :: gsMap_l   ! Output land model MCT GS map
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gsMap_orderedPoints(gsMap_l, iam, idata)
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    use mct_mod     , only : mct_gsMap, mct_gsMap_init
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    type(mct_gsMap), intent(out) :: gsMap_r     ! MCT GS map for runoff model data
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gsMap_init( gsMap_r, gindex, mpicom_l, LNDID, lsize, gsize )
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    use mct_mod     , only : mct_gsMap, mct_gGrid, mct_gGrid_importIAttr, &
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:                             mct_gsMap_orderedPoints
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    type(mct_gsMap), intent(inout) :: gsMap_r     ! Output MCT GS map for runoff model
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gsMap_orderedPoints(gsMap_r, iam, idata)
+lnd/xlnd/cpl_mct/lnd_comp_mct.F90:    type(mct_gsMap)             , pointer :: gsMap
+lnd/xlnd/cpl_mct/lnd_comp_mct.F90:    type(mct_gsMap)             , pointer :: gsMap_r
+lnd/xlnd/cpl_mct/lnd_comp_mct.F90:    type(mct_gsMap)             , pointer :: gsMap_s
+lnd/xlnd/cpl_mct/lnd_comp_mct.F90:    call mct_gsMap_init( gsMap, gindex, mpicom, COMPID, lsize, nxg*nyg)
+lnd/xlnd/cpl_mct/lnd_comp_mct.F90:    call mct_gsMap_init( gsMap_r, gindex_r, mpicom, COMPID, lsize_r, nxg_r*nyg_r)
+lnd/xlnd/cpl_mct/lnd_comp_mct.F90:    call mct_gsMap_init( gsMap_s, gindex_s, mpicom, COMPID, lsize_s, nxg_s*nyg_s)
+lnd/xlnd/cpl_esmf/lnd_comp_mct.F90:    type(mct_gsMap)             , pointer :: gsMap
+lnd/xlnd/cpl_esmf/lnd_comp_mct.F90:    type(mct_gsMap)             , pointer :: gsMap_r
+lnd/xlnd/cpl_esmf/lnd_comp_mct.F90:    type(mct_gsMap)             , pointer :: gsMap_s
+ocn/licom/licom_conf/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_aa    ! on component pes
+ocn/licom/licom_conf/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_ll
+ocn/licom/licom_conf/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_oo
+ocn/licom/licom_conf/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_ii
+ocn/licom/licom_conf/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_rr
+ocn/licom/licom_conf/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_gg
+ocn/licom/licom_conf/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_ss
+ocn/licom/licom_conf/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_ax    ! on cpl pes
+ocn/licom/licom_conf/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_lx
+ocn/licom/licom_conf/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_ox
+ocn/licom/licom_conf/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_ix
+ocn/licom/licom_conf/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_rx
+ocn/licom/licom_conf/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_gx
+ocn/licom/licom_conf/ccsm_comp_mod.F90:   type(mct_gsMap)  :: gsMap_sx
+ocn/licom/source/licomcpl7.F90:    type(mct_gsMap), pointer :: &
+ocn/licom/source/licomcpl7.F90:   lsize = mct_gsMap_lsize(gsMap_o, mpi_comm_ocn)
+ocn/licom/source/licomcpl7.F90:   write(6,*) "mct_gsMap_lsize = ",lsize
+ocn/licom/source/licomcpl7.F90:    type(mct_gsMap), intent(inout) :: gsMap_ocn
+ocn/licom/source/licomcpl7.F90:    call mct_gsMap_init( gsMap_ocn, gindex, mpicom_ocn, OCNID, lsize, gsize )
+ocn/licom/source/licomcpl7.F90:    type(mct_gsMap), intent(in)    :: gsMap_o
+ocn/licom/source/licomcpl7.F90:    call mct_gsMap_orderedPoints(gsMap_o, mytid, idata)
+ocn/xocn/cpl_mct/ocn_comp_mct.F90:    type(mct_gsMap)             , pointer :: gsMap
+ocn/xocn/cpl_mct/ocn_comp_mct.F90:    call mct_gsMap_init( gsMap, gindex, mpicom, COMPID, lsize, nxg*nyg)
+ocn/xocn/cpl_esmf/ocn_comp_mct.F90:    type(mct_gsMap)             , pointer :: gsMap
+ocn/pop2/source/ecosys_mod.F90:                                 gsmap=POP_MCT_gsMap_o, ggrid=POP_MCT_dom_o,   &
+ocn/pop2/drivers/cpl_mct/POP_MCT_vars_mod.F90:   type(mct_gsMap), pointer :: POP_MCT_gsMap_o
+ocn/pop2/drivers/cpl_mct/ocn_comp_mct.F90:    type(mct_gsMap), pointer :: &
+ocn/pop2/drivers/cpl_mct/ocn_comp_mct.F90:   POP_MCT_gsMap_o => gsMap_o
+ocn/pop2/drivers/cpl_mct/ocn_comp_mct.F90:   lsize = mct_gsMap_lsize(gsMap_o, mpicom_o)
+ocn/pop2/drivers/cpl_mct/ocn_comp_mct.F90:    type(mct_gsMap), intent(inout) :: gsMap_ocn
+ocn/pop2/drivers/cpl_mct/ocn_comp_mct.F90:    call mct_gsMap_init( gsMap_ocn, gindex, mpicom_ocn, OCNID, lsize, gsize )
+ocn/pop2/drivers/cpl_mct/ocn_comp_mct.F90:    type(mct_gsMap), intent(in)    :: gsMap_o
+ocn/pop2/drivers/cpl_mct/ocn_comp_mct.F90:    call mct_gsMap_orderedPoints(gsMap_o, my_task, idata)
+ocn/pop2/drivers/cpl_esmf/POP_MCT_vars_mod.F90:   type(mct_gsMap), pointer :: POP_MCT_gsMap_o
+ocn/pop2/drivers/cpl_esmf/ocn_comp_mct.F90:   type(mct_gsMap)             , pointer :: gsMap
+ocn/pop2/drivers/cpl_esmf/ocn_comp_mct.F90:   POP_MCT_gsMap_o => gsMap
+ocn/docn/docn_comp_mod.F90:    type(mct_gsMap)        , pointer :: gsmap
+ocn/docn/docn_comp_mod.F90:    lsize = mct_gsmap_lsize(gsmap,mpicom)
+ocn/docn/docn_comp_mod.F90:   type(mct_gsMap)        , pointer :: gsmap
+ocn/docn/cpl_esmf/ocn_comp_esmf.F90:   type(mct_gsMap)     :: gsmap
+ocn/docn/cpl_esmf/ocn_comp_mct.F90:   type(mct_gsMap)             , pointer :: gsMap
+ocn/socn/cpl_esmf/ocn_comp_mct.F90:    type(mct_gsMap)             , pointer :: gsMap
+utils/pio/.svn/text-base/mct_rearrange.F90.svn-base:     use m_GlobalSegMap, only: MCT_GSMap_init => init      ! _EXTERNAL
+utils/pio/.svn/text-base/mct_rearrange.F90.svn-base:     use m_GlobalSegMap, only: MCT_GSMap_lsize => lsize    ! _EXTERNAL
+utils/pio/.svn/text-base/mct_rearrange.F90.svn-base:     use m_GlobalSegMap, only: MCT_GSMap_clean => clean    ! _EXTERNAL
+utils/pio/.svn/text-base/mct_rearrange.F90.svn-base:    call MCT_GSMap_init( gsmap_comp, compDOF_sorted, Iosystem%comp_comm, 1)
+utils/pio/.svn/text-base/mct_rearrange.F90.svn-base:    call MCT_GSMap_init( gsmap_comp, compDOF, Iosystem%comp_comm, 1)
+utils/pio/.svn/text-base/mct_rearrange.F90.svn-base:    IOdesc%lsize_comp=MCT_GSMap_lsize(gsmap_comp,Iosystem%comp_comm)
+utils/pio/.svn/text-base/mct_rearrange.F90.svn-base:        call MCT_GSMap_init( gsmap_io, ioDof, Iosystem%comp_comm, 1)
+utils/pio/.svn/text-base/mct_rearrange.F90.svn-base:        call MCT_GSMap_init( gsmap_io, ioDof, Iosystem%comp_comm, 1, lsize=0)
+utils/pio/.svn/text-base/mct_rearrange.F90.svn-base:    IOdesc%lsize_io=MCT_GSMap_lsize(gsmap_io,Iosystem%comp_comm)
+utils/pio/.svn/text-base/mct_rearrange.F90.svn-base:    call MCT_GSMap_clean(gsmap_comp,ierr)
+utils/pio/.svn/text-base/mct_rearrange.F90.svn-base:    call MCT_GSMap_clean(gsmap_io,ierr)
+utils/pio/.svn/text-base/mct_rearrange.F90.in.svn-base:     use m_GlobalSegMap, only: MCT_GSMap_init => init      ! _EXTERNAL
+utils/pio/.svn/text-base/mct_rearrange.F90.in.svn-base:     use m_GlobalSegMap, only: MCT_GSMap_lsize => lsize    ! _EXTERNAL
+utils/pio/.svn/text-base/mct_rearrange.F90.in.svn-base:     use m_GlobalSegMap, only: MCT_GSMap_clean => clean    ! _EXTERNAL
+utils/pio/.svn/text-base/mct_rearrange.F90.in.svn-base:    call MCT_GSMap_init( gsmap_comp, compDOF_sorted, Iosystem%comp_comm, 1)
+utils/pio/.svn/text-base/mct_rearrange.F90.in.svn-base:    call MCT_GSMap_init( gsmap_comp, compDOF, Iosystem%comp_comm, 1)
+utils/pio/.svn/text-base/mct_rearrange.F90.in.svn-base:    IOdesc%lsize_comp=MCT_GSMap_lsize(gsmap_comp,Iosystem%comp_comm)
+utils/pio/.svn/text-base/mct_rearrange.F90.in.svn-base:        call MCT_GSMap_init( gsmap_io, ioDof, Iosystem%comp_comm, 1)
+utils/pio/.svn/text-base/mct_rearrange.F90.in.svn-base:        call MCT_GSMap_init( gsmap_io, ioDof, Iosystem%comp_comm, 1, lsize=0)
+utils/pio/.svn/text-base/mct_rearrange.F90.in.svn-base:    IOdesc%lsize_io=MCT_GSMap_lsize(gsmap_io,Iosystem%comp_comm)
+utils/pio/.svn/text-base/mct_rearrange.F90.in.svn-base:    call MCT_GSMap_clean(gsmap_comp,ierr)
+utils/pio/.svn/text-base/mct_rearrange.F90.in.svn-base:    call MCT_GSMap_clean(gsmap_io,ierr)
+utils/pio/mct_rearrange.F90:     use m_GlobalSegMap, only: MCT_GSMap_init => init      ! _EXTERNAL
+utils/pio/mct_rearrange.F90:     use m_GlobalSegMap, only: MCT_GSMap_lsize => lsize    ! _EXTERNAL
+utils/pio/mct_rearrange.F90:     use m_GlobalSegMap, only: MCT_GSMap_clean => clean    ! _EXTERNAL
+utils/pio/mct_rearrange.F90:    call MCT_GSMap_init( gsmap_comp, compDOF_sorted, Iosystem%comp_comm, 1)
+utils/pio/mct_rearrange.F90:    call MCT_GSMap_init( gsmap_comp, compDOF, Iosystem%comp_comm, 1)
+utils/pio/mct_rearrange.F90:    IOdesc%lsize_comp=MCT_GSMap_lsize(gsmap_comp,Iosystem%comp_comm)
+utils/pio/mct_rearrange.F90:        call MCT_GSMap_init( gsmap_io, ioDof, Iosystem%comp_comm, 1)
+utils/pio/mct_rearrange.F90:        call MCT_GSMap_init( gsmap_io, ioDof, Iosystem%comp_comm, 1, lsize=0)
+utils/pio/mct_rearrange.F90:    IOdesc%lsize_io=MCT_GSMap_lsize(gsmap_io,Iosystem%comp_comm)
+utils/pio/mct_rearrange.F90:    call MCT_GSMap_clean(gsmap_comp,ierr)
+utils/pio/mct_rearrange.F90:    call MCT_GSMap_clean(gsmap_io,ierr)
+utils/pio/mct_rearrange.F90.in:     use m_GlobalSegMap, only: MCT_GSMap_init => init      ! _EXTERNAL
+utils/pio/mct_rearrange.F90.in:     use m_GlobalSegMap, only: MCT_GSMap_lsize => lsize    ! _EXTERNAL
+utils/pio/mct_rearrange.F90.in:     use m_GlobalSegMap, only: MCT_GSMap_clean => clean    ! _EXTERNAL
+utils/pio/mct_rearrange.F90.in:    call MCT_GSMap_init( gsmap_comp, compDOF_sorted, Iosystem%comp_comm, 1)
+utils/pio/mct_rearrange.F90.in:    call MCT_GSMap_init( gsmap_comp, compDOF, Iosystem%comp_comm, 1)
+utils/pio/mct_rearrange.F90.in:    IOdesc%lsize_comp=MCT_GSMap_lsize(gsmap_comp,Iosystem%comp_comm)
+utils/pio/mct_rearrange.F90.in:        call MCT_GSMap_init( gsmap_io, ioDof, Iosystem%comp_comm, 1)
+utils/pio/mct_rearrange.F90.in:        call MCT_GSMap_init( gsmap_io, ioDof, Iosystem%comp_comm, 1, lsize=0)
+utils/pio/mct_rearrange.F90.in:    IOdesc%lsize_io=MCT_GSMap_lsize(gsmap_io,Iosystem%comp_comm)
+utils/pio/mct_rearrange.F90.in:    call MCT_GSMap_clean(gsmap_comp,ierr)
+utils/pio/mct_rearrange.F90.in:    call MCT_GSMap_clean(gsmap_io,ierr)
+utils/mct/mct/m_GlobalSegMap.F90:!  use m_GlobalSegMap,only: MCT_GSMap_init => init

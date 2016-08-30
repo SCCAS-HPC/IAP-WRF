@@ -1,0 +1,215 @@
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! MODULE PARALLEL_MODULE
+!
+! This module provides routines for parallelizing.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+module parallel_module
+   use module_dm
+   use module_atm_communicator
+
+#ifdef _MPI
+include 'mpif.h'
+#endif
+
+   integer, parameter :: HALO_WIDTH = 3
+ 
+   integer, pointer, dimension(:,:) :: processors
+   integer :: my_proc_id
+   
+   contains
+ 
+
+   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   ! Name: parallel_start
+   !
+   ! Purpose: For MPI, the purpose of this routine is to basically set up
+   !   a communicator for a rectangular mesh, and determine how many processors
+   !   in the x and y directions there will be. 
+   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   ! Name: exchange_halo_r
+   !
+   ! Purpose: 
+   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   subroutine exchange_halo_r(patch_array, &
+                              ms1, me1, ms2, me2, ms3, me3, &
+                              ps1, pe1, ps2, pe2, ps3, pe3)
+ 
+      implicit none
+
+      ! Arguments
+      integer, intent(in) :: ps1, pe1, ps2, pe2, ps3, pe3, &
+                             ms1, me1, ms2, me2, ms3, me3
+      real, dimension(ms1:me1,ms2:me2,ms3:me3), intent(inout) :: patch_array
+
+      ! Local variables
+#ifdef _MPI
+      integer :: jj, kk
+      integer :: mpi_ierr
+      integer, dimension(MPI_STATUS_SIZE) :: mpi_stat
+
+      !
+      ! Get left edge of halo
+      !
+      if (my_x /= (nproc_x - 1)) then
+         do kk=ps3,pe3
+            do jj=ms2,me2
+               call MPI_Send(patch_array(pe1-HALO_WIDTH+1:pe1,jj,kk), HALO_WIDTH, MPI_REAL, &
+                             processors(my_x+1,my_y), my_proc_id, mpicom_atm, mpi_ierr)
+            end do
+         end do
+      end if
+      if (my_x /= 0) then
+         do kk=ps3,pe3
+            do jj=ms2,me2
+               call MPI_Recv(patch_array(ms1:ms1+HALO_WIDTH-1,jj,kk), HALO_WIDTH, MPI_REAL, &
+                             processors(my_x-1,my_y), MPI_ANY_TAG, mpicom_atm, mpi_stat, mpi_ierr)
+            end do
+         end do
+      end if
+
+      !
+      ! Get right edge of halo
+      !
+      if (my_x /= 0) then
+         do kk=ps3,pe3
+            do jj=ms2,me2
+               call MPI_Send(patch_array(ps1:ps1+HALO_WIDTH-1,jj,kk), HALO_WIDTH, MPI_REAL, &
+                             processors(my_x-1,my_y), my_proc_id, mpicom_atm, mpi_ierr)
+            end do
+         end do
+      end if
+      if (my_x /= (nproc_x - 1)) then
+         do kk=ps3,pe3
+            do jj=ms2,me2
+               call MPI_Recv(patch_array(me1-HALO_WIDTH+1:me1,jj,kk), HALO_WIDTH, MPI_REAL, &
+                             processors(my_x+1,my_y), MPI_ANY_TAG, mpicom_atm, mpi_stat, mpi_ierr)
+            end do
+         end do
+      end if
+
+      !
+      ! Get bottom edge of halo
+      !
+      if (my_y /= (nproc_y - 1)) then
+         do kk=ps3,pe3
+            do jj=pe2-HALO_WIDTH+1,pe2
+               call MPI_Send(patch_array(ms1:me1,jj,kk), (me1-ms1+1), MPI_REAL, &
+                             processors(my_x,my_y+1), my_proc_id, mpicom_atm, mpi_ierr)
+            end do
+         end do
+      end if
+      if (my_y /= 0) then
+         do kk=ps3,pe3
+            do jj=ms2,ms2+HALO_WIDTH-1
+               call MPI_Recv(patch_array(ms1:me1,jj,kk), (me1-ms1+1), MPI_REAL, &
+                             processors(my_x,my_y-1), MPI_ANY_TAG, mpicom_atm, mpi_stat, mpi_ierr)
+            end do
+         end do
+      end if
+
+      !
+      ! Get top edge of halo
+      !
+      if (my_y /= 0) then
+         do kk=ps3,pe3
+            do jj=ps2,ps2+HALO_WIDTH-1
+               call MPI_Send(patch_array(ms1:me1,jj,kk), (me1-ms1+1), MPI_REAL, &
+                             processors(my_x,my_y-1), my_proc_id, mpicom_atm, mpi_ierr)
+            end do
+         end do
+      end if
+      if (my_y /= (nproc_y - 1)) then
+         do kk=ps3,pe3
+            do jj=me2-HALO_WIDTH+1,me2
+               call MPI_Recv(patch_array(ms1:me1,jj,kk), (me1-ms1+1), MPI_REAL, &
+                             processors(my_x,my_y+1), MPI_ANY_TAG, mpicom_atm, mpi_stat, mpi_ierr)
+            end do
+         end do
+      end if
+
+      !
+      ! Get lower-right corner of halo
+      !
+      if (my_y /= (nproc_y - 1) .and. my_x /= 0) then
+         do kk=ps3,pe3
+            do jj=pe2-HALO_WIDTH+1,pe2
+               call MPI_Send(patch_array(ps1:ps1+HALO_WIDTH-1,jj,kk), HALO_WIDTH, MPI_REAL, &
+                             processors(my_x-1,my_y+1), my_proc_id, mpicom_atm, mpi_ierr)
+            end do
+         end do
+      end if
+      if (my_y /= 0 .and. my_x /= (nproc_x - 1)) then
+         do kk=ps3,pe3
+            do jj=ms2,ms2+HALO_WIDTH-1
+               call MPI_Recv(patch_array(me1-HALO_WIDTH+1:me1,jj,kk), HALO_WIDTH, MPI_REAL, &
+                             processors(my_x+1,my_y-1), MPI_ANY_TAG, mpicom_atm, mpi_stat, mpi_ierr)
+            end do
+         end do
+      end if
+
+      !
+      ! Get upper-left corner of halo
+      !
+      if (my_y /= 0 .and. my_x /= (nproc_x - 1)) then
+         do kk=ps3,pe3
+            do jj=ps2,ps2+HALO_WIDTH-1
+               call MPI_Send(patch_array(pe1-HALO_WIDTH+1:pe1,jj,kk), HALO_WIDTH, MPI_REAL, &
+                             processors(my_x+1,my_y-1), my_proc_id, mpicom_atm, mpi_ierr)
+            end do
+         end do
+      end if
+      if (my_y /= (nproc_y - 1) .and. my_x /= 0) then
+         do kk=ps3,pe3
+            do jj=me2-HALO_WIDTH+1,me2
+               call MPI_Recv(patch_array(ms1:ms1+HALO_WIDTH-1,jj,kk), HALO_WIDTH, MPI_REAL, &
+                             processors(my_x-1,my_y+1), MPI_ANY_TAG, mpicom_atm, mpi_stat, mpi_ierr)
+            end do
+         end do
+      end if
+
+      !
+      ! Get upper-right corner of halo
+      !
+      if (my_y /= 0 .and. my_x /= 0) then
+         do kk=ps3,pe3
+            do jj=ps2,ps2+HALO_WIDTH-1
+               call MPI_Send(patch_array(ps1:ps1+HALO_WIDTH-1,jj,kk), HALO_WIDTH, MPI_REAL, &
+                             processors(my_x-1,my_y-1), my_proc_id, mpicom_atm, mpi_ierr)
+            end do
+         end do
+      end if
+      if (my_y /= (nproc_y - 1) .and. my_x /= (nproc_x - 1)) then
+         do kk=ps3,pe3
+            do jj=me2-HALO_WIDTH+1,me2
+               call MPI_Recv(patch_array(me1-HALO_WIDTH+1:me1,jj,kk), HALO_WIDTH, MPI_REAL, &
+                             processors(my_x+1,my_y+1), MPI_ANY_TAG, mpicom_atm, mpi_stat, mpi_ierr)
+            end do
+         end do
+      end if
+
+      !
+      ! Get lower-left corner of halo
+      !
+      if (my_y /= (nproc_y - 1) .and. my_x /= (nproc_x - 1)) then
+         do kk=ps3,pe3
+            do jj=pe2-HALO_WIDTH+1,pe2
+               call MPI_Send(patch_array(pe1-HALO_WIDTH+1:pe1,jj,kk), HALO_WIDTH, MPI_REAL, &
+                             processors(my_x+1,my_y+1), my_proc_id, mpicom_atm, mpi_ierr)
+            end do
+         end do
+      end if
+      if (my_y /= 0 .and. my_x /= 0) then
+         do kk=ps3,pe3
+            do jj=ms2,ms2+HALO_WIDTH-1
+               call MPI_Recv(patch_array(ms1:ms1+HALO_WIDTH-1,jj,kk), HALO_WIDTH, MPI_REAL, &
+                             processors(my_x-1,my_y-1), MPI_ANY_TAG, mpicom_atm, mpi_stat, mpi_ierr)
+            end do
+         end do
+      end if
+#endif
+  
+   end subroutine exchange_halo_r
+
+end module parallel_module

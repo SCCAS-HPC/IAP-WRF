@@ -1,0 +1,138 @@
+10
+
+dir
+2
+svn+ssh://jhe@everest.msrc.sunysb.edu/ptmp/jhe/ccsm4_wrf_cam/models/atm/wrf/external
+svn+ssh://jhe@everest.msrc.sunysb.edu/ptmp/jhe/ccsm4_wrf_cam
+
+
+
+2010-06-18T16:09:52.573828Z
+2
+jhe
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+68e820c0-3f89-0410-90fa-e9089979da34
+
+io_esmf
+dir
+
+io_int
+dir
+
+ioapi_share
+dir
+
+esmf_time_f90
+dir
+
+io_netcdf
+dir
+
+io_grib1
+dir
+
+atm_pom
+dir
+
+io_grib2
+dir
+
+io_grib_share
+dir
+
+io_phdf5
+dir
+
+IOAPI
+file
+
+
+
+
+2010-06-18T16:03:27.390625Z
+76569d64f7dae1bece491e6ec0081ce3
+2010-06-18T16:09:52.573828Z
+2
+jhe
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+120
+
+io_mcel
+dir
+
+io_pnetcdf
+dir
+
+RSL_LITE
+dir
+
+Makefile
+file
+
+
+
+
+2010-06-18T16:03:28.140625Z
+6a9ff0661139497d729c9bb20dc0437b
+2010-06-18T16:09:52.573828Z
+2
+jhe
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+532
+
+fftpack
+dir
+

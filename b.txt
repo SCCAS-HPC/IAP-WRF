@@ -1,0 +1,966 @@
+atm/wrf/main/wrf_comp_mct.F.0721:      type(mct_gGrid), pointer   :: dom_a
+atm/wrf/main/wrf_comp_mct.F.0721:      type(mct_gGrid), pointer   :: dom_c
+atm/wrf/main/wrf_comp_mct.F.0721:      type(mct_ggrid), intent(inout):: dom_a    
+atm/wrf/main/wrf_comp_mct.F.0721:         call mct_gGrid_init( GGrid=dom_a, CoordChars=trim(seq_flds_dom_coord), OtherChars=trim(seq_flds_dom_other), lsize=lsize )
+atm/wrf/main/wrf_comp_mct.F.0721:         call mct_gGrid_importIAttr(dom_a,'GlobGridNum',idata,lsize)
+atm/wrf/main/wrf_comp_mct.F.0721:        call mct_gGrid_importRAttr(dom_a,"lat"  ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0721:        call mct_gGrid_importRAttr(dom_a,"lon"  ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0721:        call mct_gGrid_importRAttr(dom_a,"area" ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0721:        call mct_gGrid_importRAttr(dom_a,"aream",data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0721:        call mct_gGrid_importRAttr(dom_a,"mask" ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0721:        call mct_gGrid_importRAttr(dom_a,"frac" ,data,lsize)
+atm/wrf/main/wrf_comp_mct.F.0721:       call mct_gGrid_importRAttr(dom_a,"lat",data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0721:       call mct_gGrid_importRAttr(dom_a,"lon",data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0721:      call mct_gGrid_importRAttr(dom_a,"area",data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0721:      call mct_gGrid_importRAttr(dom_a,"mask"   ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0721:      type(mct_ggrid), intent(inout):: dom_c    
+atm/wrf/main/wrf_comp_mct.F.0721:         call mct_gGrid_init( GGrid=dom_c, CoordChars=trim(seq_flds_dom_coord), OtherChars=trim(seq_flds_dom_other), lsize=lsize )
+atm/wrf/main/wrf_comp_mct.F.0721:         call mct_gGrid_importIAttr(dom_c,'GlobGridNum',idata,lsize)
+atm/wrf/main/wrf_comp_mct.F.0721:        call mct_gGrid_importRAttr(dom_c,"lat"  ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0721:        call mct_gGrid_importRAttr(dom_c,"lon"  ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0721:        call mct_gGrid_importRAttr(dom_c,"area" ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0721:        call mct_gGrid_importRAttr(dom_c,"aream",data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0721:        call mct_gGrid_importRAttr(dom_c,"mask" ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0721:        call mct_gGrid_importRAttr(dom_c,"frac" ,data,lsize)
+atm/wrf/main/wrf_comp_mct.F.0513:      type(mct_gGrid), pointer   :: dom_a
+atm/wrf/main/wrf_comp_mct.F.0513:      type(mct_gGrid), pointer   :: dom_c
+atm/wrf/main/wrf_comp_mct.F.0513:      type(mct_ggrid), intent(inout):: dom_a    
+atm/wrf/main/wrf_comp_mct.F.0513:         call mct_gGrid_init( GGrid=dom_a, CoordChars=trim(seq_flds_dom_coord), OtherChars=trim(seq_flds_dom_other), lsize=lsize )
+atm/wrf/main/wrf_comp_mct.F.0513:         call mct_gGrid_importIAttr(dom_a,'GlobGridNum',idata,lsize)
+atm/wrf/main/wrf_comp_mct.F.0513:        call mct_gGrid_importRAttr(dom_a,"lat"  ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0513:        call mct_gGrid_importRAttr(dom_a,"lon"  ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0513:        call mct_gGrid_importRAttr(dom_a,"area" ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0513:        call mct_gGrid_importRAttr(dom_a,"aream",data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0513:        call mct_gGrid_importRAttr(dom_a,"mask" ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0513:        call mct_gGrid_importRAttr(dom_a,"frac" ,data,lsize)
+atm/wrf/main/wrf_comp_mct.F.0513:       call mct_gGrid_importRAttr(dom_a,"lat",data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0513:       call mct_gGrid_importRAttr(dom_a,"lon",data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0513:      call mct_gGrid_importRAttr(dom_a,"area",data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0513:      call mct_gGrid_importRAttr(dom_a,"mask"   ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0513:      type(mct_ggrid), intent(inout):: dom_c    
+atm/wrf/main/wrf_comp_mct.F.0513:         call mct_gGrid_init( GGrid=dom_c, CoordChars=trim(seq_flds_dom_coord), OtherChars=trim(seq_flds_dom_other), lsize=lsize )
+atm/wrf/main/wrf_comp_mct.F.0513:         call mct_gGrid_importIAttr(dom_c,'GlobGridNum',idata,lsize)
+atm/wrf/main/wrf_comp_mct.F.0513:        call mct_gGrid_importRAttr(dom_c,"lat"  ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0513:        call mct_gGrid_importRAttr(dom_c,"lon"  ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0513:        call mct_gGrid_importRAttr(dom_c,"area" ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0513:        call mct_gGrid_importRAttr(dom_c,"aream",data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0513:        call mct_gGrid_importRAttr(dom_c,"mask" ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0513:        call mct_gGrid_importRAttr(dom_c,"frac" ,data,lsize)
+atm/wrf/main/wrf_comp_mct.F.xiugai:      type(mct_gGrid), pointer   :: dom_a
+atm/wrf/main/wrf_comp_mct.F.xiugai:      type(mct_gGrid), pointer   :: dom_c
+atm/wrf/main/wrf_comp_mct.F.xiugai:      type(mct_ggrid), intent(inout):: dom_a    
+atm/wrf/main/wrf_comp_mct.F.xiugai:         call mct_gGrid_init( GGrid=dom_a, CoordChars=trim(seq_flds_dom_coord), OtherChars=trim(seq_flds_dom_other), lsize=lsize )
+atm/wrf/main/wrf_comp_mct.F.xiugai:         call mct_gGrid_importIAttr(dom_a,'GlobGridNum',idata,lsize)
+atm/wrf/main/wrf_comp_mct.F.xiugai:        call mct_gGrid_importRAttr(dom_a,"lat"  ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.xiugai:        call mct_gGrid_importRAttr(dom_a,"lon"  ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.xiugai:        call mct_gGrid_importRAttr(dom_a,"area" ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.xiugai:        call mct_gGrid_importRAttr(dom_a,"aream",data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.xiugai:        call mct_gGrid_importRAttr(dom_a,"mask" ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.xiugai:        call mct_gGrid_importRAttr(dom_a,"frac" ,data,lsize)
+atm/wrf/main/wrf_comp_mct.F.xiugai:       call mct_gGrid_importRAttr(dom_a,"lat",data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.xiugai:       call mct_gGrid_importRAttr(dom_a,"lon",data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.xiugai:      call mct_gGrid_importRAttr(dom_a,"area",data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.xiugai:      call mct_gGrid_importRAttr(dom_a,"mask"   ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.xiugai:      type(mct_ggrid), intent(inout):: dom_c    
+atm/wrf/main/wrf_comp_mct.F.xiugai:         call mct_gGrid_init( GGrid=dom_c, CoordChars=trim(seq_flds_dom_coord), OtherChars=trim(seq_flds_dom_other), lsize=lsize )
+atm/wrf/main/wrf_comp_mct.F.xiugai:         call mct_gGrid_importIAttr(dom_c,'GlobGridNum',idata,lsize)
+atm/wrf/main/wrf_comp_mct.F.xiugai:        call mct_gGrid_importRAttr(dom_c,"lat"  ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.xiugai:        call mct_gGrid_importRAttr(dom_c,"lon"  ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.xiugai:        call mct_gGrid_importRAttr(dom_c,"area" ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.xiugai:        call mct_gGrid_importRAttr(dom_c,"aream",data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.xiugai:        call mct_gGrid_importRAttr(dom_c,"mask" ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.xiugai:        call mct_gGrid_importRAttr(dom_c,"frac" ,data,lsize)
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:      type(mct_gGrid), pointer   :: dom_a
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:      type(mct_gGrid), pointer   :: dom_c
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:    type(mct_ggrid), intent(inout):: dom_a    
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:         call mct_gGrid_init( GGrid=dom_a, CoordChars=trim(seq_flds_dom_coord), OtherChars=trim(seq_flds_dom_other), lsize=lsize )
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:         call mct_gGrid_importIAttr(dom_a,'GlobGridNum',idata,lsize)
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:        call mct_gGrid_importRAttr(dom_a,"lat"  ,data,lsize) 
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:        call mct_gGrid_importRAttr(dom_a,"lon"  ,data,lsize) 
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:        call mct_gGrid_importRAttr(dom_a,"area" ,data,lsize) 
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:        call mct_gGrid_importRAttr(dom_a,"aream",data,lsize) 
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:        call mct_gGrid_importRAttr(dom_a,"mask" ,data,lsize) 
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:        call mct_gGrid_importRAttr(dom_a,"frac" ,data,lsize)
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:       call mct_gGrid_importRAttr(dom_a,"lat",data,lsize) 
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:       call mct_gGrid_importRAttr(dom_a,"lon",data,lsize) 
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:      call mct_gGrid_importRAttr(dom_a,"area",data,lsize) 
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:      call mct_gGrid_importRAttr(dom_a,"mask"   ,data,lsize) 
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:    type(mct_ggrid), intent(inout):: dom_c    
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:         call mct_gGrid_init( GGrid=dom_c, CoordChars=trim(seq_flds_dom_coord), OtherChars=trim(seq_flds_dom_other), lsize=lsize )
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:         call mct_gGrid_importIAttr(dom_a,'GlobGridNum',idata,lsize)
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:        call mct_gGrid_importRAttr(dom_c,"lat"  ,data,lsize) 
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:        call mct_gGrid_importRAttr(dom_c,"lon"  ,data,lsize) 
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:        call mct_gGrid_importRAttr(dom_c,"area" ,data,lsize) 
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:        call mct_gGrid_importRAttr(dom_c,"aream",data,lsize) 
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:        call mct_gGrid_importRAttr(dom_c,"mask" ,data,lsize) 
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:        call mct_gGrid_importRAttr(dom_c,"frac" ,data,lsize)
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:       call mct_gGrid_importRAttr(dom_a,"lat",data,lsize) 
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:       call mct_gGrid_importRAttr(dom_a,"lon",data,lsize) 
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:      call mct_gGrid_importRAttr(dom_a,"area",data,lsize) 
+atm/wrf/main/.svn/text-base/wrf_comp_mct.F.svn-base:      call mct_gGrid_importRAttr(dom_a,"mask"   ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0522.right:      type(mct_gGrid), pointer   :: dom_a
+atm/wrf/main/wrf_comp_mct.F.0522.right:      type(mct_gGrid), pointer   :: dom_c
+atm/wrf/main/wrf_comp_mct.F.0522.right:      type(mct_ggrid), intent(inout):: dom_a    
+atm/wrf/main/wrf_comp_mct.F.0522.right:         call mct_gGrid_init( GGrid=dom_a, CoordChars=trim(seq_flds_dom_coord), OtherChars=trim(seq_flds_dom_other), lsize=lsize )
+atm/wrf/main/wrf_comp_mct.F.0522.right:         call mct_gGrid_importIAttr(dom_a,'GlobGridNum',idata,lsize)
+atm/wrf/main/wrf_comp_mct.F.0522.right:        call mct_gGrid_importRAttr(dom_a,"lat"  ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0522.right:        call mct_gGrid_importRAttr(dom_a,"lon"  ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0522.right:        call mct_gGrid_importRAttr(dom_a,"area" ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0522.right:        call mct_gGrid_importRAttr(dom_a,"aream",data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0522.right:        call mct_gGrid_importRAttr(dom_a,"mask" ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0522.right:        call mct_gGrid_importRAttr(dom_a,"frac" ,data,lsize)
+atm/wrf/main/wrf_comp_mct.F.0522.right:       call mct_gGrid_importRAttr(dom_a,"lat",data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0522.right:       call mct_gGrid_importRAttr(dom_a,"lon",data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0522.right:      call mct_gGrid_importRAttr(dom_a,"area",data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0522.right:      call mct_gGrid_importRAttr(dom_a,"mask"   ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0522.right:      type(mct_ggrid), intent(inout):: dom_c    
+atm/wrf/main/wrf_comp_mct.F.0522.right:         call mct_gGrid_init( GGrid=dom_c, CoordChars=trim(seq_flds_dom_coord), OtherChars=trim(seq_flds_dom_other), lsize=lsize )
+atm/wrf/main/wrf_comp_mct.F.0522.right:         call mct_gGrid_importIAttr(dom_c,'GlobGridNum',idata,lsize)
+atm/wrf/main/wrf_comp_mct.F.0522.right:        call mct_gGrid_importRAttr(dom_c,"lat"  ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0522.right:        call mct_gGrid_importRAttr(dom_c,"lon"  ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0522.right:        call mct_gGrid_importRAttr(dom_c,"area" ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0522.right:        call mct_gGrid_importRAttr(dom_c,"aream",data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0522.right:        call mct_gGrid_importRAttr(dom_c,"mask" ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F.0522.right:        call mct_gGrid_importRAttr(dom_c,"frac" ,data,lsize)
+atm/wrf/main/wrf_comp_mct.F:      type(mct_gGrid), pointer   :: dom_a
+atm/wrf/main/wrf_comp_mct.F:      type(mct_gGrid), pointer   :: dom_c
+atm/wrf/main/wrf_comp_mct.F:      type(mct_ggrid), intent(inout):: dom_a    
+atm/wrf/main/wrf_comp_mct.F:         call mct_gGrid_init( GGrid=dom_a, CoordChars=trim(seq_flds_dom_coord), OtherChars=trim(seq_flds_dom_other), lsize=lsize )
+atm/wrf/main/wrf_comp_mct.F:         call mct_gGrid_importIAttr(dom_a,'GlobGridNum',idata,lsize)
+atm/wrf/main/wrf_comp_mct.F:        call mct_gGrid_importRAttr(dom_a,"lat"  ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F:        call mct_gGrid_importRAttr(dom_a,"lon"  ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F:        call mct_gGrid_importRAttr(dom_a,"area" ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F:        call mct_gGrid_importRAttr(dom_a,"aream",data,lsize) 
+atm/wrf/main/wrf_comp_mct.F:        call mct_gGrid_importRAttr(dom_a,"mask" ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F:        call mct_gGrid_importRAttr(dom_a,"frac" ,data,lsize)
+atm/wrf/main/wrf_comp_mct.F:       call mct_gGrid_importRAttr(dom_a,"lat",data,lsize) 
+atm/wrf/main/wrf_comp_mct.F:       call mct_gGrid_importRAttr(dom_a,"lon",data,lsize) 
+atm/wrf/main/wrf_comp_mct.F:      call mct_gGrid_importRAttr(dom_a,"area",data,lsize) 
+atm/wrf/main/wrf_comp_mct.F:      call mct_gGrid_importRAttr(dom_a,"mask"   ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F:      type(mct_ggrid), intent(inout):: dom_c    
+atm/wrf/main/wrf_comp_mct.F:         call mct_gGrid_init( GGrid=dom_c, CoordChars=trim(seq_flds_dom_coord), OtherChars=trim(seq_flds_dom_other), lsize=lsize )
+atm/wrf/main/wrf_comp_mct.F:         call mct_gGrid_importIAttr(dom_c,'GlobGridNum',idata,lsize)
+atm/wrf/main/wrf_comp_mct.F:        call mct_gGrid_importRAttr(dom_c,"lat"  ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F:        call mct_gGrid_importRAttr(dom_c,"lon"  ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F:        call mct_gGrid_importRAttr(dom_c,"area" ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F:        call mct_gGrid_importRAttr(dom_c,"aream",data,lsize) 
+atm/wrf/main/wrf_comp_mct.F:        call mct_gGrid_importRAttr(dom_c,"mask" ,data,lsize) 
+atm/wrf/main/wrf_comp_mct.F:        call mct_gGrid_importRAttr(dom_c,"frac" ,data,lsize)
+atm/datm/datm_comp_mod.F90:    type(mct_gGrid)        , pointer :: ggrid
+atm/datm/datm_comp_mod.F90:   type(mct_gGrid)        , pointer :: ggrid
+atm/datm/datm_shr_mod.F90:   type(mct_ggrid) ,intent(in)    :: ggrid      ! ggrid of grid info
+atm/datm/datm_shr_mod.F90:   type(mct_ggrid) ,intent(in)    :: ggrid      ! ggrid of grid info
+atm/datm/datm_shr_mod.F90:   type(mct_ggrid) ,intent(in)    :: ggrido     ! ggrid of grid info
+atm/datm/datm_shr_mod.F90:   type(mct_ggrid)  :: ggridi        ! input file grid
+atm/datm/datm_shr_mod.F90:   type(mct_ggrid)  :: ggridoG       ! output grid gathered
+atm/datm/datm_shr_mod.F90:   call mct_gGrid_init(GGrid=gGridi, CoordChars=trim(seq_flds_dom_coord), &
+atm/datm/datm_shr_mod.F90:   call mct_ggrid_gather(ggrido, ggridoG, gsmapo, 0, mpicom)
+atm/datm/datm_shr_mod.F90:      call mct_gGrid_importRattr(gGridi,'lon',tempR1D,lsizei)
+atm/datm/datm_shr_mod.F90:      call mct_gGrid_importRattr(gGridi,'lat',tempR1D,lsizei)
+atm/datm/datm_shr_mod.F90:      call mct_gGrid_importRattr(gGridi,'mask',tempR1D,lsizei)
+atm/datm/datm_shr_mod.F90:      call mct_gGrid_clean(ggridoG)
+atm/datm/datm_shr_mod.F90:   call mct_gGrid_clean(ggridi)
+atm/datm/cpl_esmf/atm_comp_esmf.F90:   type(mct_gGrid)     :: ggrid
+atm/datm/cpl_esmf/atm_comp_mct.F90:   type(mct_gGrid)             , pointer :: dom
+atm/satm/cpl_esmf/atm_comp_mct.F90:    type(mct_gGrid)             , pointer :: dom
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    type(mct_gGrid),              pointer       :: dom_o
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    type(mct_ggrid), intent(inout) :: dom_o     
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_init( GGrid=dom_o, CoordChars=trim(seq_flds_dom_coord), &
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importIAttr(dom_o,'GlobGridNum',idata,lsize)
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importIAttr(dom_o,'GlobGridNum',idata,lsize)
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"lat"  ,data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"lon"  ,data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"area" ,data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"aream",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"mask" ,data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"frac" ,data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"lat",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"lon",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"area",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"mask",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"frac",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    type(mct_gGrid),              pointer       :: dom_o
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    type(mct_ggrid), intent(inout) :: dom_o     
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_init( GGrid=dom_o, CoordChars=trim(seq_flds_dom_coord), &
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importIAttr(dom_o,'GlobGridNum',idata,lsize)
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importIAttr(dom_o,'GlobGridNum',idata,lsize)
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"lat"  ,data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"lon"  ,data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"area" ,data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"aream",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"mask" ,data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"frac" ,data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"lat",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"lon",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"area",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"mask",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"frac",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    type(mct_gGrid)             , pointer :: dom_i
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    type(mct_ggrid), intent(inout) :: dom_i     
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gGrid_init( GGrid=dom_i, CoordChars=trim(seq_flds_dom_coord), &
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gGrid_importIAttr(dom_i,'GlobGridNum',idata,lsize)
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gGrid_importIAttr(dom_i,'GlobGridNum',idata,lsize)
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_i,"lat"  ,data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_i,"lon"  ,data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_i,"area" ,data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_i,"aream",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_i,"mask" ,data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_i,"frac" ,data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_i,"lat",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_i,"lon",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_i,"area",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_i,"mask",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_i,"frac",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    type(mct_gGrid)             , pointer :: dom_i
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    type(mct_ggrid), intent(inout) :: dom_i     
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_init( GGrid=dom_i, CoordChars=trim(seq_flds_dom_coord), &
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importIAttr(dom_i,'GlobGridNum',idata,lsize)
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importIAttr(dom_i,'GlobGridNum',idata,lsize)
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRAttr(dom_i,"lat"  ,data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRAttr(dom_i,"lon"  ,data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRAttr(dom_i,"area" ,data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRAttr(dom_i,"aream",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRAttr(dom_i,"mask" ,data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRAttr(dom_i,"frac" ,data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRAttr(dom_i,"lat",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRAttr(dom_i,"lon",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRAttr(dom_i,"area",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRAttr(dom_i,"mask",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRAttr(dom_i,"frac",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    type(mct_gGrid),              pointer       :: dom_o
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    type(mct_ggrid), intent(inout) :: dom_o     
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_init( GGrid=dom_o, CoordChars=trim(seq_flds_dom_coord), &
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importIAttr(dom_o,'GlobGridNum',idata,lsize)
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importIAttr(dom_o,'GlobGridNum',idata,lsize)
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"lat"  ,data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"lon"  ,data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"area" ,data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"aream",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"mask" ,data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"frac" ,data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"lat",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"lon",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"area",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"mask",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"frac",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    type(mct_gGrid),              pointer       :: dom_o
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    type(mct_ggrid), intent(inout) :: dom_o     
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_init( GGrid=dom_o, CoordChars=trim(seq_flds_dom_coord), &
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importIAttr(dom_o,'GlobGridNum',idata,lsize)
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importIAttr(dom_o,'GlobGridNum',idata,lsize)
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"lat"  ,data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"lon"  ,data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"area" ,data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"aream",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"mask" ,data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"frac" ,data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"lat",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"lon",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"area",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"mask",data,lsize) 
+atm/beifen_cam/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"frac",data,lsize) 
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    type(mct_gGrid), pointer   :: dom_a
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    type(mct_gGrid), pointer   :: dom_c   !juanxiong he for wrf/cam coupling
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    type(mct_gGrid), pointer   :: dom_ca   !juanxiong he for geatm/cam coupling
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    type(mct_ggrid), intent(inout):: dom_a  
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_init( GGrid=dom_a, CoordChars=trim(seq_flds_dom_coord), OtherChars=trim(seq_flds_dom_other), lsize=lsize )
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importIAttr(dom_a,'GlobGridNum',idata,lsize)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_a,"lat"  ,data,lsize) 
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_a,"lon"  ,data,lsize) 
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_a,"area" ,data,lsize) 
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_a,"aream",data,lsize) 
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_a,"mask" ,data,lsize) 
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_a,"frac" ,data,lsize)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_a,"lat",data,lsize) 
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_a,"lon",data,lsize) 
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_a,"area",data,lsize) 
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_a,"mask"   ,data,lsize) 
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    type(mct_ggrid), intent(inout):: dom_c  
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_init( GGrid=dom_c, CoordChars=trim(seq_flds_dom_coord), OtherChars=trim(seq_flds_dom_other), lsize=lsize )
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importIAttr(dom_c,'GlobGridNum',idata,lsize)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"lat"  ,data,lsize) 
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"lon"  ,data,lsize) 
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"area" ,data,lsize) 
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"aream",data,lsize) 
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"mask" ,data,lsize) 
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"frac" ,data,lsize)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"lat",data,lsize) 
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"lon",data,lsize) 
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"area",data,lsize) 
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"mask"   ,data,lsize) 
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    type(mct_ggrid), intent(inout):: dom_c  
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_init( GGrid=dom_c, CoordChars=trim(seq_flds_dom_coord), OtherChars=trim(seq_flds_dom_other), lsize=lsize )
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importIAttr(dom_c,'GlobGridNum',idata,lsize)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"lat"  ,data,lsize) 
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"lon"  ,data,lsize) 
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"area" ,data,lsize) 
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"aream",data,lsize) 
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"mask" ,data,lsize) 
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"frac" ,data,lsize)
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"lat",data,lsize) 
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"lon",data,lsize) 
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"area",data,lsize) 
+atm/beifen_cam/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"mask"   ,data,lsize) 
+atm/beifen_cam/cam/src/cpl_esmf/atm_comp_mct.F90:   type(mct_gGrid)             , pointer :: dom
+atm/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    type(mct_gGrid),              pointer       :: dom_o
+atm/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    type(mct_ggrid), intent(inout) :: dom_o     
+atm/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_init( GGrid=dom_o, CoordChars=trim(seq_flds_dom_coord), &
+atm/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importIAttr(dom_o,'GlobGridNum',idata,lsize)
+atm/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importIAttr(dom_o,'GlobGridNum',idata,lsize)
+atm/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"lat"  ,data,lsize) 
+atm/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"lon"  ,data,lsize) 
+atm/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"area" ,data,lsize) 
+atm/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"aream",data,lsize) 
+atm/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"mask" ,data,lsize) 
+atm/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"frac" ,data,lsize) 
+atm/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"lat",data,lsize) 
+atm/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"lon",data,lsize) 
+atm/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"area",data,lsize) 
+atm/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"mask",data,lsize) 
+atm/cam/src/utils/cam_dom/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"frac",data,lsize) 
+atm/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    type(mct_gGrid),              pointer       :: dom_o
+atm/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    type(mct_ggrid), intent(inout) :: dom_o     
+atm/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_init( GGrid=dom_o, CoordChars=trim(seq_flds_dom_coord), &
+atm/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importIAttr(dom_o,'GlobGridNum',idata,lsize)
+atm/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importIAttr(dom_o,'GlobGridNum',idata,lsize)
+atm/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"lat"  ,data,lsize) 
+atm/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"lon"  ,data,lsize) 
+atm/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"area" ,data,lsize) 
+atm/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"aream",data,lsize) 
+atm/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"mask" ,data,lsize) 
+atm/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"frac" ,data,lsize) 
+atm/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"lat",data,lsize) 
+atm/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"lon",data,lsize) 
+atm/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"area",data,lsize) 
+atm/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"mask",data,lsize) 
+atm/cam/src/utils/cam_dom/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"frac",data,lsize) 
+atm/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    type(mct_gGrid)             , pointer :: dom_i
+atm/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    type(mct_ggrid), intent(inout) :: dom_i     
+atm/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gGrid_init( GGrid=dom_i, CoordChars=trim(seq_flds_dom_coord), &
+atm/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gGrid_importIAttr(dom_i,'GlobGridNum',idata,lsize)
+atm/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gGrid_importIAttr(dom_i,'GlobGridNum',idata,lsize)
+atm/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_i,"lat"  ,data,lsize) 
+atm/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_i,"lon"  ,data,lsize) 
+atm/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_i,"area" ,data,lsize) 
+atm/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_i,"aream",data,lsize) 
+atm/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_i,"mask" ,data,lsize) 
+atm/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_i,"frac" ,data,lsize) 
+atm/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_i,"lat",data,lsize) 
+atm/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_i,"lon",data,lsize) 
+atm/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_i,"area",data,lsize) 
+atm/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_i,"mask",data,lsize) 
+atm/cam/src/utils/cam_csim4/cpl_mct/.svn/text-base/ice_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_i,"frac",data,lsize) 
+atm/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    type(mct_gGrid)             , pointer :: dom_i
+atm/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    type(mct_ggrid), intent(inout) :: dom_i     
+atm/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_init( GGrid=dom_i, CoordChars=trim(seq_flds_dom_coord), &
+atm/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importIAttr(dom_i,'GlobGridNum',idata,lsize)
+atm/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importIAttr(dom_i,'GlobGridNum',idata,lsize)
+atm/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRAttr(dom_i,"lat"  ,data,lsize) 
+atm/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRAttr(dom_i,"lon"  ,data,lsize) 
+atm/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRAttr(dom_i,"area" ,data,lsize) 
+atm/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRAttr(dom_i,"aream",data,lsize) 
+atm/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRAttr(dom_i,"mask" ,data,lsize) 
+atm/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRAttr(dom_i,"frac" ,data,lsize) 
+atm/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRAttr(dom_i,"lat",data,lsize) 
+atm/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRAttr(dom_i,"lon",data,lsize) 
+atm/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRAttr(dom_i,"area",data,lsize) 
+atm/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRAttr(dom_i,"mask",data,lsize) 
+atm/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRAttr(dom_i,"frac",data,lsize) 
+atm/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    type(mct_gGrid),              pointer       :: dom_o
+atm/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    type(mct_ggrid), intent(inout) :: dom_o     
+atm/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_init( GGrid=dom_o, CoordChars=trim(seq_flds_dom_coord), &
+atm/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importIAttr(dom_o,'GlobGridNum',idata,lsize)
+atm/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importIAttr(dom_o,'GlobGridNum',idata,lsize)
+atm/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"lat"  ,data,lsize) 
+atm/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"lon"  ,data,lsize) 
+atm/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"area" ,data,lsize) 
+atm/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"aream",data,lsize) 
+atm/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"mask" ,data,lsize) 
+atm/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"frac" ,data,lsize) 
+atm/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"lat",data,lsize) 
+atm/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"lon",data,lsize) 
+atm/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"area",data,lsize) 
+atm/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"mask",data,lsize) 
+atm/cam/src/utils/cam_aqua/cpl_mct/.svn/text-base/ocn_comp_mct.F90.svn-base:    call mct_gGrid_importRAttr(dom_o,"frac",data,lsize) 
+atm/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    type(mct_gGrid),              pointer       :: dom_o
+atm/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    type(mct_ggrid), intent(inout) :: dom_o     
+atm/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_init( GGrid=dom_o, CoordChars=trim(seq_flds_dom_coord), &
+atm/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importIAttr(dom_o,'GlobGridNum',idata,lsize)
+atm/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importIAttr(dom_o,'GlobGridNum',idata,lsize)
+atm/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"lat"  ,data,lsize) 
+atm/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"lon"  ,data,lsize) 
+atm/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"area" ,data,lsize) 
+atm/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"aream",data,lsize) 
+atm/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"mask" ,data,lsize) 
+atm/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"frac" ,data,lsize) 
+atm/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"lat",data,lsize) 
+atm/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"lon",data,lsize) 
+atm/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"area",data,lsize) 
+atm/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"mask",data,lsize) 
+atm/cam/src/utils/cam_aqua/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"frac",data,lsize) 
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    type(mct_gGrid), pointer   :: dom_a
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    type(mct_gGrid), pointer   :: dom_c   !juanxiong he for wrf/cam coupling
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    type(mct_gGrid), pointer   :: dom_ca   !juanxiong he for geatm/cam coupling
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    type(mct_ggrid), intent(inout):: dom_a  
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_init( GGrid=dom_a, CoordChars=trim(seq_flds_dom_coord), OtherChars=trim(seq_flds_dom_other), lsize=lsize )
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importIAttr(dom_a,'GlobGridNum',idata,lsize)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_a,"lat"  ,data,lsize) 
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_a,"lon"  ,data,lsize) 
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_a,"area" ,data,lsize) 
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_a,"aream",data,lsize) 
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_a,"mask" ,data,lsize) 
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_a,"frac" ,data,lsize)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_a,"lat",data,lsize) 
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_a,"lon",data,lsize) 
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_a,"area",data,lsize) 
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_a,"mask"   ,data,lsize) 
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    type(mct_ggrid), intent(inout):: dom_c  
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_init( GGrid=dom_c, CoordChars=trim(seq_flds_dom_coord), OtherChars=trim(seq_flds_dom_other), lsize=lsize )
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importIAttr(dom_c,'GlobGridNum',idata,lsize)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"lat"  ,data,lsize) 
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"lon"  ,data,lsize) 
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"area" ,data,lsize) 
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"aream",data,lsize) 
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"mask" ,data,lsize) 
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"frac" ,data,lsize)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"lat",data,lsize) 
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"lon",data,lsize) 
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"area",data,lsize) 
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"mask"   ,data,lsize) 
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    type(mct_ggrid), intent(inout):: dom_c  
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_init( GGrid=dom_c, CoordChars=trim(seq_flds_dom_coord), OtherChars=trim(seq_flds_dom_other), lsize=lsize )
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importIAttr(dom_c,'GlobGridNum',idata,lsize)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"lat"  ,data,lsize) 
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"lon"  ,data,lsize) 
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"area" ,data,lsize) 
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"aream",data,lsize) 
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"mask" ,data,lsize) 
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"frac" ,data,lsize)
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"lat",data,lsize) 
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"lon",data,lsize) 
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"area",data,lsize) 
+atm/cam/src/cpl_mct/atm_comp_mct.F90:    call mct_gGrid_importRAttr(dom_c,"mask"   ,data,lsize) 
+atm/cam/src/cpl_esmf/atm_comp_mct.F90:   type(mct_gGrid)             , pointer :: dom
+atm/xatm/cpl_mct/atm_comp_mct.F90:    type(mct_gGrid)             , pointer :: dom
+atm/xatm/cpl_esmf/atm_comp_mct.F90:    type(mct_gGrid)             , pointer :: dom
+chem/geatm/src.datamodel/geatm_comp_mct.f90:    type(mct_gGrid), pointer   :: dom_ge
+chem/geatm/src.datamodel/geatm_comp_mct.f90:      type(mct_ggrid), intent(inout):: dom_c    
+chem/geatm/src.datamodel/geatm_comp_mct.f90:         call mct_gGrid_init( GGrid=dom_c, CoordChars=trim(seq_flds_dom_coord), OtherChars=trim(seq_flds_dom_other), lsize=lsize )
+chem/geatm/src.datamodel/geatm_comp_mct.f90:         call mct_gGrid_importIAttr(dom_c,'GlobGridNum',idata,lsize)
+chem/geatm/src.datamodel/geatm_comp_mct.f90:        call mct_gGrid_importRAttr(dom_c,"lat"  ,data,lsize) 
+chem/geatm/src.datamodel/geatm_comp_mct.f90:        call mct_gGrid_importRAttr(dom_c,"lon"  ,data,lsize) 
+chem/geatm/src.datamodel/geatm_comp_mct.f90:        call mct_gGrid_importRAttr(dom_c,"area" ,data,lsize) 
+chem/geatm/src.datamodel/geatm_comp_mct.f90:        call mct_gGrid_importRAttr(dom_c,"aream",data,lsize) 
+chem/geatm/src.datamodel/geatm_comp_mct.f90:        call mct_gGrid_importRAttr(dom_c,"mask" ,data,lsize) 
+chem/geatm/src.datamodel/geatm_comp_mct.f90:        call mct_gGrid_importRAttr(dom_c,"frac" ,data,lsize)
+chem/geatm/src.version1/geatm_comp_mct.f90:    type(mct_gGrid), pointer   :: dom_ge
+chem/geatm/src.version1/geatm_comp_mct.f90:      type(mct_ggrid), intent(inout):: dom_c    
+chem/geatm/src.version1/geatm_comp_mct.f90:         call mct_gGrid_init( GGrid=dom_c, CoordChars=trim(seq_flds_dom_coord), OtherChars=trim(seq_flds_dom_other), lsize=lsize )
+chem/geatm/src.version1/geatm_comp_mct.f90:         call mct_gGrid_importIAttr(dom_c,'GlobGridNum',idata,lsize)
+chem/geatm/src.version1/geatm_comp_mct.f90:        call mct_gGrid_importRAttr(dom_c,"lat"  ,data,lsize) 
+chem/geatm/src.version1/geatm_comp_mct.f90:        call mct_gGrid_importRAttr(dom_c,"lon"  ,data,lsize) 
+chem/geatm/src.version1/geatm_comp_mct.f90:        call mct_gGrid_importRAttr(dom_c,"area" ,data,lsize) 
+chem/geatm/src.version1/geatm_comp_mct.f90:        call mct_gGrid_importRAttr(dom_c,"aream",data,lsize) 
+chem/geatm/src.version1/geatm_comp_mct.f90:        call mct_gGrid_importRAttr(dom_c,"mask" ,data,lsize) 
+chem/geatm/src.version1/geatm_comp_mct.f90:        call mct_gGrid_importRAttr(dom_c,"frac" ,data,lsize)
+chem/geatm/src/geatm_comp_mct.f90:    type(mct_gGrid), pointer   :: dom_ge
+chem/geatm/src/geatm_comp_mct.f90:      type(mct_ggrid), intent(inout):: dom_c    
+chem/geatm/src/geatm_comp_mct.f90:         call mct_gGrid_init( GGrid=dom_c, CoordChars=trim(seq_flds_dom_coord), OtherChars=trim(seq_flds_dom_other), lsize=lsize )
+chem/geatm/src/geatm_comp_mct.f90:         call mct_gGrid_importIAttr(dom_c,'GlobGridNum',idata,lsize)
+chem/geatm/src/geatm_comp_mct.f90:        call mct_gGrid_importRAttr(dom_c,"lat"  ,data,lsize) 
+chem/geatm/src/geatm_comp_mct.f90:        call mct_gGrid_importRAttr(dom_c,"lon"  ,data,lsize) 
+chem/geatm/src/geatm_comp_mct.f90:        call mct_gGrid_importRAttr(dom_c,"area" ,data,lsize) 
+chem/geatm/src/geatm_comp_mct.f90:        call mct_gGrid_importRAttr(dom_c,"aream",data,lsize) 
+chem/geatm/src/geatm_comp_mct.f90:        call mct_gGrid_importRAttr(dom_c,"mask" ,data,lsize) 
+chem/geatm/src/geatm_comp_mct.f90:        call mct_gGrid_importRAttr(dom_c,"frac" ,data,lsize)
+csm_share/shr/shr_strdata_mod.F90:    type(mct_ggrid) :: grid
+csm_share/shr/shr_strdata_mod.F90:    type(mct_ggrid) :: gridR(nStrMax)
+csm_share/shr/shr_strdata_mod.F90:  type(mct_ggrid)       ,intent(in),optional :: ggrid
+csm_share/shr/shr_strdata_mod.F90:     call mct_ggrid_init(SDAT%grid, ggrid, lsize)    
+csm_share/shr/shr_strdata_mod.F90:  call mct_ggrid_clean(SDAT%grid)
+csm_share/shr/shr_strdata_mod.F90:     call mct_ggrid_clean(SDAT%gridR(n))
+csm_share/shr/shr_strdata_mod.F90:   type(mct_ggrid)       ,intent(in)   :: ggrid
+csm_share/shr/shr_scam_mod.F90:      call mct_ggrid_clean(SCAMSDAT%grid)
+csm_share/shr/shr_dmodel_mod.F90:  type(mct_gGrid), intent(inout) :: gGrid
+csm_share/shr/shr_dmodel_mod.F90:  type(mct_ggrid)      :: gGridRoot       ! global mct ggrid
+csm_share/shr/shr_dmodel_mod.F90:  call mct_gGrid_init( GGrid=gGrid, CoordChars=trim(seq_flds_dom_coord), &
+csm_share/shr/shr_dmodel_mod.F90:  call mct_gGrid_importIAttr(gGrid,'GlobGridNum',idata,lsize)
+csm_share/shr/shr_dmodel_mod.F90:     call mct_gGrid_init(gGridRoot,gGrid,gsize)
+csm_share/shr/shr_dmodel_mod.F90:  call mct_gGrid_scatter(gGridRoot, gGrid, gsMap, master_task, mpicom)
+csm_share/shr/shr_dmodel_mod.F90:  if (my_task == master_task) call mct_gGrid_clean(gGridRoot)
+csm_share/shr/shr_dmodel_mod.F90:   type(mct_gGrid)     ,intent(in)  :: ggrid1   ! 1st ggrid
+csm_share/shr/shr_dmodel_mod.F90:   type(mct_gGrid)     ,intent(in)  :: ggrid2   ! 2nd ggrid
+csm_share/shr/shr_dmodel_mod.F90:    type(mct_gGrid), intent(in)    :: ggridS
+csm_share/shr/shr_dmodel_mod.F90:    type(mct_gGrid), intent(in)    :: ggridD
+csm_share/shr/shr_dmodel_mod.F90:    type(mct_gGrid), intent(in)    :: ggridS
+csm_share/shr/shr_dmodel_mod.F90:    type(mct_gGrid), intent(in)    :: ggridD
+csm_share/shr/shr_dmodel_mod.F90:  type(mct_ggrid), intent(in)    :: ggridi
+csm_share/shr/shr_dmodel_mod.F90:  type(mct_ggrid), intent(inout) :: ggrido  
+csm_share/shr/shr_dmodel_mod.F90:  call mct_gGrid_init( ggrido, ggridi, lsize=lsize )
+csm_share/shr/shr_dmodel_mod.F90:  call mct_gGrid_importIAttr(ggrido,'GlobGridNum',idata,lsize)
+csm_share/shr/shr_dmodel_mod.F90:  call mct_gGrid_importRAttr(ggrido,"lat"  ,data,lsize) 
+csm_share/shr/shr_dmodel_mod.F90:  call mct_gGrid_importRAttr(ggrido,"lon"  ,data,lsize) 
+csm_share/shr/shr_dmodel_mod.F90:  call mct_gGrid_importRAttr(ggrido,"area" ,data,lsize) 
+csm_share/shr/shr_dmodel_mod.F90:  call mct_gGrid_importRAttr(ggrido,"aream",data,lsize) 
+csm_share/shr/shr_dmodel_mod.F90:  call mct_gGrid_importRAttr(ggrido,"mask",data,lsize) 
+csm_share/shr/shr_dmodel_mod.F90:  call mct_gGrid_importRAttr(ggrido,"frac",data,lsize) 
+csm_share/shr/mct_mod.F90:   use m_GeneralGrid        ,only: mct_gGrid              => GeneralGrid
+csm_share/shr/mct_mod.F90:   use m_GeneralGrid        ,only: mct_gGrid_init         => init
+csm_share/shr/mct_mod.F90:   use m_GeneralGrid        ,only: mct_gGrid_clean        => clean
+csm_share/shr/mct_mod.F90:   use m_GeneralGrid        ,only: mct_gGrid_dims         => dims
+csm_share/shr/mct_mod.F90:   use m_GeneralGrid        ,only: mct_gGrid_lsize        => lsize
+csm_share/shr/mct_mod.F90:   use m_GeneralGrid        ,only: mct_ggrid_indexIA      => indexIA
+csm_share/shr/mct_mod.F90:   use m_GeneralGrid        ,only: mct_gGrid_indexRA      => indexRA
+csm_share/shr/mct_mod.F90:   use m_GeneralGrid        ,only: mct_gGrid_exportRattr  => exportRattr
+csm_share/shr/mct_mod.F90:   use m_GeneralGrid        ,only: mct_gGrid_importRattr  => importRattr
+csm_share/shr/mct_mod.F90:   use m_GeneralGrid        ,only: mct_gGrid_exportIattr  => exportIattr
+csm_share/shr/mct_mod.F90:   use m_GeneralGrid        ,only: mct_gGrid_importIattr  => importIattr
+csm_share/shr/mct_mod.F90:   use m_GeneralGrid        ,only: mct_gGrid_permute      => permute
+csm_share/shr/mct_mod.F90:   use m_GeneralGridComms   ,only: mct_gGrid_scatter      => scatter
+csm_share/shr/mct_mod.F90:   use m_GeneralGridComms   ,only: mct_gGrid_gather       => gather 
+csm_share/shr/mct_mod.F90:   use m_GeneralGridComms   ,only: mct_gGrid_bcast        => bcast  
+dead_share/dead_mct_mod.F90:    type(mct_ggrid), intent(out)  :: domain  
+dead_share/dead_mct_mod.F90:    call mct_gGrid_init( GGrid=domain, CoordChars=trim(seq_flds_dom_coord), &
+dead_share/dead_mct_mod.F90:    lsize = mct_gGrid_lsize(domain)
+dead_share/dead_mct_mod.F90:    call mct_gGrid_importIAttr(domain,'GlobGridNum',idata,lsize)
+dead_share/dead_mct_mod.F90:    call mct_gGrid_importRAttr(domain,"lat" ,data,lsize) 
+dead_share/dead_mct_mod.F90:    call mct_gGrid_importRAttr(domain,"lon" ,data,lsize) 
+dead_share/dead_mct_mod.F90:    call mct_gGrid_importRAttr(domain,"area",data,lsize) 
+dead_share/dead_mct_mod.F90:    call mct_gGrid_importRAttr(domain,"frac",data,lsize) 
+dead_share/dead_mct_mod.F90:    call mct_gGrid_importRAttr(domain,"mask" ,data,lsize) 
+dead_share/dead_mct_mod.F90:    call mct_gGrid_importRAttr(domain,"aream",data,lsize) 
+dead_share/dead_mct_mod.F90:    call mct_gGrid_importRAttr(domain,"lat",data,lsize) 
+dead_share/dead_mct_mod.F90:    call mct_gGrid_importRAttr(domain,"lon",data,lsize) 
+dead_share/dead_mct_mod.F90:    call mct_gGrid_importRAttr(domain,"area",data,lsize) 
+dead_share/dead_mct_mod.F90:    call mct_gGrid_importRAttr(domain,"aream",data,lsize) 
+dead_share/dead_mct_mod.F90:    call mct_gGrid_importRAttr(domain,"mask"   ,data,lsize) 
+dead_share/dead_mct_mod.F90:    call mct_gGrid_importRAttr(domain,"frac"   ,data,lsize) 
+drv/ChangeLog:          call mct_gGrid_exportRAttr(dom_o, "lat", lats, nloc) 
+drv/ChangeLog:          call mct_gGrid_exportRAttr(dom_o, "lon", lons, nloc) 
+drv/driver/seq_frac_mct.F90:   type(mct_gGrid), pointer :: dom_a   ! pointer to component domain
+drv/driver/seq_frac_mct.F90:   type(mct_gGrid), pointer :: dom_i   ! pointer to component domain
+drv/driver/seq_frac_mct.F90:   type(mct_gGrid), pointer :: dom_l   ! pointer to component domain
+drv/driver/seq_frac_mct.F90:   type(mct_gGrid), pointer :: dom_o   ! pointer to component domain
+drv/driver/seq_frac_mct.F90:   type(mct_gGrid), pointer :: dom_g   ! pointer to component domain
+drv/driver/seq_frac_mct.F90:   type(mct_gGrid), pointer :: dom_i   ! pointer to component domain
+drv/driver/seq_domain_mct.F90:    type(mct_gGrid)  , pointer :: atmdom_a   ! atm domain
+drv/driver/seq_domain_mct.F90:    type(mct_gGrid)  , pointer :: icedom_i   ! ice domain
+drv/driver/seq_domain_mct.F90:    type(mct_gGrid)  , pointer :: lnddom_l   ! lnd domain
+drv/driver/seq_domain_mct.F90:    type(mct_gGrid)  , pointer :: ocndom_o   ! ocn domain
+drv/driver/seq_domain_mct.F90:    type(mct_gGrid)  , pointer :: glcdom_g   ! glc domain
+drv/driver/seq_domain_mct.F90:    type(mct_gGrid)  , pointer :: snodom_s   ! sno domain
+drv/driver/seq_domain_mct.F90:    type(mct_gGrid) :: lnddom_a              ! lnd domain info on atm decomp
+drv/driver/seq_domain_mct.F90:    type(mct_gGrid) :: icedom_a              ! ice domain info on atm decomp (all grids same)
+drv/driver/seq_domain_mct.F90:    type(mct_gGrid) :: ocndom_a              ! ocn domain info on atm decomp (all grids same)
+drv/driver/seq_domain_mct.F90:    type(mct_gGrid) :: icedom_o              ! ocn domain info on ocn decomp (atm/ocn grid different)
+drv/driver/seq_domain_mct.F90:    type(mct_gGrid) :: snodom_g              ! sno domain info on glc decomp
+drv/driver/seq_domain_mct.F90:       call mct_gGrid_init(oGGrid=lnddom_a, iGGrid=lnddom_l, lsize=atmsize)
+drv/driver/seq_domain_mct.F90:       call mct_gGrid_init(oGGrid=ocndom_a, iGGrid=ocndom_o, lsize=atmsize)
+drv/driver/seq_domain_mct.F90:       call mct_gGrid_init(oGGrid=icedom_a, iGGrid=icedom_i, lsize=atmsize)
+drv/driver/seq_domain_mct.F90:       call mct_gGrid_init(oGGrid=snodom_g, iGGrid=snodom_s, lsize=glcsize)
+drv/driver/seq_domain_mct.F90:       call mct_gGrid_init(oGGrid=icedom_o, iGGrid=icedom_i, lsize=ocnsize)
+drv/driver/seq_domain_mct.F90:       call mct_gGrid_clean(lnddom_a, rcode)
+drv/driver/seq_domain_mct.F90:       call mct_gGrid_clean(ocndom_a, rcode)
+drv/driver/seq_domain_mct.F90:       call mct_gGrid_clean(icedom_a, rcode)
+drv/driver/seq_domain_mct.F90:       call mct_gGrid_clean(icedom_o, rcode)
+drv/driver/seq_domain_mct.F90:    type(mct_gGrid),pointer:: domain
+drv/driver/seq_domain_mct.F90:    gridsize = mct_gGrid_lsize(domain)
+drv/driver/seq_domain_mct.F90:    j1 = mct_gGrid_indexRA(domain,"area"    ,dieWith=subName)
+drv/driver/seq_domain_mct.F90:    j2 = mct_gGrid_indexRA(domain,"aream"   ,dieWith=subName)
+drv/driver/seq_domain_mct.F90:    m1 = mct_gGrid_indexRA(domain,"mask"    ,dieWith=subName)
+drv/driver/map_rofocn_mct.F90:    type(mct_ggrid), pointer :: dom_r             ! runoff domain
+drv/driver/map_rofocn_mct.F90:    type(mct_ggrid), pointer :: dom_o             ! ocn domain
+drv/driver/map_wrfcam_mct.F90:    type(mct_gGrid), pointer :: dom_w             ! atm domain
+drv/driver/map_wrfcam_mct.F90:    type(mct_gGrid), pointer :: dom_c             ! lnd domain
+drv/driver/map_wrfcam_mct.F90:    type(mct_gGrid), pointer :: dom_c             ! lnd domain
+drv/driver/map_wrfcam_mct.F90:    type(mct_gGrid), pointer :: dom_w             ! atm domain
+drv/driver/map_atmlnd_mct.F90:    type(mct_gGrid), pointer :: dom_a             ! atm domain
+drv/driver/map_atmlnd_mct.F90:    type(mct_gGrid), pointer :: dom_l             ! lnd domain
+drv/driver/map_atmlnd_mct.F90:    type(mct_gGrid), pointer :: dom_l             ! lnd domain
+drv/driver/map_iceocn_mct.F90:    type(mct_gGrid), pointer :: dom_i             ! ice domain
+drv/driver/map_iceocn_mct.F90:    type(mct_gGrid), pointer :: dom_o             ! ocn domain
+drv/driver/seq_hist_mod.F90:   type(mct_gGrid),pointer :: dom
+drv/driver/map_geacam_mct.F90:    type(mct_gGrid), pointer :: dom_w             ! atm domain
+drv/driver/map_geacam_mct.F90:    type(mct_gGrid), pointer :: dom_c             ! lnd domain
+drv/driver/map_geacam_mct.F90:    type(mct_gGrid), pointer :: dom_c             ! lnd domain
+drv/driver/map_geacam_mct.F90:    type(mct_gGrid), pointer :: dom_w             ! atm domain
+drv/driver/map_atmice_mct.F90:    type(mct_gGrid), pointer :: dom_i             ! ice domain
+drv/driver/map_atmice_mct.F90:    type(mct_gGrid), pointer :: dom_a             ! atm domain
+drv/driver/.svn/text-base/seq_avdata_mod.F90.svn-base:   type(mct_gGrid) :: dom_aa      ! atm domain on atm pes
+drv/driver/.svn/text-base/seq_avdata_mod.F90.svn-base:   type(mct_gGrid) :: dom_ll      ! lnd domain
+drv/driver/.svn/text-base/seq_avdata_mod.F90.svn-base:   type(mct_gGrid) :: dom_ii      ! ice domain
+drv/driver/.svn/text-base/seq_avdata_mod.F90.svn-base:   type(mct_gGrid) :: dom_oo      ! ocn domain
+drv/driver/.svn/text-base/seq_avdata_mod.F90.svn-base:   type(mct_gGrid) :: dom_rr      ! runoff domain
+drv/driver/.svn/text-base/seq_avdata_mod.F90.svn-base:   type(mct_gGrid) :: dom_gg      ! glc domain
+drv/driver/.svn/text-base/seq_avdata_mod.F90.svn-base:   type(mct_gGrid) :: dom_ss      ! sno domain
+drv/driver/.svn/text-base/seq_avdata_mod.F90.svn-base:   type(mct_gGrid) :: dom_ax      ! atm domain on cpl pes
+drv/driver/.svn/text-base/seq_avdata_mod.F90.svn-base:   type(mct_gGrid) :: dom_lx      ! lnd domain
+drv/driver/.svn/text-base/seq_avdata_mod.F90.svn-base:   type(mct_gGrid) :: dom_ix      ! ice domain
+drv/driver/.svn/text-base/seq_avdata_mod.F90.svn-base:   type(mct_gGrid) :: dom_ox      ! ocn domain
+drv/driver/.svn/text-base/seq_avdata_mod.F90.svn-base:   type(mct_gGrid) :: dom_rx      ! runoff domain
+drv/driver/.svn/text-base/seq_avdata_mod.F90.svn-base:   type(mct_gGrid) :: dom_gx      ! glc domain
+drv/driver/.svn/text-base/seq_avdata_mod.F90.svn-base:   type(mct_gGrid) :: dom_sx      ! sno domain
+drv/driver/.svn/text-base/map_iceocn_mct.F90.svn-base:    type(mct_gGrid), pointer :: dom_i             ! ice domain
+drv/driver/.svn/text-base/map_iceocn_mct.F90.svn-base:    type(mct_gGrid), pointer :: dom_o             ! ocn domain
+drv/driver/.svn/text-base/seq_flux_mct.F90.svn-base:    type(mct_gGrid), pointer        :: dom
+drv/driver/.svn/text-base/seq_flux_mct.F90.svn-base:    call mct_gGrid_exportRAttr(dom, 'lat' , lats , nloc) 
+drv/driver/.svn/text-base/seq_flux_mct.F90.svn-base:    call mct_gGrid_exportRAttr(dom, 'lon' , lons , nloc) 
+drv/driver/.svn/text-base/seq_flux_mct.F90.svn-base:    call mct_gGrid_exportRAttr(dom, 'mask', rmask, nloc)
+drv/driver/.svn/text-base/seq_flux_mct.F90.svn-base:    type(mct_gGrid), pointer        :: dom_a
+drv/driver/.svn/text-base/seq_flux_mct.F90.svn-base:    type(mct_gGrid), pointer        :: dom_o
+drv/driver/.svn/text-base/seq_flux_mct.F90.svn-base:    type(mct_gGrid), pointer        :: dom_o
+drv/driver/.svn/text-base/seq_flux_mct.F90.svn-base:       nloc_o  = mct_ggrid_lsize(dom_o)
+drv/driver/.svn/text-base/seq_flux_mct.F90.svn-base:       klat = mct_gGrid_indexRA(dom_o,"lat" ,dieWith=subName)
+drv/driver/.svn/text-base/seq_flux_mct.F90.svn-base:       klon = mct_gGrid_indexRA(dom_o,"lon" ,dieWith=subName)
+drv/driver/.svn/text-base/seq_hist_mod.F90.svn-base:   type(mct_gGrid),pointer :: dom
+drv/driver/.svn/text-base/map_atmice_mct.F90.svn-base:    type(mct_gGrid), pointer :: dom_i             ! ice domain
+drv/driver/.svn/text-base/map_atmice_mct.F90.svn-base:    type(mct_gGrid), pointer :: dom_a             ! atm domain
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:    type(mct_gGrid)  , pointer :: atmdom_a   ! atm domain
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:    type(mct_gGrid)  , pointer :: icedom_i   ! ice domain
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:    type(mct_gGrid)  , pointer :: lnddom_l   ! lnd domain
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:    type(mct_gGrid)  , pointer :: ocndom_o   ! ocn domain
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:    type(mct_gGrid)  , pointer :: glcdom_g   ! glc domain
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:    type(mct_gGrid)  , pointer :: snodom_s   ! sno domain
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:    type(mct_gGrid) :: lnddom_a              ! lnd domain info on atm decomp
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:    type(mct_gGrid) :: icedom_a              ! ice domain info on atm decomp (all grids same)
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:    type(mct_gGrid) :: ocndom_a              ! ocn domain info on atm decomp (all grids same)
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:    type(mct_gGrid) :: icedom_o              ! ocn domain info on ocn decomp (atm/ocn grid different)
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:    type(mct_gGrid) :: snodom_g              ! sno domain info on glc decomp
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:       call mct_gGrid_init(oGGrid=lnddom_a, iGGrid=lnddom_l, lsize=atmsize)
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:       call mct_gGrid_init(oGGrid=ocndom_a, iGGrid=ocndom_o, lsize=atmsize)
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:       call mct_gGrid_init(oGGrid=icedom_a, iGGrid=icedom_i, lsize=atmsize)
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:       call mct_gGrid_init(oGGrid=snodom_g, iGGrid=snodom_s, lsize=glcsize)
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:       call mct_gGrid_init(oGGrid=icedom_o, iGGrid=icedom_i, lsize=ocnsize)
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:       call mct_gGrid_clean(lnddom_a, rcode)
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:       call mct_gGrid_clean(ocndom_a, rcode)
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:       call mct_gGrid_clean(icedom_a, rcode)
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:       call mct_gGrid_clean(icedom_o, rcode)
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:    type(mct_gGrid),pointer:: domain
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:    gridsize = mct_gGrid_lsize(domain)
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:    j1 = mct_gGrid_indexRA(domain,"area"    ,dieWith=subName)
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:    j2 = mct_gGrid_indexRA(domain,"aream"   ,dieWith=subName)
+drv/driver/.svn/text-base/seq_domain_mct.F90.svn-base:    m1 = mct_gGrid_indexRA(domain,"mask"    ,dieWith=subName)
+drv/driver/.svn/text-base/seq_frac_mct.F90.svn-base:   type(mct_gGrid), pointer :: dom_a   ! pointer to component domain
+drv/driver/.svn/text-base/seq_frac_mct.F90.svn-base:   type(mct_gGrid), pointer :: dom_i   ! pointer to component domain
+drv/driver/.svn/text-base/seq_frac_mct.F90.svn-base:   type(mct_gGrid), pointer :: dom_l   ! pointer to component domain
+drv/driver/.svn/text-base/seq_frac_mct.F90.svn-base:   type(mct_gGrid), pointer :: dom_o   ! pointer to component domain
+drv/driver/.svn/text-base/seq_frac_mct.F90.svn-base:   type(mct_gGrid), pointer :: dom_g   ! pointer to component domain
+drv/driver/.svn/text-base/seq_frac_mct.F90.svn-base:   type(mct_gGrid), pointer :: dom_i   ! pointer to component domain
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:    type(mct_gGrid), pointer :: dom_new             ! new domain
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:    type(mct_gGrid), pointer :: dom_old             ! old domain
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:    type(mct_gGrid)          :: dom_join          ! gathered grid
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:    type(mct_gGrid)          :: dom_empty         ! empty grid
+drv/driver/.svn/text-base/seq_rearr_mod.F90.svn-base:    call mct_gGrid_init( GGrid=dom_new, CoordChars=seq_flds_dom_coord, OtherChars=seq_flds_dom_other, lsize=lsize )
+drv/driver/.svn/text-base/seq_diag_mct.F90.svn-base:   type(mct_gGrid),intent(in)          ::  dom_a ! model domain
+drv/driver/.svn/text-base/seq_diag_mct.F90.svn-base:   type(mct_gGrid),intent(in)          ::  dom_l ! model domain
+drv/driver/.svn/text-base/seq_diag_mct.F90.svn-base:   type(mct_gGrid),intent(in)          ::  dom_r ! model domain
+drv/driver/.svn/text-base/seq_diag_mct.F90.svn-base:   type(mct_gGrid),intent(in)          ::  dom_o ! model domain
+drv/driver/.svn/text-base/seq_diag_mct.F90.svn-base:   type(mct_gGrid),intent(in)          ::  dom_i ! model domain
+drv/driver/.svn/text-base/seq_diag_mct.F90.svn-base:   type(mct_gGrid)   ,pointer :: dom
+drv/driver/.svn/text-base/map_atmlnd_mct.F90.svn-base:    type(mct_gGrid), pointer :: dom_a             ! atm domain
+drv/driver/.svn/text-base/map_atmlnd_mct.F90.svn-base:    type(mct_gGrid), pointer :: dom_l             ! lnd domain
+drv/driver/.svn/text-base/map_atmlnd_mct.F90.svn-base:    type(mct_gGrid), pointer :: dom_l             ! lnd domain
+drv/driver/.svn/text-base/map_atmocn_mct.F90.svn-base:    type(mct_ggrid), pointer :: dom_a
+drv/driver/.svn/text-base/map_atmocn_mct.F90.svn-base:    type(mct_ggrid), pointer :: dom_o
+drv/driver/.svn/text-base/map_atmocn_mct.F90.svn-base:    type(mct_ggrid), pointer :: dom_o             ! ocn domain
+drv/driver/.svn/text-base/map_atmocn_mct.F90.svn-base:    type(mct_ggrid), pointer :: dom_a             ! atm domain
+drv/driver/.svn/text-base/map_atmocn_mct.F90.svn-base:    type(mct_ggrid), pointer :: dom_o
+drv/driver/.svn/text-base/map_atmocn_mct.F90.svn-base:    type(mct_ggrid), pointer :: dom_a
+drv/driver/.svn/text-base/map_atmocn_mct.F90.svn-base:   type(mct_gGrid),pointer      :: domi    ! input domain 
+drv/driver/.svn/text-base/map_atmocn_mct.F90.svn-base:   type(mct_gGrid),pointer      :: domo    ! output domain 
+drv/driver/.svn/text-base/map_rofocn_mct.F90.svn-base:    type(mct_ggrid), pointer :: dom_r             ! runoff domain
+drv/driver/.svn/text-base/map_rofocn_mct.F90.svn-base:    type(mct_ggrid), pointer :: dom_o             ! ocn domain
+drv/driver/.svn/text-base/map_snoglc_mct.F90.svn-base:    type(mct_gGrid), pointer :: dom_s             ! sno domain
+drv/driver/.svn/text-base/map_snoglc_mct.F90.svn-base:    type(mct_gGrid), pointer :: dom_g             ! glc domain
+drv/driver/map_snoglc_mct.F90:    type(mct_gGrid), pointer :: dom_s             ! sno domain
+drv/driver/map_snoglc_mct.F90:    type(mct_gGrid), pointer :: dom_g             ! glc domain
+drv/driver/map_atmocn_mct.F90:    type(mct_ggrid), pointer :: dom_a
+drv/driver/map_atmocn_mct.F90:    type(mct_ggrid), pointer :: dom_o
+drv/driver/map_atmocn_mct.F90:    type(mct_ggrid), pointer :: dom_o             ! ocn domain
+drv/driver/map_atmocn_mct.F90:    type(mct_ggrid), pointer :: dom_a             ! atm domain
+drv/driver/map_atmocn_mct.F90:    type(mct_ggrid), pointer :: dom_o
+drv/driver/map_atmocn_mct.F90:    type(mct_ggrid), pointer :: dom_a
+drv/driver/map_atmocn_mct.F90:   type(mct_gGrid),pointer      :: domi    ! input domain 
+drv/driver/map_atmocn_mct.F90:   type(mct_gGrid),pointer      :: domo    ! output domain 
+drv/driver/seq_rearr_mod.F90:    type(mct_gGrid), pointer :: dom_new             ! new domain
+drv/driver/seq_rearr_mod.F90:    type(mct_gGrid), pointer :: dom_old             ! old domain
+drv/driver/seq_rearr_mod.F90:    type(mct_gGrid)          :: dom_join          ! gathered grid
+drv/driver/seq_rearr_mod.F90:    type(mct_gGrid)          :: dom_empty         ! empty grid
+drv/driver/seq_rearr_mod.F90:    call mct_gGrid_init( GGrid=dom_new, CoordChars=seq_flds_dom_coord, OtherChars=seq_flds_dom_other, lsize=lsize )
+drv/driver/seq_flux_mct.F90:    type(mct_gGrid), pointer        :: dom
+drv/driver/seq_flux_mct.F90:    call mct_gGrid_exportRAttr(dom, 'lat' , lats , nloc) 
+drv/driver/seq_flux_mct.F90:    call mct_gGrid_exportRAttr(dom, 'lon' , lons , nloc) 
+drv/driver/seq_flux_mct.F90:    call mct_gGrid_exportRAttr(dom, 'mask', rmask, nloc)
+drv/driver/seq_flux_mct.F90:    type(mct_gGrid), pointer        :: dom_a
+drv/driver/seq_flux_mct.F90:    type(mct_gGrid), pointer        :: dom_o
+drv/driver/seq_flux_mct.F90:    type(mct_gGrid), pointer        :: dom_o
+drv/driver/seq_flux_mct.F90:       nloc_o  = mct_ggrid_lsize(dom_o)
+drv/driver/seq_flux_mct.F90:       klat = mct_gGrid_indexRA(dom_o,"lat" ,dieWith=subName)
+drv/driver/seq_flux_mct.F90:       klon = mct_gGrid_indexRA(dom_o,"lon" ,dieWith=subName)
+drv/driver/seq_diag_mct.F90:   type(mct_gGrid),intent(in)          ::  dom_a ! model domain
+drv/driver/seq_diag_mct.F90:   type(mct_gGrid),intent(in)          ::  dom_l ! model domain
+drv/driver/seq_diag_mct.F90:   type(mct_gGrid),intent(in)          ::  dom_r ! model domain
+drv/driver/seq_diag_mct.F90:   type(mct_gGrid),intent(in)          ::  dom_o ! model domain
+drv/driver/seq_diag_mct.F90:   type(mct_gGrid),intent(in)          ::  dom_i ! model domain
+drv/driver/seq_diag_mct.F90:   type(mct_gGrid)   ,pointer :: dom
+drv/driver/seq_avdata_mod.F90:   type(mct_gGrid) :: dom_aa      ! atm domain on atm pes
+drv/driver/seq_avdata_mod.F90:   type(mct_gGrid) :: dom_ll      ! lnd domain
+drv/driver/seq_avdata_mod.F90:   type(mct_gGrid) :: dom_ii      ! ice domain
+drv/driver/seq_avdata_mod.F90:   type(mct_gGrid) :: dom_oo      ! ocn domain
+drv/driver/seq_avdata_mod.F90:   type(mct_gGrid) :: dom_rr      ! runoff domain
+drv/driver/seq_avdata_mod.F90:   type(mct_gGrid) :: dom_gg      ! glc domain
+drv/driver/seq_avdata_mod.F90:   type(mct_gGrid) :: dom_ss      ! sno domain
+drv/driver/seq_avdata_mod.F90:   type(mct_gGrid) :: dom_ww      ! wrf domain,juanxiong he for wrf/ccsm4 coupling  
+drv/driver/seq_avdata_mod.F90:   type(mct_gGrid) :: dom_cc      ! cam domain,juanxiong he for wrf/cam coupling, cam end     
+drv/driver/seq_avdata_mod.F90:   type(mct_gGrid) :: dom_mm      ! wrf domain,juanxiong he for wrf/cam coupling, wrf grid wrf end     
+drv/driver/seq_avdata_mod.F90:   type(mct_gGrid) :: dom_caca      ! cam domain,juanxiong he for geatm/cam coupling, cam end     
+drv/driver/seq_avdata_mod.F90:   type(mct_gGrid) :: dom_gege      ! wrf domain,juanxiong he for geatm/cam coupling, geatm grid geatm end
+drv/driver/seq_avdata_mod.F90:   type(mct_gGrid) :: dom_ax      ! atm domain on cpl pes
+drv/driver/seq_avdata_mod.F90:   type(mct_gGrid) :: dom_lx      ! lnd domain
+drv/driver/seq_avdata_mod.F90:   type(mct_gGrid) :: dom_ix      ! ice domain
+drv/driver/seq_avdata_mod.F90:   type(mct_gGrid) :: dom_ox      ! ocn domain
+drv/driver/seq_avdata_mod.F90:   type(mct_gGrid) :: dom_rx      ! runoff domain
+drv/driver/seq_avdata_mod.F90:   type(mct_gGrid) :: dom_gx      ! glc domain
+drv/driver/seq_avdata_mod.F90:   type(mct_gGrid) :: dom_sx      ! sno domain
+drv/driver/seq_avdata_mod.F90:   type(mct_gGrid) :: dom_wx      ! wrf domain for wrf/ccsm4 coupling, juanxiong he
+drv/driver/seq_avdata_mod.F90:   type(mct_gGrid) :: dom_cx      ! cam domain for wrf/cam coupling, cam end, juanxiong he
+drv/driver/seq_avdata_mod.F90:   type(mct_gGrid) :: dom_mx      ! wrf domain for wrf/cam coupling, wrf end, juanxiong he   
+drv/driver/seq_avdata_mod.F90:   type(mct_gGrid) :: dom_cax      ! cam domain for geatm/cam coupling, cam end, juanxiong he
+drv/driver/seq_avdata_mod.F90:   type(mct_gGrid) :: dom_gex      ! wrf domain for geatm/cam coupling, geatm end, juanxiong he
+drv/.svn/text-base/ChangeLog.svn-base:          call mct_gGrid_exportRAttr(dom_o, "lat", lats, nloc) 
+drv/.svn/text-base/ChangeLog.svn-base:          call mct_gGrid_exportRAttr(dom_o, "lon", lons, nloc) 
+drv/shr_esmf/esmf2mct_mod.F90:    type(mct_ggrid), intent(out)            :: ggrid
+drv/shr_esmf/esmf2mct_mod.F90:    call mct_gGrid_init( GGrid=ggrid, &
+drv/shr_esmf/esmf2mct_mod.F90:    call mct_gGrid_importIAttr(ggrid,'GlobGridNum',gindex,lsize)
+drv/shr_esmf/.svn/text-base/esmf2mct_mod.F90.svn-base:    type(mct_ggrid), intent(out)            :: ggrid
+drv/shr_esmf/.svn/text-base/esmf2mct_mod.F90.svn-base:    call mct_gGrid_init( GGrid=ggrid, &
+drv/shr_esmf/.svn/text-base/esmf2mct_mod.F90.svn-base:    call mct_gGrid_importIAttr(ggrid,'GlobGridNum',gindex,lsize)
+drv/shr/seq_cdata_mod.F90:    type(mct_gGrid)  ,pointer :: dom         ! domain info
+drv/shr/seq_cdata_mod.F90:    type(mct_gGrid)     ,intent(in),target   :: dom        ! domain
+drv/shr/seq_cdata_mod.F90:    type(mct_gGrid)  ,optional,pointer :: dom        ! domain
+drv/shr/seq_cdata_mod.F90:      ! write(logunit,*) '  dom dims    = ',mct_gGrid_dims(cdata%dom)
+drv/shr/seq_cdata_mod.F90:      ! write(logunit,*) '  dom lsize   = ',mct_gGrid_lsize(cdata%dom)
+drv/shr/.svn/text-base/seq_cdata_mod.F90.svn-base:    type(mct_gGrid)  ,pointer :: dom         ! domain info
+drv/shr/.svn/text-base/seq_cdata_mod.F90.svn-base:    type(mct_gGrid)     ,intent(in),target   :: dom        ! domain
+drv/shr/.svn/text-base/seq_cdata_mod.F90.svn-base:    type(mct_gGrid)  ,optional,pointer :: dom        ! domain
+drv/shr/.svn/text-base/seq_cdata_mod.F90.svn-base:      ! write(logunit,*) '  dom dims    = ',mct_gGrid_dims(cdata%dom)
+drv/shr/.svn/text-base/seq_cdata_mod.F90.svn-base:      ! write(logunit,*) '  dom lsize   = ',mct_gGrid_lsize(cdata%dom)
+glc/sglc/cpl_esmf/glc_comp_mct.F90:    type(mct_gGrid)             , pointer :: dom
+glc/xglc/cpl_mct/glc_comp_mct.F90:    type(mct_gGrid)             , pointer :: dom
+glc/xglc/cpl_esmf/glc_comp_mct.F90:    type(mct_gGrid)             , pointer :: dom
+glc/cism/drivers/cpl_mct/glc_comp_mct.F90:    type(mct_gGrid), pointer :: dom
+glc/cism/drivers/cpl_mct/glc_comp_mct.F90:    type(mct_ggrid), intent(out)   :: dom_g      
+glc/cism/drivers/cpl_mct/glc_comp_mct.F90:    call mct_gGrid_init( GGrid=dom_g, CoordChars=trim(seq_flds_dom_coord), &
+glc/cism/drivers/cpl_mct/glc_comp_mct.F90:    call mct_gGrid_importRAttr(dom_g,"mask" ,data,lsize) 
+glc/cism/drivers/cpl_mct/glc_comp_mct.F90:    call mct_gGrid_importRAttr(dom_g,"frac" ,data,lsize) 
+glc/cism/drivers/cpl_mct/glc_comp_mct.F90:    call mct_gGrid_importIAttr(dom_g,'GlobGridNum',idata,lsize)
+glc/cism/drivers/cpl_mct/glc_comp_mct.F90:    call mct_gGrid_importRattr(dom_g,"lon",data,lsize) 
+glc/cism/drivers/cpl_mct/glc_comp_mct.F90:    call mct_gGrid_importRattr(dom_g,"lat",data,lsize) 
+glc/cism/drivers/cpl_mct/glc_comp_mct.F90:    call mct_gGrid_importRattr(dom_g,"area",data,lsize) 
+glc/cism/drivers/cpl_mct/glc_comp_mct.F90:    call mct_gGrid_importRattr(dom_g,"mask",data,lsize) 
+glc/cism/drivers/cpl_mct/glc_comp_mct.F90:    call mct_gGrid_importRattr(dom_g,"frac",data,lsize) 
+ice/dice/dice_comp_mod.F90:    type(mct_gGrid)        , pointer :: ggrid
+ice/dice/dice_comp_mod.F90:   type(mct_gGrid)        , pointer :: ggrid
+ice/dice/cpl_esmf/ice_comp_esmf.F90:   type(mct_gGrid)     :: ggrid
+ice/dice/cpl_esmf/ice_comp_mct.F90:   type(mct_gGrid)             , pointer :: dom
+ice/sice/cpl_esmf/ice_comp_mct.F90:    type(mct_gGrid)             , pointer :: dom
+ice/xice/cpl_mct/ice_comp_mct.F90:    type(mct_gGrid)             , pointer :: dom
+ice/xice/cpl_esmf/ice_comp_mct.F90:    type(mct_gGrid)             , pointer :: dom
+ice/cice/docs/RefGuide/html/ice__comp__mct_8F90_source.html:<a name="l00129"></a>00129     <span class="keywordtype">type(</span>mct_gGrid<span class="keywordtype">)</span>             , <span class="keywordtype">pointer</span> :: dom_i
+ice/cice/docs/RefGuide/html/ice__comp__mct_8F90_source.html:<a name="l00381"></a>00381     <span class="keywordtype">type(</span>mct_gGrid<span class="keywordtype">)</span>             , <span class="keywordtype">pointer</span> :: dom_i
+ice/cice/docs/RefGuide/html/ice__comp__mct_8F90_source.html:<a name="l01248"></a>01248     <span class="keywordtype">type(</span>mct_ggrid<span class="keywordtype">)</span>, <span class="keywordtype">intent(inout)</span> :: dom_i     
+ice/cice/docs/RefGuide/html/ice__comp__mct_8F90_source.html:<a name="l01263"></a>01263     call mct_gGrid_init( GGrid=dom_i, CoordChars=trim(seq_flds_dom_coord), &amp;
+ice/cice/docs/RefGuide/html/ice__comp__mct_8F90_source.html:<a name="l01272"></a>01272     call mct_gGrid_importIAttr(dom_i,<span class="stringliteral">&apos;GlobGridNum&apos;</span>,idata,lsize)
+ice/cice/docs/RefGuide/html/ice__comp__mct_8F90_source.html:<a name="l01278"></a>01278     call mct_gGrid_importRAttr(dom_i,<span class="stringliteral">&quot;lat&quot;</span>  ,<span class="keyword">data</span>,lsize) 
+ice/cice/docs/RefGuide/html/ice__comp__mct_8F90_source.html:<a name="l01279"></a>01279     call mct_gGrid_importRAttr(dom_i,<span class="stringliteral">&quot;lon&quot;</span>  ,<span class="keyword">data</span>,lsize) 
+ice/cice/docs/RefGuide/html/ice__comp__mct_8F90_source.html:<a name="l01280"></a>01280     call mct_gGrid_importRAttr(dom_i,<span class="stringliteral">&quot;area&quot;</span> ,<span class="keyword">data</span>,lsize) 
+ice/cice/docs/RefGuide/html/ice__comp__mct_8F90_source.html:<a name="l01281"></a>01281     call mct_gGrid_importRAttr(dom_i,<span class="stringliteral">&quot;aream&quot;</span>,<span class="keyword">data</span>,lsize) 
+ice/cice/docs/RefGuide/html/ice__comp__mct_8F90_source.html:<a name="l01283"></a>01283     call mct_gGrid_importRAttr(dom_i,<span class="stringliteral">&quot;mask&quot;</span>,<span class="keyword">data</span>,lsize) 
+ice/cice/docs/RefGuide/html/ice__comp__mct_8F90_source.html:<a name="l01284"></a>01284     call mct_gGrid_importRAttr(dom_i,<span class="stringliteral">&quot;frac&quot;</span>,<span class="keyword">data</span>,lsize) 
+ice/cice/docs/RefGuide/html/ice__comp__mct_8F90_source.html:<a name="l01306"></a>01306     call mct_gGrid_importRattr(dom_i,<span class="stringliteral">&quot;lon&quot;</span>,<span class="keyword">data</span>,lsize) 
+ice/cice/docs/RefGuide/html/ice__comp__mct_8F90_source.html:<a name="l01323"></a>01323     call mct_gGrid_importRattr(dom_i,<span class="stringliteral">&quot;lat&quot;</span>,<span class="keyword">data</span>,lsize) 
+ice/cice/docs/RefGuide/html/ice__comp__mct_8F90_source.html:<a name="l01340"></a>01340     call mct_gGrid_importRattr(dom_i,<span class="stringliteral">&quot;area&quot;</span>,<span class="keyword">data</span>,lsize) 
+ice/cice/docs/RefGuide/html/ice__comp__mct_8F90_source.html:<a name="l01357"></a>01357     call mct_gGrid_importRattr(dom_i,<span class="stringliteral">&quot;mask&quot;</span>,<span class="keyword">data</span>,lsize) 
+ice/cice/docs/RefGuide/html/ice__comp__mct_8F90_source.html:<a name="l01378"></a>01378     call mct_gGrid_importRattr(dom_i,<span class="stringliteral">&quot;frac&quot;</span>,<span class="keyword">data</span>,lsize) 
+ice/cice/docs/RefGuide/html/namespaceice__comp__mct.html:          <td class="paramtype">type(mct_ggrid),intent(inout)&nbsp;</td>
+ice/cice/src/drivers/cpl_share/ice_prescribed_mod.F90:   type(mct_gGrid) :: dom
+ice/cice/src/drivers/cpl_mct/ice_comp_mct.F90:    type(mct_gGrid)             , pointer :: dom_i
+ice/cice/src/drivers/cpl_mct/ice_comp_mct.F90:    type(mct_gGrid)        , pointer :: dom_i
+ice/cice/src/drivers/cpl_mct/ice_comp_mct.F90:    type(mct_ggrid), intent(inout) :: dom_i     
+ice/cice/src/drivers/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_init( GGrid=dom_i, CoordChars=trim(seq_flds_dom_coord), &
+ice/cice/src/drivers/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importIAttr(dom_i,'GlobGridNum',idata,lsize)
+ice/cice/src/drivers/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRAttr(dom_i,"lat"  ,data,lsize) 
+ice/cice/src/drivers/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRAttr(dom_i,"lon"  ,data,lsize) 
+ice/cice/src/drivers/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRAttr(dom_i,"area" ,data,lsize) 
+ice/cice/src/drivers/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRAttr(dom_i,"aream",data,lsize) 
+ice/cice/src/drivers/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRAttr(dom_i,"mask",data,lsize) 
+ice/cice/src/drivers/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRAttr(dom_i,"frac",data,lsize) 
+ice/cice/src/drivers/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRattr(dom_i,"lon",data,lsize) 
+ice/cice/src/drivers/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRattr(dom_i,"lat",data,lsize) 
+ice/cice/src/drivers/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRattr(dom_i,"area",data,lsize) 
+ice/cice/src/drivers/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRattr(dom_i,"mask",data,lsize) 
+ice/cice/src/drivers/cpl_mct/ice_comp_mct.F90:    call mct_gGrid_importRattr(dom_i,"frac",data,lsize) 
+ice/cice/src/drivers/cpl_esmf/ice_comp_esmf.F90:  type(mct_ggrid),save :: dom_i
+ice/cice/src/drivers/cpl_esmf/ice_comp_mct.F90:   type(mct_gGrid)             , pointer :: dom
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    type(mct_gGrid),         pointer :: dom_l        ! Land model domain
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    type(mct_gGrid),         pointer :: dom_r        ! Runoff model domain
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    type(mct_gGrid),         pointer :: dom_s
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    type(mct_gGrid),        pointer :: dom_l    ! Land model domain data
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:       lsize = mct_gGrid_lsize(dom_l)
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:       call mct_gGrid_exportRattr(dom_l,"ascale",data,lsize) 
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    use mct_mod     , only : mct_gsMap, mct_gGrid, mct_gGrid_importIAttr, &
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:                             mct_gGrid_importRAttr, mct_gGrid_init,       &
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    type(mct_ggrid), intent(out)   :: dom_l     ! Output domain information for land model
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_init( GGrid=dom_l, CoordChars=trim(seq_flds_dom_coord), &
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importIAttr(dom_l,'GlobGridNum',idata,lsize)
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRAttr(dom_l,"lat"  ,data,lsize) 
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRAttr(dom_l,"lon"  ,data,lsize) 
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRAttr(dom_l,"area" ,data,lsize) 
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRAttr(dom_l,"aream",data,lsize) 
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRAttr(dom_l,"mask" ,data,lsize) 
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRattr(dom_l,"lon",data,lsize) 
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRattr(dom_l,"lat",data,lsize) 
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRattr(dom_l,"area",data,lsize) 
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRattr(dom_l,"mask",data,lsize) 
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRattr(dom_l,"frac",data,lsize) 
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    use mct_mod     , only : mct_gsMap, mct_gGrid, mct_gGrid_importIAttr, &
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:                             mct_gGrid_importRAttr, mct_gGrid_init,       &
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    type(mct_ggrid), intent(out)   :: dom_r       ! Domain information from the runoff model
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_init( GGrid=dom_r, CoordChars=trim(seq_flds_dom_coord), &
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importIAttr(dom_r,'GlobGridNum',idata,lsize)
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRAttr(dom_r,"lat"  ,data,lsize) 
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRAttr(dom_r,"lon"  ,data,lsize) 
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRAttr(dom_r,"area" ,data,lsize) 
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRAttr(dom_r,"aream",data,lsize) 
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRAttr(dom_r,"mask" ,data,lsize) 
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRattr(dom_r,"lon",data,lsize) 
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRattr(dom_r,"lat",data,lsize) 
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRattr(dom_r,"area",data,lsize) 
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRattr(dom_r,"mask",data,lsize) 
+lnd/clm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRattr(dom_r,"frac",data,lsize) 
+lnd/clm/src/cpl_esmf/lnd_comp_mct.F90:   type(mct_gGrid)             , pointer :: dom_l
+lnd/clm/src/cpl_esmf/lnd_comp_mct.F90:   type(mct_gGrid)             , pointer :: dom_r
+lnd/clm/src/cpl_esmf/lnd_comp_mct.F90:   type(mct_gGrid)             , pointer :: dom_s
+lnd/clm/src/cpl_esmf/lnd_comp_mct.F90:   type(mct_gGrid), pointer         :: dom_l
+lnd/clm/src/main/ndepStreamMod.F90:   type(mct_ggrid)    :: dom_clm   ! domain information 
+lnd/clm/src/main/ndepStreamMod.F90:    type(mct_ggrid), intent(out)   :: dom_clm     ! Output domain information for land model
+lnd/clm/src/main/ndepStreamMod.F90:    call mct_gGrid_init( GGrid=dom_clm, CoordChars=trim(seq_flds_dom_coord), &
+lnd/clm/src/main/ndepStreamMod.F90:    call mct_gGrid_importIAttr(dom_clm,'GlobGridNum',idata,lsize)
+lnd/clm/src/main/ndepStreamMod.F90:    call mct_gGrid_importRAttr(dom_clm,"lat"  ,data,lsize) 
+lnd/clm/src/main/ndepStreamMod.F90:    call mct_gGrid_importRAttr(dom_clm,"lon"  ,data,lsize) 
+lnd/clm/src/main/ndepStreamMod.F90:    call mct_gGrid_importRAttr(dom_clm,"area" ,data,lsize) 
+lnd/clm/src/main/ndepStreamMod.F90:    call mct_gGrid_importRAttr(dom_clm,"aream",data,lsize) 
+lnd/clm/src/main/ndepStreamMod.F90:    call mct_gGrid_importRAttr(dom_clm,"mask" ,data,lsize) 
+lnd/clm/src/main/ndepStreamMod.F90:    call mct_gGrid_importRattr(dom_clm,"lon",data,lsize) 
+lnd/clm/src/main/ndepStreamMod.F90:    call mct_gGrid_importRattr(dom_clm,"lat",data,lsize) 
+lnd/clm/src/main/ndepStreamMod.F90:    call mct_gGrid_importRattr(dom_clm,"area",data,lsize) 
+lnd/clm/src/main/ndepStreamMod.F90:    call mct_gGrid_importRattr(dom_clm,"mask",data,lsize) 
+lnd/clm/src/main/ndepStreamMod.F90:    call mct_gGrid_importRattr(dom_clm,"frac",data,lsize) 
+lnd/clm/src/main/clm_mct_mod.F90:   use m_GeneralGrid        ,only: mct_gGrid              => GeneralGrid
+lnd/clm/src/main/clm_mct_mod.F90:   use m_GeneralGrid        ,only: mct_gGrid_init         => init
+lnd/clm/src/main/clm_mct_mod.F90:   use m_GeneralGrid        ,only: mct_gGrid_clean        => clean
+lnd/clm/src/main/clm_mct_mod.F90:   use m_GeneralGrid        ,only: mct_gGrid_lsize        => lsize
+lnd/clm/src/main/clm_mct_mod.F90:   use m_GeneralGrid        ,only: mct_ggrid_indexIA      => indexIA
+lnd/clm/src/main/clm_mct_mod.F90:   use m_GeneralGrid        ,only: mct_gGrid_indexRA      => indexRA
+lnd/clm/src/main/clm_mct_mod.F90:   use m_GeneralGrid        ,only: mct_gGrid_exportRattr  => exportRattr	
+lnd/clm/src/main/clm_mct_mod.F90:   use m_GeneralGrid        ,only: mct_gGrid_importRattr  => importRattr	
+lnd/clm/src/main/clm_mct_mod.F90:   use m_GeneralGrid        ,only: mct_gGrid_exportIattr  => exportIattr	
+lnd/clm/src/main/clm_mct_mod.F90:   use m_GeneralGrid        ,only: mct_gGrid_importIattr  => importIattr	
+lnd/clm/src/main/clm_mct_mod.F90:   use m_GeneralGridComms   ,only: mct_gGrid_scatter      => scatter
+lnd/clm/src/main/clm_mct_mod.F90:   use m_GeneralGridComms   ,only: mct_gGrid_gather       => gather 
+lnd/clm/src/main/clm_mct_mod.F90:   use m_GeneralGridComms   ,only: mct_gGrid_bcast        => bcast  
+lnd/dlnd/dlnd_comp_mod.F90:    type(mct_gGrid)        , pointer :: dom_l
+lnd/dlnd/dlnd_comp_mod.F90:    type(mct_gGrid)        , pointer :: dom_r
+lnd/dlnd/dlnd_comp_mod.F90:    type(mct_gGrid)        , pointer :: dom_s
+lnd/dlnd/dlnd_comp_mod.F90:   type(mct_gGrid)        , pointer :: dom_l
+lnd/dlnd/dlnd_comp_mod.F90:   type(mct_gGrid)        , pointer :: dom_r
+lnd/dlnd/dlnd_comp_mod.F90:   type(mct_gGrid)        , pointer :: dom_s
+lnd/dlnd/cpl_esmf/lnd_comp_esmf.F90:   type(mct_gGrid)     :: ggrid_l
+lnd/dlnd/cpl_esmf/lnd_comp_esmf.F90:   type(mct_gGrid)     :: ggrid_r
+lnd/dlnd/cpl_esmf/lnd_comp_esmf.F90:   type(mct_gGrid)     :: ggrid_s
+lnd/dlnd/cpl_esmf/lnd_comp_mct.F90:   type(mct_gGrid)             , pointer :: dom_l
+lnd/dlnd/cpl_esmf/lnd_comp_mct.F90:   type(mct_gGrid)             , pointer :: dom_r
+lnd/dlnd/cpl_esmf/lnd_comp_mct.F90:   type(mct_gGrid)             , pointer :: dom_s
+lnd/slnd/cpl_esmf/lnd_comp_mct.F90:    type(mct_gGrid)             , pointer :: dom
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    type(mct_gGrid),         pointer :: dom_l        ! Land model domain
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    type(mct_gGrid),         pointer :: dom_r        ! Runoff model domain
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    type(mct_gGrid),         pointer :: dom_s
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    type(mct_gGrid),        pointer :: dom_l    ! Land model domain data
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:       lsize = mct_gGrid_lsize(dom_l)
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:       call mct_gGrid_exportRattr(dom_l,"ascale",data,lsize) 
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    use mct_mod     , only : mct_gsMap, mct_gGrid, mct_gGrid_importIAttr, &
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:                             mct_gGrid_importRAttr, mct_gGrid_init,       &
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    type(mct_ggrid), intent(out)   :: dom_l     ! Output domain information for land model
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_init( GGrid=dom_l, CoordChars=trim(seq_flds_dom_coord), &
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importIAttr(dom_l,'GlobGridNum',idata,lsize)
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRAttr(dom_l,"lat"  ,data,lsize) 
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRAttr(dom_l,"lon"  ,data,lsize) 
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRAttr(dom_l,"area" ,data,lsize) 
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRAttr(dom_l,"aream",data,lsize) 
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRAttr(dom_l,"mask" ,data,lsize) 
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRattr(dom_l,"lon",data,lsize) 
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRattr(dom_l,"lat",data,lsize) 
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRattr(dom_l,"area",data,lsize) 
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRattr(dom_l,"mask",data,lsize) 
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRattr(dom_l,"frac",data,lsize) 
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    use mct_mod     , only : mct_gsMap, mct_gGrid, mct_gGrid_importIAttr, &
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:                             mct_gGrid_importRAttr, mct_gGrid_init,       &
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    type(mct_ggrid), intent(out)   :: dom_r       ! Domain information from the runoff model
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_init( GGrid=dom_r, CoordChars=trim(seq_flds_dom_coord), &
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importIAttr(dom_r,'GlobGridNum',idata,lsize)
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRAttr(dom_r,"lat"  ,data,lsize) 
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRAttr(dom_r,"lon"  ,data,lsize) 
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRAttr(dom_r,"area" ,data,lsize) 
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRAttr(dom_r,"aream",data,lsize) 
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRAttr(dom_r,"mask" ,data,lsize) 
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRattr(dom_r,"lon",data,lsize) 
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRattr(dom_r,"lat",data,lsize) 
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRattr(dom_r,"area",data,lsize) 
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRattr(dom_r,"mask",data,lsize) 
+lnd/colm/src/cpl_mct/lnd_comp_mct.F90:    call mct_gGrid_importRattr(dom_r,"frac",data,lsize) 
+lnd/xlnd/cpl_mct/lnd_comp_mct.F90:    type(mct_gGrid)             , pointer :: dom
+lnd/xlnd/cpl_mct/lnd_comp_mct.F90:    type(mct_gGrid)             , pointer :: dom_r
+lnd/xlnd/cpl_mct/lnd_comp_mct.F90:    type(mct_gGrid)             , pointer :: dom_s
+lnd/xlnd/cpl_esmf/lnd_comp_mct.F90:    type(mct_gGrid)             , pointer :: dom
+lnd/xlnd/cpl_esmf/lnd_comp_mct.F90:    type(mct_gGrid)             , pointer :: dom_r
+lnd/xlnd/cpl_esmf/lnd_comp_mct.F90:    type(mct_gGrid)             , pointer :: dom_s
+ocn/licom/source/licomcpl7.F90:    type(mct_gGrid), pointer :: &
+ocn/licom/source/licomcpl7.F90:    type(mct_ggrid), intent(inout) :: dom_o
+ocn/licom/source/licomcpl7.F90:    call mct_gGrid_init( GGrid=dom_o, CoordChars=trim(seq_flds_dom_coord), &
+ocn/licom/source/licomcpl7.F90:    call mct_gGrid_importIAttr(dom_o,'GlobGridNum',idata,lsize)
+ocn/licom/source/licomcpl7.F90:    call mct_gGrid_importRAttr(dom_o,"lat"  ,data,lsize)
+ocn/licom/source/licomcpl7.F90:    call mct_gGrid_importRAttr(dom_o,"lon"  ,data,lsize)
+ocn/licom/source/licomcpl7.F90:    call mct_gGrid_importRAttr(dom_o,"area" ,data,lsize)
+ocn/licom/source/licomcpl7.F90:    call mct_gGrid_importRAttr(dom_o,"aream",data,lsize)
+ocn/licom/source/licomcpl7.F90:    call mct_gGrid_importRAttr(dom_o,"mask",data,lsize)
+ocn/licom/source/licomcpl7.F90:    call mct_gGrid_importRAttr(dom_o,"frac",data,lsize)
+ocn/licom/source/licomcpl7.F90:     call mct_gGrid_importRattr(dom_o,"mask",data,lsize)
+ocn/licom/source/licomcpl7.F90:     call mct_gGrid_importRattr(dom_o,"frac",data,lsize)
+ocn/licom/source/licomcpl7.F90:     call mct_gGrid_importRattr(dom_o,"area",data,lsize)
+ocn/licom/source/licomcpl7.F90:     call mct_gGrid_importRattr(dom_o,"lon",data,lsize)
+ocn/licom/source/licomcpl7.F90:     call mct_gGrid_importRattr(dom_o,"lat",data,lsize)
+ocn/xocn/cpl_mct/ocn_comp_mct.F90:    type(mct_gGrid)             , pointer :: dom
+ocn/xocn/cpl_esmf/ocn_comp_mct.F90:    type(mct_gGrid)             , pointer :: dom
+ocn/pop2/drivers/cpl_mct/POP_MCT_vars_mod.F90:   type(mct_gGrid), pointer :: POP_MCT_dom_o
+ocn/pop2/drivers/cpl_mct/ocn_comp_mct.F90:    type(mct_gGrid), pointer :: &
+ocn/pop2/drivers/cpl_mct/ocn_comp_mct.F90:    type(mct_ggrid), intent(inout) :: dom_o     
+ocn/pop2/drivers/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_init( GGrid=dom_o, CoordChars=trim(seq_flds_dom_coord), &
+ocn/pop2/drivers/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importIAttr(dom_o,'GlobGridNum',idata,lsize)
+ocn/pop2/drivers/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"lat"  ,data,lsize) 
+ocn/pop2/drivers/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"lon"  ,data,lsize) 
+ocn/pop2/drivers/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"area" ,data,lsize) 
+ocn/pop2/drivers/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"aream",data,lsize) 
+ocn/pop2/drivers/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"mask",data,lsize) 
+ocn/pop2/drivers/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRAttr(dom_o,"frac",data,lsize) 
+ocn/pop2/drivers/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRattr(dom_o,"lon",data,lsize) 
+ocn/pop2/drivers/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRattr(dom_o,"lat",data,lsize) 
+ocn/pop2/drivers/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRattr(dom_o,"area",data,lsize) 
+ocn/pop2/drivers/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRattr(dom_o,"mask",data,lsize) 
+ocn/pop2/drivers/cpl_mct/ocn_comp_mct.F90:    call mct_gGrid_importRattr(dom_o,"frac",data,lsize) 
+ocn/pop2/drivers/cpl_esmf/POP_MCT_vars_mod.F90:   type(mct_gGrid), pointer :: POP_MCT_dom_o
+ocn/pop2/drivers/cpl_esmf/ocn_comp_mct.F90:   type(mct_gGrid)             , pointer :: dom
+ocn/docn/docn_comp_mod.F90:    type(mct_gGrid)        , pointer :: ggrid
+ocn/docn/docn_comp_mod.F90:   type(mct_gGrid)        , pointer :: ggrid
+ocn/docn/cpl_esmf/ocn_comp_esmf.F90:   type(mct_gGrid)     :: ggrid
+ocn/docn/cpl_esmf/ocn_comp_mct.F90:   type(mct_gGrid)             , pointer :: dom
+ocn/socn/cpl_esmf/ocn_comp_mct.F90:    type(mct_gGrid)             , pointer :: dom

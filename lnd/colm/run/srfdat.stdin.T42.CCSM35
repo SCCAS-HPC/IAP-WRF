@@ -1,0 +1,18 @@
+&mksrfexp
+fmetmask    = ''
+fmapmask    = ''
+fglacier    = ''
+fgridname   = '/home/jidy/CoLM_csm/data/T42_CCSM35_grid.asc'
+fdemname    = '/home/jidy/CoLM_csm/rawdata/dem-usgs.30s'
+fmaskname   = '/home/jidy/CoLM_csm/rawdata/lwmask-usgs.30s'
+flandname   = '/home/jidy/CoLM_csm/rawdata/veg-usgs.30s'
+fsolaname   = '/home/jidy/CoLM_csm/rawdata/soilcat.30s'
+fsolbname   = '/home/jidy/CoLM_csm/rawdata/soilcatb.30s'
+fsurdat     = '/home/jidy/CoLM_csm/data/srfdata.T42.CCSM35'
+lon_points  =  128
+lat_points  =   64
+edgen       =   90.
+edgee       =  180.
+edges       =  -90.
+edgew       = -180.
+/

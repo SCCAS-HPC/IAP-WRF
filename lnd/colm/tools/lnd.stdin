@@ -1,0 +1,23 @@
+&clmexp
+             site = 'T42-offline'
+            fgrid = '/home/jidy/CoLM_csm/data/CoLM_T42_MOM4p1_grid_pft_glc'
+             flai = ''
+             fmet = '/home/jidy/swgfs/Princeton_30MIN_coverT42'
+             fout = '/home/jidy/swgfs/run2o/T42'
+           fconst = '/home/jidy/CoLM_csm/data/CoLM_T42_MOM4p1_const_pft_glc_new'
+         frestart = '/home/jidy/CoLM_csm/data/CoLM_T42_MOM4p1_restart_pft_glc_new'
+           lugrid =          130
+            lulai =          140
+            lumet =          150
+          luconst =          160
+        lurestart =          170
+    lhist_monthly =  T
+      lhist_daily =  F
+    lhist_3hourly =  F
+        numcolumn =         5136
+         numpatch =        44400
+       lon_points =          128
+       lat_points =           64
+            dtime =     1800.0000000000000000
+            mstep =        360000
+/

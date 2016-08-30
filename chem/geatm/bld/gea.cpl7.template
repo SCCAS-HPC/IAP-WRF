@@ -1,0 +1,48 @@
+#!/bin/csh -f
+
+if !(-d $CASEBUILD        ) mkdir $CASEBUILD
+
+cat >! $CASEBUILD/gea.buildnml.csh << EOF1
+#! /bin/csh -f 
+EOF1
+
+#--------------------------------------------------------------------
+# create script to generate executable
+#--------------------------------------------------------------------
+
+cat >! $CASEBUILD/gea.buildexe.csh << EOF2
+#! /bin/csh -f
+
+# enter the code directory
+set objdir = \$OBJROOT/gea/obj
+cd \$objdir
+cp -p -r \$CODEROOT/chem/geatm/src .
+cd ./src
+
+# for geatm_mct_comp compiler
+make clean
+make
+
+# for ccsm compiler
+cd \$objdir/src
+rm -f libgeatmlib.a
+ar ru \$objdir/src/libgeatmlib.a *.o
+cp -p *.mod  \$LIBROOT/include
+cp -p libgeatmlib.a  \$LIBROOT/libgeatm.a
+
+# prepare namelist and other parameters
+cd \$RUNDIR
+
+rm  -f input.dat
+rm  -f emitinput.dat
+rm  -f wrfd01.dat
+
+cp   /R0/jhe/v3.2/input.dat .
+cp   /R0/jhe/v3.2/emitinput.dat .
+cp   /R0/jhe/v3.2/wrfd01.dat .
+rm -rf out
+mkdir out
+
+chmod u+w *
+
+EOF2

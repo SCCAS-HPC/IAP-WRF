@@ -1,0 +1,193 @@
+10
+
+dir
+2
+svn+ssh://jhe@everest.msrc.sunysb.edu/ptmp/jhe/ccsm4_wrf_cam/models/atm/wrf/var/da
+svn+ssh://jhe@everest.msrc.sunysb.edu/ptmp/jhe/ccsm4_wrf_cam
+
+
+
+2010-06-18T16:09:52.573828Z
+2
+jhe
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+68e820c0-3f89-0410-90fa-e9089979da34
+
+da_ssmi
+dir
+
+da_recursive_filter
+dir
+
+da_spectral
+dir
+
+da_util
+dir
+
+da_vtox_transforms
+dir
+
+da_gen_be
+dir
+
+da_control
+dir
+
+da_grid_definitions
+dir
+
+da_polaramv
+dir
+
+da_profiler
+dir
+
+da_physics
+dir
+
+da_obs
+dir
+
+da_interpolation
+dir
+
+da_tracing
+dir
+
+da_sound
+dir
+
+da_radar
+dir
+
+da_statistics
+dir
+
+makedepf90-2.8.8
+dir
+
+da_define_structures
+dir
+
+da_tools
+dir
+
+da_airep
+dir
+
+da_minimisation
+dir
+
+da_setup_structures
+dir
+
+da_transfer_model
+dir
+
+da_mtgirs
+dir
+
+da_verif_anal
+dir
+
+da_dynamics
+dir
+
+da_metar
+dir
+
+da_satem
+dir
+
+da_reporting
+dir
+
+da_obs_io
+dir
+
+da_qscat
+dir
+
+da_buoy
+dir
+
+da_geoamv
+dir
+
+da_verif_obs
+dir
+
+da_par_util
+dir
+
+da_bogus
+dir
+
+da_test
+dir
+
+da_airsr
+dir
+
+da_verif_grid
+dir
+
+da_biascorr_airmass
+dir
+
+da_main
+dir
+
+da_gpsref
+dir
+
+da_ships
+dir
+
+da_update_bc
+dir
+
+da_pilot
+dir
+
+da_monitor
+dir
+
+da_etkf
+dir
+
+da_varbc
+dir
+
+da_pseudo
+dir
+
+da_gpspw
+dir
+
+da_ffts
+dir
+
+da_radiance
+dir
+
+da_synop
+dir
+
+da_tamdar
+dir
+

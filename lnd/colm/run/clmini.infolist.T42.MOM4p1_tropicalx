@@ -1,0 +1,20 @@
+ &clmexp
+ site           = 'global.t42'
+ fgrid          = '/Users/jidy/Models/CoLM_csm/data/CoLM_T42_MOM4p1_grid_tropicalx'
+ flai           = ''
+ fmet           = ''
+ fout           = '/Users/jidy/Models/CoLM_csm/output/T42.MOM4p1'
+ fconst         = '/Users/jidy/Models/CoLM_csm/data/CoLM_T42_MOM4p1_const_tropicalx'
+ frestart       = '/Users/jidy/Models/CoLM_csm/data/CoLM_T42_MOM4p1_restart_tropicalx-1990-001-01800'
+ lugrid         =          130
+ lulai          =          150
+ lumet          =          160
+ luhistory      =          170
+ lurestart      =          180
+ luconst        =          190
+ lon_points     =            1
+ lat_points     =            1
+ numpatch       =            4
+ mstep          =       175200
+ dtime          =    1800.0000000000000     
+ /

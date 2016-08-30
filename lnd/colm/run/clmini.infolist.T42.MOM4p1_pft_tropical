@@ -1,0 +1,19 @@
+ &clmexp
+ site           = 'tropical.t42'
+ flaidat        = ''
+ fmetdat        = ''
+ fhistTimeConst = '/home/jidy/models/CoLM_csm/data/CoLM_T42_MOM4p1_const_pft_tropical'
+ fhistTimeVar   = '/home/jidy/models/CoLM_csm/data/CoLM_T42_MOM4p1_restart_pft_tropical'
+ foutdat        = '/home/jidy/models/CoLM_csm/output/T42.MOM4p1'
+ lhistTimeConst =          150
+ lhistTimeVar   =          160
+ lulai          =          120
+ lumet          =          140
+ luout          =          170
+ lon_points     =            1
+ lat_points     =            1
+ numcolumn      =            2
+ numpatch       =           18
+ deltim         =    1800.0000000000000     
+ mstep          =       175200
+ /

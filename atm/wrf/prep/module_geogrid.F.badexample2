@@ -1,0 +1,311 @@
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! Program: geogrid
+!
+! Written by Michael G. Duda
+! adapted by Juanxiong He for WRF/CAM coupling 	
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+module module_geogrid	
+
+   use gridinfo_module
+   use llxy_module
+   use module_llxy
+   use list_module
+   use module_debug
+   use process_tile_module
+   use source_data_module
+   use parallel_module
+         
+   contains
+
+   subroutine init_geogrid   
+     
+      call mprintf(.true.,LOGFILE,' *** Starting program geogrid.exe *** ')
+  
+      ! Have the gridinfo module retrieve description of the grid setup
+      call get_grid_params()
+
+      ! Get information about the source data to be processed
+      call get_datalist()
+
+      ! Tell the llxy module that it can now compute parameters necessary to do 
+      !   transformations for any nest 
+      call compute_nest_locations()
+
+   end subroutine init_geogrid
+
+   subroutine geogrid(grid, domain_id)
+
+   USE module_domain, ONLY : domain, get_ijk_from_grid
+   
+   IMPLICIT NONE
+
+   type(domain) :: grid
+   integer, intent(in) ::  domain_id
+   
+   ! Local variables  
+   logical :: extra_col, extra_row
+   integer :: ips, ipe, jps ,jpe, kps, kpe, &
+               ids, ide, jds, jde, kds, kde, &
+               ims, ime, jms, jme, kms, kme   
+   integer :: start_patch_i, end_patch_i, start_patch_j, end_patch_j, end_patch_stag_i, end_patch_stag_j, &
+               start_mem_i, end_mem_i, start_mem_j, end_mem_j, end_mem_stag_i, end_mem_stag_j               
+   real, dimension(:,:),allocatable:: ht_gc, tmn_gc, snoalb, OC12D, var2d, &
+                           oa1, oa2, oa3, oa4, ol1, ol2, ol3, ol4, &
+                           xland, lu_index, toposlpx, toposlpy,&
+                           sct_dom_gc, scb_dom_gc, slopecat
+   real, dimension(:,:),allocatable:: xlat, xlong, xlat_gc, xlong_gc, clat, clong, &
+                            f, e, sina, cosa, msftx, msfty                                                                                   
+   real, dimension(:,:,:),allocatable:: albedo12m,  greenfrac
+   real, dimension(:,:,:),allocatable:: soilctop, soilcbot
+   real, dimension(:,:,:),allocatable:: landusef
+   real, dimension(:,:),allocatable:: msfux, msfuy, xlat_u, xlong_u
+   real, dimension(:,:),allocatable:: msfvx, msfvy, xlat_v, xlong_v
+   integer:: i,j,k
+      
+            call mprintf(.true.,STDOUT,'Processing domain %i of %i', i1=domain_id, i2=max_domains)
+            call mprintf(.true.,LOGFILE,'Processing domain %i of %i', i1=domain_id, i2=max_domains)
+  
+            ! Get information about the source data we will use for this nest
+            call get_source_params(geog_data_res(domain_id))
+  
+            ! Set transformations in llxy module to be with respect to current nest
+            call select_domain(domain_id)
+ 
+            ! Determine which range of indices we will work on
+            call get_ijk_from_grid ( grid,    &
+                               ids, ide, jds, jde, kds, kde,    &
+                               ims, ime, jms, jme, kms, kme,    &    
+		       	       ips, ipe, jps, jpe, kps, kpe    )
+  
+            if (ipe .eq. ide) then ! One more column for U points
+               extra_col = .true.
+            else
+               extra_col = .false.
+            end if
+  
+            if (jpe .eq. jde ) then ! One more row for V points
+               extra_row = .true.
+            else
+               extra_row = .false.
+            end if
+            
+      ! The following pertains primarily to the C grid
+      ! Determine whether only (n-1)th rows/columns should be computed for variables
+      !   on staggered grid. In a distributed memory situation, not every tile should
+      !   have only (n-1)th rows/columns computed, or we end up with (n-k) 
+      !   rows/columns when there are k patches in the y/x direction
+            if (extra_col) then
+               start_patch_i    = ips    ! The seemingly pointless renaming of start
+               end_patch_i      = ipe - 1  !   naming convention with modified end_patch variables, 
+               end_patch_stag_i = ipe      !   variables is so that we can maintain consistent
+                                                   !   which are marked as intent(in)
+               start_mem_i    = start_patch_i    - HALO_WIDTH
+               end_mem_i      = end_patch_i      + HALO_WIDTH
+               end_mem_stag_i = end_patch_stag_i + HALO_WIDTH
+            else                                     
+               start_patch_i    = ips
+               end_patch_i      = ipe
+               end_patch_stag_i = ipe
+
+               start_mem_i    = start_patch_i - HALO_WIDTH
+               end_mem_i      = end_patch_i  + HALO_WIDTH
+               end_mem_stag_i = end_patch_stag_i  + HALO_WIDTH
+             end if
+    
+           if (extra_row) then
+              start_patch_j    = jps
+              end_patch_j      = jpe - 1
+              end_patch_stag_j = jpe
+
+              start_mem_j    = start_patch_j    - HALO_WIDTH
+              end_mem_j      = end_patch_j      + HALO_WIDTH
+              end_mem_stag_j = end_patch_stag_j + HALO_WIDTH
+           else
+              start_patch_j    = jps
+              end_patch_j      = jpe
+              end_patch_stag_j = jpe
+
+              start_mem_j    = start_patch_j    - HALO_WIDTH
+              end_mem_j      = end_patch_j      + HALO_WIDTH
+              end_mem_stag_j = end_patch_stag_j + HALO_WIDTH
+           end if
+
+           allocate( ht_gc(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( tmn_gc(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( snoalb(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( OC12D(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( var2d(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( oa1(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( oa2(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( oa3(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( oa4(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( ol1(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( ol2(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( ol3(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( ol4(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( xland(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( lu_index(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( toposlpx(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( toposlpy(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( sct_dom_gc(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( scb_dom_gc(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( slopecat(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( xlat(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( xlong(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( xlat_gc(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( xlong_gc(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( clat(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( clong(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( f(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( e(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( sina(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( cosa(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( msftx(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+           allocate( msfty(start_mem_i:end_mem_i,start_mem_j:end_mem_j) )
+
+           allocate( albedo12m(start_mem_i:end_mem_i,start_mem_j:end_mem_j,1:12) )   
+           allocate( greenfrac(start_mem_i:end_mem_i,start_mem_j:end_mem_j,1:12) )
+           allocate( soilctop(start_mem_i:end_mem_i,start_mem_j:end_mem_j,1:16) )
+           allocate( soilcbot(start_mem_i:end_mem_i,start_mem_j:end_mem_j,1:16) )
+           allocate( landusef(start_mem_i:end_mem_i,start_mem_j:end_mem_j,1:24) )
+   
+           allocate( msfux(start_mem_i:end_mem_stag_i,start_mem_j:end_mem_j) )
+           allocate( msfuy(start_mem_i:end_mem_stag_i,start_mem_j:end_mem_j) )
+           allocate( xlat_u(start_mem_i:end_mem_stag_i,start_mem_j:end_mem_j) )
+           allocate( xlong_u(start_mem_i:end_mem_stag_i,start_mem_j:end_mem_j) )
+           allocate( msfvx(start_mem_i:end_mem_i,start_mem_j:end_mem_stag_j) )
+           allocate( msfvy(start_mem_i:end_mem_i,start_mem_j:end_mem_stag_j) )
+           allocate( xlat_v(start_mem_i:end_mem_i,start_mem_j:end_mem_stag_j) )
+           allocate( xlong_v(start_mem_i:end_mem_i,start_mem_j:end_mem_stag_j) )
+              
+            ! Process fields for a tile of the current nest
+            call process_tile(domain_id, start_patch_i, end_patch_i, start_patch_j, end_patch_j, end_patch_stag_i, end_patch_stag_j, &
+                            start_mem_i, end_mem_i, start_mem_j, end_mem_j, end_mem_stag_i, end_mem_stag_j, extra_col, extra_row, &
+                            ht_gc, tmn_gc, snoalb, OC12D, var2d, &
+                            oa1, oa2, oa3, oa4, ol1, ol2, ol3, ol4, &
+                            xland, lu_index, toposlpx, toposlpy,&
+                            sct_dom_gc, scb_dom_gc, slopecat, &
+                            xlat, xlong, xlat_gc, xlong_gc, clat, clong, &
+                            f, e, sina, cosa, msftx, msfty, &    
+                            albedo12m, greenfrac, soilctop, soilcbot, &
+                            landusef, msfux, msfuy, xlat_u, xlong_u, &
+                            msfvx, msfvy, xlat_v, xlong_v)
+                            
+           do j = start_patch_j, end_patch_j 
+            do i = start_patch_i, end_patch_i
+               grid%ht_gc(i,j) = ht_gc(i,j) 
+               grid%tmn_gc(i,j) = tmn_gc(i,j) 
+               grid%snoalb(i,j) = snoalb(i,j) 
+               grid%OC12D(i,j) = OC12D(i,j)
+               grid%var2d(i,j) = var2d(i,j)
+               grid%oa1(i,j) = oa1(i,j)
+               grid%oa2(i,j) = oa2(i,j)
+               grid%oa3(i,j) = oa3(i,j)
+               grid%oa4(i,j) = oa4(i,j)
+               grid%ol1(i,j) = ol1(i,j)
+               grid%ol2(i,j) = ol2(i,j)
+               grid%ol3(i,j) = ol3(i,j)
+               grid%ol4(i,j) = ol4(i,j)
+               grid%xland(i,j) = xland(i,j)
+               grid%lu_index(i,j) = lu_index(i,j)
+               grid%toposlpx(i,j) = toposlpx(i,j)
+               grid%toposlpy(i,j) = toposlpy(i,j)
+               grid%sct_dom_gc(i,j) = sct_dom_gc(i,j)
+               grid%scb_dom_gc(i,j) = scb_dom_gc(i,j)
+               grid%slopecat(i,j) = slopecat(i,j)
+               grid%xlat(i,j) = xlat(i,j)
+               grid%xlong(i,j) = xlong(i,j)
+               grid%xlat_gc(i,j) = xlat_gc(i,j)
+               grid%xlong_gc(i,j) = xlong_gc(i,j)
+               grid%clat(i,j) = clat(i,j)
+               grid%clong(i,j) = clong(i,j)
+               grid%f(i,j) = f(i,j)
+               grid%e(i,j) = e(i,j)
+               grid%sina(i,j) = sina(i,j)
+               grid%cosa(i,j) = cosa(i,j)
+               grid%msft(i,j) = msftx(i,j)               
+               grid%msftx(i,j) = msftx(i,j)
+               grid%msfty(i,j) = msfty(i,j)                               
+              do k=1,12
+               grid%albedo12m(i,k,j) = albedo12m(i,j,k)   
+               grid%greenfrac(i,k,j) = greenfrac(i,j,k)
+              enddo
+              do k=1,16
+               grid%soilctop(i,k,j) = soilctop(i,j,k)
+               grid%soilcbot(i,k,j) = soilcbot(i,j,k)
+              enddo
+              do k=1,24
+               grid%landusef(i,k,j) = landusef(i,j,k)
+              enddo
+            enddo
+           enddo
+           do j = start_patch_j, end_patch_j 
+            do i = start_patch_i, end_patch_stag_i
+               grid%msfu(i,j) = msfux(i,j)            
+               grid%msfux(i,j) = msfux(i,j) 
+               grid%msfuy(i,j) = msfuy(i,j)
+               grid%xlat_u(i,j) = xlat_u(i,j) 
+               grid%xlong_u(i,j) = xlong_u(i,j) 
+             enddo
+            enddo
+           do j = start_patch_j, end_patch_stag_j 
+            do i = start_patch_i, end_patch_i
+               grid%msfv(i,j) = msfvx(i,j)             
+               grid%msfvx(i,j) = msfvx(i,j) 
+               grid%msfvy(i,j) = msfvy(i,j) 
+               grid%xlat_v(i,j) = xlat_v(i,j)
+               grid%xlong_v(i,j) = xlong_v(i,j)
+             enddo
+           enddo  
+           
+           deallocate( ht_gc )
+           deallocate( tmn_gc )
+           deallocate( snoalb )
+           deallocate( OC12D )
+           deallocate( var2d )
+           deallocate( oa1 )
+           deallocate( oa2 )
+           deallocate( oa3 )
+           deallocate( oa4 )
+           deallocate( ol1 )
+           deallocate( ol2 )
+           deallocate( ol3 )
+           deallocate( ol4 )
+           deallocate( xland )
+           deallocate( lu_index )
+           deallocate( toposlpx )
+           deallocate( toposlpy )
+           deallocate( sct_dom_gc )
+           deallocate( scb_dom_gc )
+           deallocate( slopecat )
+           deallocate( xlat )
+           deallocate( xlong )
+           deallocate( xlat_gc )
+           deallocate( xlong_gc )
+           deallocate( clat )
+           deallocate( clong )
+           deallocate( f )
+           deallocate( e )
+           deallocate( sina )
+           deallocate( cosa )
+           deallocate( msftx )
+           deallocate( msfty )                                   
+           deallocate( albedo12m )   
+           deallocate( greenfrac )
+           deallocate( soilctop )
+           deallocate( soilcbot )
+           deallocate( landusef )   
+           deallocate( msfux )
+           deallocate( msfuy )
+           deallocate( xlat_u )
+           deallocate( xlong_u )
+           deallocate( msfvx )
+           deallocate(  msfvy )
+           deallocate( xlat_v )
+           deallocate( xlong_v )
+           
+           call datalist_destroy()
+
+   end subroutine geogrid
+   
+end module module_geogrid

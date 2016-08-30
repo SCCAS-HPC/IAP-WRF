@@ -1,0 +1,184 @@
+dyn_nmm/.svn/text-base/DSTRB.F.svn-base:      CALL MPI_BARRIER(MPI_COMM_COMP,IRTN)
+dyn_nmm/.svn/text-base/solve_nmm.F.svn-base:      CALL MPI_BARRIER(MPI_COMM_COMP,IRTN)
+dyn_nmm/.svn/text-base/solve_nmm.F.svn-base:      CALL MPI_BARRIER(MPI_COMM_COMP,IRTN)
+dyn_nmm/.svn/text-base/solve_nmm.F.svn-base:      CALL MPI_BARRIER(MPI_COMM_COMP,IRTN)
+dyn_nmm/DSTRB.F:      CALL MPI_BARRIER(MPI_COMM_COMP,IRTN)
+dyn_nmm/solve_nmm.F:      CALL MPI_BARRIER(MPI_COMM_COMP,IRTN)
+dyn_nmm/solve_nmm.F:      CALL MPI_BARRIER(MPI_COMM_COMP,IRTN)
+dyn_nmm/solve_nmm.F:      CALL MPI_BARRIER(MPI_COMM_COMP,IRTN)
+external/atm_pom/.svn/text-base/module_PATCH_QUILT.F.svn-base:!     CALL MPI_BARRIER(MPI_COMM_COMP,IRTN)
+external/atm_pom/.svn/text-base/module_PATCH_QUILT.F.svn-base:!     CALL MPI_BARRIER(MPI_COMM_COMP,IRTN)
+external/atm_pom/.svn/text-base/cmpcomm.F.svn-base:        call MPI_BARRIER(COMM_local,ierr)
+external/atm_pom/.svn/text-base/cmpcomm.F.svn-base:        call GLOB_ABORT(ierr,'CMP_FLUSH: MPI_BARRIER failed, aborting', &
+external/atm_pom/.svn/text-base/atm_comm_pom.F.svn-base:          call MPI_BARRIER(MPI_COMM_Atmos,ierr)
+external/atm_pom/module_PATCH_QUILT.F:!     CALL MPI_BARRIER(MPI_COMM_COMP,IRTN)
+external/atm_pom/module_PATCH_QUILT.F:!     CALL MPI_BARRIER(MPI_COMM_COMP,IRTN)
+external/atm_pom/atm_comm_pom.F:          call MPI_BARRIER(MPI_COMM_Atmos,ierr)
+external/atm_pom/cmpcomm.F:        call MPI_BARRIER(COMM_local,ierr)
+external/atm_pom/cmpcomm.F:        call GLOB_ABORT(ierr,'CMP_FLUSH: MPI_BARRIER failed, aborting', &
+frame/module_io_quilt.F:!write(0,*)'calling MPI_Barrier'
+frame/module_io_quilt.F:!  CALL MPI_Barrier( mpi_comm_local, ierr )
+frame/module_io_quilt.F:!write(0,*)'back from MPI_Barrier'
+frame/module_io_quilt.F:!JMTIMING!   CALL end_timing("MPI_Barrier in wrf_quilt_put_dom_ti_char")
+frame/.svn/text-base/module_io_quilt.F.svn-base:!write(0,*)'calling MPI_Barrier'
+frame/.svn/text-base/module_io_quilt.F.svn-base:!  CALL MPI_Barrier( mpi_comm_local, ierr )
+frame/.svn/text-base/module_io_quilt.F.svn-base:!write(0,*)'back from MPI_Barrier'
+frame/.svn/text-base/module_io_quilt.F.svn-base:!JMTIMING!   CALL end_timing("MPI_Barrier in wrf_quilt_put_dom_ti_char")
+main/wrf_comp_mct.F.0513:       call mpi_barrier(local_communicator, mpi_ierr)  ! by Yuzhu Wang, 2014-04-24
+main/wrf_comp_mct.F.0513:       call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+main/wrf_comp_mct.F.0513:       call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+main/wrf_comp_mct.F.0513:       call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+main/wrf_comp_mct.F.0513:       call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+main/wrf_comp_mct.F.0513:        call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+main/wrf_comp_mct.F:       call mpi_barrier(local_communicator, mpi_ierr)  ! by Yuzhu Wang, 2014-04-24
+main/wrf_comp_mct.F:       call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+main/wrf_comp_mct.F:       call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+main/wrf_comp_mct.F:       call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+main/wrf_comp_mct.F:       call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+main/wrf_comp_mct.F:        call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/interp_module.F:      call mpi_barrier(MPI_COMM_WORLD,ierr1) !by Yuzhu Wang
+prep/interp_module.F:      !call mpi_barrier(local_communicator,ierr) !by Yuzhu Wang
+prep/interp_module.F:         !call mpi_barrier(MPI_COMM_WORLD,ierr1) !by Yuzhu Wang
+prep/interp_module.F:!         call mpi_barrier(local_communicator,ierr)  !by Yuzhu Wang
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:main/wrf_comp_mct.F.0513:       call mpi_barrier(local_communicator, mpi_ierr)  ! by Yuzhu Wang, 2014-04-24
+test22.txt:main/wrf_comp_mct.F.0513:       call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+test22.txt:main/wrf_comp_mct.F.0513:       call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+test22.txt:main/wrf_comp_mct.F.0513:       call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+test22.txt:main/wrf_comp_mct.F.0513:       call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+test22.txt:main/wrf_comp_mct.F.0513:        call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+test22.txt:main/wrf_comp_mct.F:       call mpi_barrier(local_communicator, mpi_ierr)  ! by Yuzhu Wang, 2014-04-24
+test22.txt:main/wrf_comp_mct.F:       call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+test22.txt:main/wrf_comp_mct.F:       call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+test22.txt:main/wrf_comp_mct.F:       call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+test22.txt:main/wrf_comp_mct.F:       call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+test22.txt:main/wrf_comp_mct.F:        call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+test22.txt:prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+test22.txt:prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+var/da/da_test/.svn/text-base/da_check_xtoy_adjoint.inc.svn-base:      call mpi_barrier(comm, ierr)
+var/da/da_test/.svn/text-base/da_check_xtoy_adjoint.inc.svn-base:      call mpi_barrier(comm, ierr)
+var/da/da_test/da_check_xtoy_adjoint.inc:      call mpi_barrier(comm, ierr)
+var/da/da_test/da_check_xtoy_adjoint.inc:      call mpi_barrier(comm, ierr)
+var/da/da_main/.svn/text-base/da_solve.inc.svn-base:   call mpi_barrier(comm,ierr)
+var/da/da_main/.svn/text-base/da_solve.inc.svn-base:            call mpi_barrier (comm, ierr)
+var/da/da_main/.svn/text-base/da_solve.inc.svn-base:   call mpi_barrier (comm,ierr)
+var/da/da_main/da_solve.inc:   call mpi_barrier(comm,ierr)
+var/da/da_main/da_solve.inc:            call mpi_barrier (comm, ierr)
+var/da/da_main/da_solve.inc:   call mpi_barrier (comm,ierr)
+var/da/da_minimisation/.svn/text-base/da_transform_vtoy.inc.svn-base:         call mpi_barrier(comm, ierr)
+var/da/da_minimisation/.svn/text-base/da_minimisation.f90.svn-base:!   use mpi, only : mpi_barrier
+var/da/da_minimisation/.svn/text-base/da_transform_vtoy_adj.inc.svn-base:         call mpi_barrier(comm, ierr)
+var/da/da_minimisation/da_minimisation.f90:!   use mpi, only : mpi_barrier
+var/da/da_minimisation/da_transform_vtoy.inc:         call mpi_barrier(comm, ierr)
+var/da/da_minimisation/da_transform_vtoy_adj.inc:         call mpi_barrier(comm, ierr)
+var/da/da_obs_io/da_final_write_obs.inc:   call mpi_barrier(comm, ierr)
+var/da/da_obs_io/da_write_noise_to_ob.inc:   call mpi_barrier(comm, ierr)
+var/da/da_obs_io/.svn/text-base/da_write_noise_to_ob.inc.svn-base:   call mpi_barrier(comm, ierr)
+var/da/da_obs_io/.svn/text-base/da_final_write_y.inc.svn-base:   call mpi_barrier(comm, ierr)
+var/da/da_obs_io/.svn/text-base/da_final_write_obs.inc.svn-base:   call mpi_barrier(comm, ierr)
+var/da/da_obs_io/.svn/text-base/da_write_modified_filtered_obs.inc.svn-base:   call mpi_barrier(comm, ierr)
+var/da/da_obs_io/.svn/text-base/da_write_filtered_obs.inc.svn-base:   call mpi_barrier(comm, ierr)
+var/da/da_obs_io/da_write_filtered_obs.inc:   call mpi_barrier(comm, ierr)
+var/da/da_obs_io/da_write_modified_filtered_obs.inc:   call mpi_barrier(comm, ierr)
+var/da/da_obs_io/da_final_write_y.inc:   call mpi_barrier(comm, ierr)

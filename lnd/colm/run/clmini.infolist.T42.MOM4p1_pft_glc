@@ -1,0 +1,19 @@
+ &clmexp
+ site           = 'global.t42'
+ flaidat        = ''
+ fmetdat        = ''
+ fhistTimeConst = '/home/jidy/models/CoLM_csm/data/CoLM_T42_MOM4p1_const_pft_glc'
+ fhistTimeVar   = '/home/jidy/models/CoLM_csm/data/CoLM_T42_MOM4p1_restart_pft_glc-1990-001-01800'
+ foutdat        = '/home/jidy/models/CoLM_csm/output/T42.MOM4p1'
+ lhistTimeConst =          150
+ lhistTimeVar   =          160
+ lulai          =          120
+ lumet          =          140
+ luout          =          170
+ lon_points     =          128
+ lat_points     =           64
+ numcolumn      =         5136
+ numpatch       =        44400
+ deltim         =    1800.0000000000000     
+ mstep          =       175200
+ /

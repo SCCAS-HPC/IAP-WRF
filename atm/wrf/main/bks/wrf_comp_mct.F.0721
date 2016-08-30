@@ -1,0 +1,3110 @@
+!WRF:DRIVER_LAYER:TOP
+
+MODULE wrf_comp_mct
+!<DESCRIPTION>
+! This module defines top-level wrf_init_mct(), wrf_run_mct(), and wrf_final_mct()
+! routines.
+! by juanxiong he, 2010/05/09	
+!</DESCRIPTION>
+
+#ifdef CCSMCOUPLED
+#ifdef SEQ_MCT
+
+  use mct_mod
+  use esmf_mod, CCSM_Clock=>ESMF_Clock
+  use seq_flds_mod
+  use seq_flds_indices
+  use seq_cdata_mod
+  use seq_infodata_mod
+  use seq_timemgr_mod
+  use seq_comm_mct, only:seq_comm_iamroot,seq_comm_iamin
+  use shr_file_mod, only: shr_file_getunit, shr_file_freeunit, &
+                          shr_file_setLogUnit, shr_file_setLogLevel, &
+                          shr_file_getLogUnit, shr_file_getLogLevel, &
+		               shr_file_setIO
+  use shr_sys_mod, only: shr_sys_flush, shr_sys_abort
+  use atm_comp_mct, only : wrf_read_srfrest_mct, wrf_write_srfrest_mct, &
+                       wrf_read_srfrest_mct_app, wrf_write_srfrest_mct_app
+  use perf_mod      ! by Yuzhu Wang, 2014-04-18
+#endif
+#endif   
+! for WRF
+	
+   USE module_machine
+   USE module_domain
+   USE module_integrate
+   USE module_driver_constants
+   USE module_configure
+   USE module_io_domain
+   USE module_io
+   USE module_io_wrf
+   USE module_timing
+   USE module_utility  ! for using ESMF function in WRF
+   USE module_wrf_error
+   USE module_date_time
+   USE module_check_a_mundo
+   USE module_nesting
+   
+   USE parallel_module ! for geogrid  
+   use gridinfo_module ! for project type
+   use module_llxy ! for ijll_latlon
+   use llxy_module ! for projstack information
+   use source_data_module
+   use module_geogrid ! for map info, terrain and surface layer
+   use module_metgrid  ! for metgrid   
+   use module_real  ! for vertical interpolation
+   use module_camdomain ! for cam grid
+   use module_geodomain ! for geo grid
+   
+   USE module_atm_communicator, only: mpi_communicator_atm
+   use queue_module !by Wang Yuzhu
+#ifdef DM_PARALLEL
+   USE module_dm
+   USE module_comm_dm, ONLY : halo_em_phys_a_sub, halo_em_tend_a_sub
+#endif
+
+implicit none
+!
+! coupler
+!
+#ifdef CCSMCOUPLED
+#ifdef SEQ_MCT
+
+!--------------------------------------------------------------------------
+! Public interfaces
+!--------------------------------------------------------------------------
+
+  public :: wrf_init_mct
+  public :: wrf_run_mct
+  public :: wrf_final_mct
+
+!--------------------------------------------------------------------------
+! Private interfaces
+!--------------------------------------------------------------------------
+
+  private :: wrf_SetgsMap_mct
+  private :: wrf_import_mct
+  private :: wrf_export_mct
+  private :: wrf_domain_mct
+  
+  private :: wrf_SetgsMap_cam ! juanxiong he for wrf/cam coupling
+  private :: wrf_domain_cam ! juanxiong he for wrf/cam coupling
+  private :: wrf_import_cam  ! juanxiong he for wrf/cam coupling
+  private :: wrf_export_cam ! juanxiong he for wrf/cam coupling
+
+!--------------------------------------------------------------------------
+! Private data
+!--------------------------------------------------------------------------
+
+  type(mct_aVect)   :: a2x_a_SNAP
+  type(mct_aVect)   :: a2x_a_SUM
+  type(mct_aVect)   :: x2c_old
+
+  integer, parameter  :: nlen = 256     ! Length of character strings
+  character(len=nlen) :: fname_srf_wrf  ! surface restart filename
+  character(len=nlen) :: pname_srf_wrf  ! surface restart full pathname
+!
+! Filename specifier for restart surface file
+! (%c = caseid, $y = year, $m = month, $d = day, $s = seconds in day, %t = tape number)
+!
+  character(len=*), parameter :: wrsfilename_spec_wrf = '%c.wrf.rw.%y-%m-%d-%s.nc' ! cam wrf restarts, juanxiong
+  character(len=*), parameter :: wrsfilename_spec_wrfold = '%c.wrf.rw.%y-%m-%d-%s.nc' ! cam wrf restarts, juanxiong
+
+  integer :: wrf_cpl_dt       ! driver atm coupling time step 
+
+! both projection and structure cam grid defined in module_metgrid
+
+! camgrid decomposition on wrf processors  
+  integer, dimension(2) :: buffer
+  integer :: mpi_ierr
+  integer :: tendrec = 0, debugfile = 249
+
+  integer, parameter :: r8 = 8
+
+! Time averaged counter for flux fields
+  integer :: avg_count
+
+! Time averaged flux fields
+  character(*), parameter :: a2x_avg_flds = "Faxa_rainc:Faxa_rainl:Faxa_snowc:Faxa_snowl"  
+!
+! Are all surface types present   
+!
+     
+!  integer :: iulog  ! for I/O
+  logical :: exists
+
+  integer :: WRFID
+
+  real,dimension(:,:),allocatable :: camarea
+  integer,dimension(:,:),allocatable ::wrf_local_points,wrf_boundary_points
+  integer,dimension(:),allocatable :: remap_wrfi, remap_wrfj,remap_wrfbi,remap_wrfbj
+  real,dimension(:),allocatable :: wrf_weight,wrf_bweight
+  integer, parameter :: wrf_to_cam_points = 1000000
+  real, dimension(:,:,:),allocatable :: gcoef
+  integer, parameter :: kstart = 2       
+  integer, parameter :: bufzone_x = 5       
+  integer, parameter :: bufzone_y = 1 
+
+#endif
+#endif
+   
+!  wrf
+	
+   REAL    :: time
+   integer :: loop       ! loop=1 input all new fields, loop>1 only bdy and fdda 
+   INTEGER :: levels_to_process
+
+   TYPE (domain) , POINTER :: keep_grid, grid_ptr, null_domain
+   INTEGER                 :: number_at_same_level
+   INTEGER                 :: time_step_begin_restart
+
+   INTEGER :: max_dom , domain_id , fid , oid , idum1 , idum2 , ierr
+!   INTEGER :: debug_level ! declared in gridinfo_module already, by juanxiong he
+   LOGICAL :: input_from_file
+
+#ifdef DM_PARALLEL
+   INTEGER                 :: nbytes
+   INTEGER, PARAMETER      :: configbuflen = 4* CONFIG_BUF_LEN
+   INTEGER                 :: configbuf( configbuflen )
+   LOGICAL , EXTERNAL      :: wrf_dm_on_monitor
+#endif
+
+   CHARACTER ( 80)      :: rstname
+   CHARACTER ( 80)      :: message
+
+   INTERFACE
+     SUBROUTINE Setup_Timekeeping( grid )
+      USE module_domain
+      TYPE(domain), POINTER :: grid
+     END SUBROUTINE Setup_Timekeeping
+
+#if (EM_CORE == 1)
+     SUBROUTINE wrf_dfi_write_initialized_state( )
+     END SUBROUTINE wrf_dfi_write_initialized_state
+
+     SUBROUTINE wrf_dfi_bck_init( )
+     END SUBROUTINE wrf_dfi_bck_init
+
+     SUBROUTINE wrf_dfi_fwd_init( )
+     END SUBROUTINE wrf_dfi_fwd_init
+
+     SUBROUTINE wrf_dfi_fst_init( )
+     END SUBROUTINE wrf_dfi_fst_init
+
+     SUBROUTINE wrf_dfi_array_reset ( )
+     END SUBROUTINE wrf_dfi_array_reset
+#endif
+   END INTERFACE
+
+CONTAINS
+
+      SUBROUTINE wrf_init_mct( &
+#ifdef CCSMCOUPLED
+#ifdef SEQ_MCT  
+      EClock, cdata_a, cdata_c, x2a_a, a2x_a, x2c_c1, x2c_c2, c2x_c, twoway_coupling, twoway_nudging, NLFilename,&
+#endif
+#endif
+      no_init1 )
+!<DESCRIPTION>
+!     WRF initialization routine.
+!</DESCRIPTION>
+      implicit none
+#ifdef CCSMCOUPLED
+#ifdef SEQ_MCT  	
+
+#if defined(DM_PARALLEL) 
+     include "mpif.h"
+#endif
+
+      type(CCSM_Clock), intent(in)                 :: EClock
+      type(seq_cdata), intent(inout)              :: cdata_a  ! wrf_grid
+      type(seq_cdata), intent(inout)              :: cdata_c  ! cam grid
+      type(mct_aVect), intent(inout)              :: x2a_a  ! wrf/pop/cice/lnd coupling
+      type(mct_aVect), intent(inout)              :: a2x_a  ! wrf/pop/cice/lnd coupling 
+      type(mct_aVect), intent(inout)              :: x2c_c1  ! wrf/cam coupling
+      type(mct_aVect), intent(inout)              :: x2c_c2  ! wrf/cam coupling
+      type(mct_aVect), intent(inout)              :: c2x_c  ! wrf/cam coupling     
+      character( *), optional,   intent(IN)    :: NLFilename ! Namelist filename
+#endif
+#endif
+      LOGICAL, OPTIONAL, INTENT(IN) :: no_init1
+      logical, intent(inout) :: twoway_coupling
+      integer, intent(inout) :: twoway_nudging
+
+!
+! Locals
+!
+#ifdef CCSMCOUPLED
+#ifdef SEQ_MCT
+      type(mct_gsMap), pointer   :: gsMap_atm
+      type(mct_gGrid), pointer   :: dom_a
+      type(mct_gsMap), pointer   :: gsMap_cc  ! cam grid
+      type(mct_gGrid), pointer   :: dom_c
+      type(seq_infodata_type),pointer :: infodata
+      integer :: mpicom_atm
+      integer :: lsize 
+      real(r8):: nextsw_cday      ! calendar of next atm shortwave		 
+      integer :: stepno           ! time step			 
+      integer :: dtime_sync       ! integer timestep size
+      integer :: currentymd       ! current year-month-day
+      integer :: dtime            ! time step increment (sec)
+      integer :: start_ymd        ! Start date (YYYYMMDD)
+      integer :: start_tod        ! Start time of day (sec)
+      integer :: restart_ymd        ! Start date (YYYYMMDD)
+      integer :: restart_tod        ! Start time of day (sec)
+      integer :: ref_ymd          ! Reference date (YYYYMMDD)
+      integer :: ref_tod          ! Reference time of day (sec)
+      integer :: stop_ymd         ! Stop date (YYYYMMDD)
+      integer :: stop_tod         ! Stop time of day (sec)
+      logical :: perpetual_run    ! If in perpetual mode or not
+      integer :: perpetual_ymd    ! Perpetual date (YYYYMMDD)
+      real(r8) :: eccen       ! Eccentricity of orbit
+      real(r8) :: mvelp       ! Locatn of vernal equinox
+      real(r8) :: obliqr      ! Obliquity in radians
+      real(r8) :: lambm0      ! Long of perh. radians
+      real(r8) :: mvelpp      ! Locatn of vernal equinox at perh. 
+      integer :: plon,plat    ! global grid number in the lon and lat direction
+      character( 80) :: start_type    ! Start type
+      character( 80) :: caseid     ! Short case identification
+      character( 80) :: ctitle       ! Long case description 
+      logical  :: adiabatic ! atm adiabatic mode
+      logical  :: ideal_phys! atm idealized-physics mode
+      logical   :: aqua_planet   ! aqua_planet mode
+      logical   :: brnch_retain_casename
+      logical    :: single_column
+      real (R8) :: scmlat
+      real (R8)  :: scmlon
+      integer :: nradt
+      integer :: nsrest 
+
+      logical :: dosend          ! true => send data back to driver
+      logical :: first_time = .true.
+      character( 80) :: calendar  ! Calendar type
+      character( 80) :: starttype ! infodata start type
+
+      TYPE(WRFU_Time) :: current_time
+      type(WRFU_TimeInterval) :: off     
+      integer :: ymd              ! WRF current date (YYYYMMDD)
+      integer :: yr               ! WRF current year
+      integer :: mon              ! WRF current month
+      integer :: day              ! WRF current day
+      integer :: hour             ! WRF current hour
+      integer :: minuate            ! WRF current minuate
+      integer :: second             ! WRF current second
+      integer :: tod              ! WRF current time of day (sec)
+      logical :: restart
+      CHARACTER (LEN=19) :: current_timestr     
+
+      integer :: ids,ide,jds,jde,kds,kde,ims,ime,jms,jme,kms,kme,ips,ipe,jps,jpe,kps,kpe,&
+                 start_year,start_month,start_day,start_hour,start_minute,start_second,&
+	         i,j,k,ig	
+      integer::n
+      
+      integer, dimension(MPI_STATUS_SIZE) :: mpi_stat
+      integer::ix,iy
+      
+      LOGICAL , EXTERNAL  :: wrf_dm_on_monitor	
+      INTEGER :: mpicomcart
+      INTEGER, DIMENSION(2) :: dims, coords
+      integer,dimension(:),allocatable::cpuid
+            
+      TYPE (grid_config_rec_type) :: config_flags
+#endif
+#endif
+	
+      INTEGER myproc,nproc,hostid,loccomm,ierr,buddcounter,mydevice
+      INTEGER, ALLOCATABLE :: hostids(:), budds(:)
+      CHARACTER*512 hostname
+
+#include "version_decl"
+
+!<DESCRIPTION>
+! Program_name, a global variable defined in frame/module_domain.F, is
+! set, then a routine <a href=init_modules.html>init_modules</a> is
+! called. This calls all the init programs that are provided by the
+! modules that are linked into WRF.  These include initialization of
+! external I/O packages.   Also, some key initializations for
+! distributed-memory parallelism occur here if DM_PARALLEL is specified
+! in the compile: setting up I/O quilt processes to act as I/O servers
+! and dividing up MPI communicators among those as well as initializing
+! external communication packages such as RSL or RSL_LITE.
+!
+!</DESCRIPTION>
+
+     program_name = "WRF " // TRIM(release_version) // " MODEL"
+
+#ifdef CCSMCOUPLED
+#ifdef SEQ_MCT
+
+! 
+! Get data from driver routine
+!
+   
+       call seq_cdata_setptrs(cdata_a, ID=WRFID, mpicom=mpicom_atm,&
+                          mpicomcart_periodic=local_communicator_periodic,&
+                          mpicomcart=mpicomcart,mpicomx=local_communicator_x,&
+                          mpicomy=local_communicator_y,ntasks=ntasks,ntasks_x=ntasks_x,ntasks_y=ntasks_y,& 
+                          gsMap=gsMap_atm, dom=dom_a, infodata=infodata)
+
+       call seq_cdata_setptrs(cdata_c, gsMap=gsMap_cc, dom=dom_c) ! for wrf/cam coupling 
+                          
+       if(first_time) then
+	    
+         mpi_communicator_atm=mpicom_atm  ! get ATM group communicator
+
+       if (seq_comm_iamroot(WRFID)) then
+          inquire(file='wrf_modelio.nml',exist=exists)
+          if (exists) then
+             iulog = shr_file_getUnit()
+             call shr_file_setIO('wrf_modelio.nml',iulog)
+          endif
+          write(iulog,*) "WRF initialization"
+       endif
+       
+       call shr_file_getLogUnit (shrlogunit)
+       call shr_file_getLogLevel(shrloglev)
+       call shr_file_setLogUnit (iulog)
+
+       write(iulog,*)'***mpi_communicator_atm***',mpi_communicator_atm
+       write(iulog,*)'********mpicomcart********',mpicomcart,WRFID
+
+! 
+! Get data from infodata object
+!
+       call seq_infodata_GetData( infodata,                                           &
+            case_name=caseid, case_desc=ctitle,                                       &
+            start_type=starttype,                                                     &
+            orb_eccen=eccen, orb_mvelpp=mvelpp, orb_lambm0=lambm0, orb_obliqr=obliqr)
+    
+! Get nsrest from startup type methods
+!
+       if (     trim(starttype) == trim(seq_infodata_start_type_start)) then
+          nsrest = 0
+       else if (trim(starttype) == trim(seq_infodata_start_type_cont) ) then
+          nsrest = 1
+       else if (trim(starttype) == trim(seq_infodata_start_type_brnch)) then
+          nsrest = 3
+       else
+          write(iulog,*) 'wrf_init: ERROR: unknown starttype'
+          call shr_sys_abort()
+       end if
+#endif
+#endif
+!-----------------------------------------------
+   
+   ! Initialize WRF modules:
+   ! Phase 1 returns after MPI_INIT() (if it is called)
+       CALL init_modules(1)
+       IF ( .NOT. PRESENT( no_init1 ) ) THEN
+!       CALL WRFU_Initialize( defaultCalendar=WRFU_CAL_GREGORIAN )
+        CALL WRFU_Initialize( defaultCalendar=ESMF_CAL_NOLEAP )  ! follow the CCSM4
+       ENDIF
+   ! Phase 2 resumes after MPI_INIT() (if it is called)
+       CALL init_modules(2)
+
+!<DESCRIPTION>
+! The wrf namelist.input file is read and stored in the USE associated
+! structure model_config_rec, defined in frame/module_configure.F, by the
+! call to <a href=initial_config.html>initial_config</a>.  On distributed
+! memory parallel runs this is done only on one processor, and then
+! broadcast as a buffer.  For distributed-memory, the broadcast of the
+! configuration information is accomplished by first putting the
+! configuration information into a buffer (<a
+! href=get_config_as_buffer.html>get_config_as_buffer</a>), broadcasting
+! the buffer, then setting the configuration information (<a
+! href=set_config_as_buffer.html>set_config_as_buffer</a>).
+!
+!</DESCRIPTION>
+
+#ifdef DM_PARALLEL
+       IF ( wrf_dm_on_monitor() ) THEN
+         CALL initial_config
+       ENDIF
+   !  There are variables in the Registry that are only required for the real
+   !  program, fields that come from the WPS package.  We define the run-time
+   !  flag that says to allocate space for these input-from-WPS-only arrays.
+       model_config_rec%use_wps_input = 1
+       model_config_rec%mminlu = 'USGS'
+       model_config_rec%gwd_opt = 1 
+       
+       CALL get_config_as_buffer( configbuf, configbuflen, nbytes )
+       CALL wrf_dm_bcast_bytes( configbuf, nbytes )
+       CALL set_config_as_buffer( configbuf, configbuflen )
+
+! ---------------------------------------------------------------------
+! prepare the parallel of geogrid
+! --------------------------------------------------------------------
+#ifdef CCSMCOUPLED
+#ifdef SEQ_MCT
+
+      CALL wrf_set_dm_communicator (mpicomcart)
+      CALL mpi_comm_rank( local_communicator_periodic, mytask, ierr )
+      CALL mpi_cart_coords( local_communicator_periodic, mytask, 2, coords, ierr )
+       write(iulog,*)'ntasks_x=',ntasks_x
+       write(iulog,*)'ntasks_y=',ntasks_y
+
+       CALL mpi_comm_rank( local_communicator, mytask, ierr )
+       CALL mpi_cart_coords( local_communicator, mytask, 2, coords, ierr )
+
+       mytask_x = coords(2)   ! col task (x)
+       mytask_y = coords(1)   ! row task (y)
+       CALL nl_set_nproc_x ( 1, ntasks_x )
+       CALL nl_set_nproc_y ( 1, ntasks_y )
+      
+       allocate(processors(0:ntasks_y-1,0:ntasks_x-1))
+
+       processors(mytask_y,mytask_x)=mytask
+       my_proc_id=mytask
+       if (mytask.eq.0) then
+         do i=1,ntasks-1
+            call MPI_Recv(buffer, 2, MPI_INTEGER, i, MPI_ANY_TAG, local_communicator, mpi_stat, mpi_ierr)
+            processors(buffer(1), buffer(2)) = mpi_stat(MPI_SOURCE)
+         end do
+       else
+         buffer(1) = mytask_y
+         buffer(2) = mytask_x
+         call MPI_Send(buffer, 2, MPI_INTEGER, 0, mytask, local_communicator, mpi_ierr)
+       end if
+
+       allocate(cpuid(1:ntasks))
+       if(mytask.eq.0) then
+       ig=0
+       do i=0,ntasks_x-1
+       do j=0,ntasks_y-1
+         ig=ig+1
+         cpuid(ig)=processors(j,i)
+       end do
+       end do
+       endif
+       call MPI_Bcast(cpuid, ntasks, MPI_INTEGER, 0, local_communicator, mpi_ierr)
+       if(mytask.ne.0) then
+       ig=0
+       do i=0,ntasks_x-1
+       do j=0,ntasks_y-1
+         ig=ig+1
+         processors(j,i)=cpuid(ig)
+       end do
+       end do
+       endif
+       deallocate(cpuid)
+
+#else
+#endif
+#else	
+       CALL wrf_dm_initialize
+#endif
+! ---------------------------------------------------------------------
+! end parallel prepare for geogrid
+! ---------------------------------------------------------------------
+
+#else
+       CALL initial_config
+#endif
+
+       CALL set_derived_rconfigs
+       CALL check_nml_consistency
+       CALL set_physics_rconfigs
+
+#ifdef RUN_ON_GPU
+       CALL wrf_get_myproc( myproc )
+       CALL wrf_get_nproc( nproc )
+       CALL wrf_get_hostid ( hostid )
+#ifdef DM_PARALLEL
+       CALL wrf_get_dm_communicator ( loccomm )
+       ALLOCATE( hostids(nproc) )
+       ALLOCATE( budds(nproc) )
+       CALL mpi_allgather( hostid, 1, MPI_INTEGER, hostids, 1, MPI_INTEGER, loccomm, ierr )
+       if ( ierr .NE. 0 ) write(0,*)__FILE__,__LINE__,'error in mpi_allgather ',ierr
+       budds = -1
+       buddcounter = 0
+   ! mark the ones i am on the same node with
+       DO i = 1, nproc
+        IF ( hostid .EQ. hostids(i) ) THEN
+           budds(i) = buddcounter
+           buddcounter = buddcounter + 1
+        ENDIF
+       ENDDO
+       mydevice = budds(myproc+1)
+       DEALLOCATE( hostids )
+       DEALLOCATE( budds )
+#else
+       mydevice = 0
+#endif
+       CALL wsm5_gpu_init( myproc, nproc, mydevice )
+#endif
+
+!<DESCRIPTION>
+! Among the configuration variables read from the namelist is
+! debug_level. This is retrieved using nl_get_debug_level (Registry
+! generated and defined in frame/module_configure.F).  The value is then
+! used to set the debug-print information level for use by <a
+! href=wrf_debug.html>wrf_debug</a> throughout the code. Debug_level
+! of zero (the default) causes no information to be printed when the
+! model runs. The higher the number (up to 1000) the more information is
+! printed.
+!
+!</DESCRIPTION>
+
+       CALL nl_get_debug_level ( 1, debug_level )
+       CALL set_wrf_debug_level ( debug_level )
+
+   ! allocated and configure the mother domain
+
+       NULLIFY( null_domain )
+
+!<DESCRIPTION>
+! RSL is required for WRF nesting options.
+! The non-MPI build that allows nesting is only supported on machines
+! with the -DSTUBMPI option.  Check to see if the WRF model is being asked
+! for a for a multi-domain run (max_dom > 1, from the namelist).  If so,
+! then we check to make sure that we are under the parallel
+! run option or we are on an acceptable machine.
+!</DESCRIPTION>
+
+      CALL nl_get_max_dom( 1, max_dom )
+      IF ( max_dom > 1 ) THEN
+#if ( ! defined(DM_PARALLEL)  &&   ! defined(STUBMPI) )
+      CALL wrf_error_fatal( &
+     'nesting requires either an MPI build or use of the -DSTUBMPI option' )
+#endif
+      END IF
+
+!<DESCRIPTION>
+! The top-most domain in the simulation is then allocated and configured
+! by calling <a href=alloc_and_configure_domain.html>alloc_and_configure_domain</a>.
+! Here, in the case of this root domain, the routine is passed the
+! globally accessible pointer to TYPE(domain), head_grid, defined in
+! frame/module_domain.F.  The parent is null and the child index is given
+! as negative, signifying none.  Afterwards, because the call to
+! alloc_and_configure_domain may modify the model's configuration data
+! stored in model_config_rec, the configuration information is again
+! repacked into a buffer, broadcast, and unpacked on each task (for
+! DM_PARALLEL compiles). The call to <a
+! href=setup_timekeeping.html>setup_timekeeping</a> for head_grid relies
+! on this configuration information, and it must occur after the second
+! broadcast of the configuration information.
+!
+!</DESCRIPTION>
+      CALL       wrf_message ( program_name )
+      CALL       wrf_debug ( 100 , 'wrf: calling alloc_and_configure_domain ' )
+      CALL alloc_and_configure_domain ( domain_id  = 1 ,                  &
+                                     grid       = head_grid ,          &
+                                     parent     = null_domain ,        &
+                                     kid        = -1                   )
+
+      CALL       wrf_debug ( 100 , 'wrf: calling model_to_grid_config_rec ' )
+      CALL model_to_grid_config_rec ( head_grid%id , model_config_rec , config_flags )
+      CALL       wrf_debug ( 100 , 'wrf: calling set_scalar_indices_from_config ' )
+      CALL set_scalar_indices_from_config ( head_grid%id , idum1, idum2 )
+      CALL       wrf_debug ( 100 , 'wrf: calling init_wrfio' )
+      CALL init_wrfio
+
+#ifdef DM_PARALLEL
+      CALL get_config_as_buffer( configbuf, configbuflen, nbytes )
+      CALL wrf_dm_bcast_bytes( configbuf, nbytes )
+      CALL set_config_as_buffer( configbuf, configbuflen )
+#endif
+
+#if (EM_CORE == 1)
+! In case we are doing digital filter initialization, set dfi_stage = DFI_SETUP
+!   to indicate in Setup_Timekeeping that we want forecast start and
+!   end times at this point
+      IF ( head_grid%dfi_opt .NE. DFI_NODFI ) head_grid%dfi_stage = DFI_SETUP
+#endif		      
+!
+! Initialize wrf time manager
+!
+      CALL Setup_Timekeeping (head_grid)
+	
+! ---------------------------------------------------------------------
+! initialize geogrid information firstly, since wrf_domain_mct and
+! wrf_domain_cam need projection information	
+! added by Juanxiong He
+! ---------------------------------------------------------------------                    
+      call get_ijk_from_grid (  head_grid ,                   &
+                              ids, ide, jds, jde, kds, kde,    &
+                              ims, ime, jms, jme, kms, kme,    &
+                              ips, ipe, jps, jpe, kps, kpe    )
+                              
+      call nl_get_restart(1,restart)
+
+      ! initialize the geograph information of all domains
+      call init_geogrid
+      
+      if(.not.restart) then                              
+      
+      call initial_ggrid(ggrid_info, ids, ide, jds, jde, kds, kde,    &
+                             ims, ime, jms, jme, kms, kme,    &    
+		       	     ips, ipe, jps, jpe, kps, kpe )   
+      call geogrid(1, ips, ipe, jps ,jpe, kps, kpe, &
+               ids, ide, jds, jde, kds, kde, &
+               ims, ime, jms, jme, kms, kme, &
+               ggrid_info%ht_gc, ggrid_info%tmn_gc, ggrid_info%snoalb, ggrid_info%OC12D, ggrid_info%var2d, &
+               ggrid_info%oa1, ggrid_info%oa2, ggrid_info%oa3, ggrid_info%oa4, ggrid_info%ol1, ggrid_info%ol2, ggrid_info%ol3, ggrid_info%ol4, &
+               ggrid_info%xland, ggrid_info%lu_index, ggrid_info%toposlpx, ggrid_info%toposlpy,&
+               ggrid_info%sct_dom_gc, ggrid_info%scb_dom_gc, ggrid_info%slopecat, &
+               ggrid_info%xlat, ggrid_info%xlong, ggrid_info%xlat_gc, ggrid_info%xlong_gc, ggrid_info%clat, ggrid_info%clong, &
+               ggrid_info%f, ggrid_info%e, ggrid_info%sina, ggrid_info%cosa, ggrid_info%msftx, ggrid_info%msfty, &    
+               ggrid_info%albedo12m, ggrid_info%greenfrac, ggrid_info%soilctop, ggrid_info%soilcbot, &
+               ggrid_info%landusef, ggrid_info%msfux, ggrid_info%msfuy, ggrid_info%xlat_u, ggrid_info%xlong_u, &
+               ggrid_info%msfvx, ggrid_info%msfvy, ggrid_info%xlat_v, ggrid_info%xlong_v)
+               
+      call transfer_ggrid(ggrid_info, head_grid, ids, ide, jds, jde, kds, kde,    &
+                               ims, ime, jms, jme, kms, kme,    &
+                               ips, ipe, jps, jpe, kps, kpe )
+      call final_ggrid(ggrid_info)
+     
+      endif
+     
+      model_config_rec%dx(head_grid%id) = dxkm/parent_grid_ratio(head_grid%id)
+      model_config_rec%dy(head_grid%id) = dykm/parent_grid_ratio(head_grid%id)
+      config_flags%dx = dxkm/parent_grid_ratio(head_grid%id)
+      config_flags%dy = dykm/parent_grid_ratio(head_grid%id)
+
+! ---------------------------------------------------------------------
+! geogrid
+! ---------------------------------------------------------------------     
+     
+! ---------------------------------------------------------------------
+! Check consistency of outside clock and WRF clock
+! Check consistency of restart time information with input clock
+! added by Juanxiong He
+! ---------------------------------------------------------------------	
+#ifdef CCSMCOUPLED
+#ifdef SEQ_MCT
+       twoway_coupling= model_config_rec%twoway_coupling
+       twoway_nudging= model_config_rec%twoway_nudging
+
+!
+! Initialize time manager (outside clock).
+!
+       call seq_timemgr_EClockGetData(EClock, &
+                                      start_ymd=start_ymd, start_tod=start_tod, &
+                                      ref_ymd=ref_ymd, ref_tod=ref_tod,         &
+                                      stop_ymd=stop_ymd, stop_tod=stop_tod,     &
+                                      calendar=calendar )   
+		
+!
+! Initialize MCT gsMap, domain and attribute vectors
+!
+        call wrf_SetgsMap_mct( head_grid, mpicom_atm, WRFID, gsMap_atm )
+        lsize = mct_gsMap_lsize(gsMap_atm, mpicom_atm)
+!
+! Initialize MCT domain 
+!
+        call wrf_domain_mct( head_grid, lsize, gsMap_atm, dom_a )
+!
+! Initialize MCT attribute vectors
+!
+        call mct_aVect_init(a2x_a, rList=seq_flds_w2x_fields, lsize=lsize)
+        call mct_aVect_zero(a2x_a)
+       
+        call mct_aVect_init(x2a_a, rList=seq_flds_x2w_fields, lsize=lsize) 
+        call mct_aVect_zero(x2a_a)
+       
+        call mct_aVect_init(a2x_a_SNAP, rList=a2x_avg_flds, lsize=lsize)
+        call mct_aVect_zero(a2x_a_SNAP)
+       
+        call mct_aVect_init(a2x_a_SUM , rList=a2x_avg_flds, lsize=lsize)
+        call mct_aVect_zero(a2x_a_SUM )         
+
+       ! set the basic information of cam domain
+        call set_metgrid(mgrid)
+
+       ! initial processors map
+        call wrf_SetgsMap_cam(mgrid, mpicom_atm, WRFID, gsMap_cc ) 
+        lsize = mct_gsMap_lsize(gsMap_cc, mpicom_atm)
+       
+        ! initial domain       
+        call wrf_domain_cam( mgrid, lsize, gsMap_cc, dom_c ) 
+
+       ! initial bundle vector       
+        call mct_aVect_init(x2c_c1, rList=seq_flds_x2w_fields, lsize=lsize) 
+        call mct_aVect_zero(x2c_c1)
+
+        call mct_aVect_init(x2c_c2, rList=seq_flds_x2w_fields, lsize=lsize) 
+        call mct_aVect_zero(x2c_c2)
+
+        call mct_aVect_init(x2c_old, rList=seq_flds_x2w_fields, lsize=lsize)
+        call mct_aVect_zero(x2c_old)
+       
+        call mct_aVect_init(c2x_c, rList=seq_flds_w2x_fields, lsize=lsize)
+        call mct_aVect_zero(c2x_c)        
+        
+!
+! Initialize averaging counter
+!
+        avg_count = 0   
+!
+! Set flag to specify that an extra albedo calculation is to be done (i.e. specify active)
+!		
+        
+        plon=ide-ids  
+        plat=jde-jds  
+        
+        call seq_infodata_PutData(infodata, wrf_prognostic=.true.)
+        call seq_infodata_PutData(infodata, wrf_nx=plon, wrf_ny=plat)
+!
+! Set time step of radiation computation as the current calday
+! This will only be used on the first timestep of an initial run
+!
+
+!       print *,mytask 
+                       
+       first_time = .false.
+
+       call shr_file_setLogUnit (shrlogunit)
+       call shr_file_setLogLevel(shrloglev)
+
+    else
+       
+       call shr_file_getLogUnit (shrlogunit)
+       call shr_file_getLogLevel(shrloglev)
+       call shr_file_setLogUnit (iulog)       
+!<DESCRIPTION>
+! The head grid is initialized with read-in data through the call to <a
+! href=med_initialdata_input.html>med_initialdata_input</a>, which is
+! passed the pointer head_grid and a locally declared configuration data
+! structure, config_flags, that is set by a call to <a
+! href=model_to_grid_config_rec.html>model_to_grid_config_rec</a>.  It is
+! also necessary that the indices into the 4d tracer arrays such as
+! moisture be set with a call to <a
+! href=set_scalar_indices_from_config.html>set_scalar_indices_from_config</a>
+! prior to the call to initialize the domain.  Both of these calls are
+! told which domain they are setting up for by passing in the integer id
+! of the head domain as <tt>head_grid%id</tt>, which is 1 for the
+! top-most domain.
+!
+! In the case that write_restart_at_0h is set to true in the namelist,
+! the model simply generates a restart file using the just read-in data
+! and then shuts down. This is used for ensemble breeding, and is not
+! typically enabled.
+!
+!</DESCRIPTION>
+
+      ! before initialization, find current_date
+      call domain_clock_get( head_grid,current_timestr = current_timestr )
+      current_date = trim(current_timestr)//'.0000'
+
+! ---------------------------------------------------------------------
+! metgrid
+! ---------------------------------------------------------------------
+
+      twoway_coupling= model_config_rec%twoway_coupling
+      twoway_nudging= model_config_rec%twoway_nudging
+
+      ! initial windgrid used by wrf to cam
+      call get_ijk_from_grid (  head_grid ,                   &
+                              ids, ide, jds, jde, kds, kde,    &
+                              ims, ime, jms, jme, kms, kme,    &
+                              ips, ipe, jps, jpe, kps, kpe    )
+
+      ipe = min (ipe,ide-1)
+      jpe = min (jpe,jde-1)
+      kpe = min (kpe,kde-1)
+      ide = ide -1
+      jde = jde -1
+      kde = kde -1
+
+      ! import cam data from coupler and prepare initial dataset
+      call initial_metgrid(mgrid, mgrid%ids, mgrid%ide, mgrid%jds, mgrid%jde, &
+                           mgrid%num_metgrid_levels, mgrid%num_metgrid_soil_levels )
+
+      ! before initialize, setting some namelists derived
+      call set_rconfig(model_config_rec, 1)       
+
+      call nl_get_restart(1,restart)
+      
+      if(.not.restart) then
+
+       loop=1
+
+       else
+
+       call seq_timemgr_EClockGetData(Eclock, dtime=wrf_cpl_dt)
+       call seq_timemgr_EClockGetData(EClock, curr_ymd=ymd, curr_tod=tod )
+       call seq_timemgr_EClockGetData(EClock, start_ymd=start_ymd )
+       loop=((ymd-start_ymd)*86400+tod)/wrf_cpl_dt+1
+
+      endif
+
+! ---------------------------------------------------------------------
+! real
+! ---------------------------------------------------------------------      
+      call init_real(head_grid)
+
+      if(restart) then
+        ! read the restart variables
+        CALL med_initialdata_input( head_grid , config_flags )
+
+        ! initial nest domains if one of nested domains start the simulation when the model begins running 
+        call init_nest_domain(mgrid, head_grid)
+
+        ! import for wrf restart
+        call wrf_read_srfrest_mct( EClock, cdata_c, x2c_c2, c2x_c )
+
+
+        call wrf_import_cam(x2c_c2, mgrid, loop )
+
+        ! prep the field to generate bdy
+        call metgrid(mgrid, head_grid, loop)
+
+        ! vertical interpolation and generate bdy
+        call restart_real(head_grid,loop)
+
+         ! initial nest domains if one of nested domains start the simulation when the model begins running 
+        call init_nest_domain(mgrid, head_grid)
+
+        loop = 1 ! mark the first coupling during the restart, when wrf_cpl_dt/cam_dt>1
+
+      end if
+ 
+      IF ( config_flags%write_restart_at_0h ) THEN
+        CALL med_restart_out ( head_grid, config_flags )
+#ifndef AUTODOC_BUILD
+! prevent this from showing up before the call to integrate in the autogenerated call tree
+        CALL wrf_debug ( 0 , ' 0 h restart only wrf: SUCCESS COMPLETE WRF' )
+! TBH:  $$$ Unscramble this later...
+! TBH:  $$$ Need to add state to avoid calling wrf_finalize() twice when ESMF
+! TBH:  $$$ library is used.  Maybe just set clock stop_time=start_time and
+! TBH:  $$$ do0com not call wrf_finalize here...
+        CALL wrf_final_mct( )
+#endif
+      END IF
+
+! set default values for subtimes
+       head_grid%start_subtime = domain_get_start_time ( head_grid )
+       head_grid%stop_subtime = domain_get_stop_time ( head_grid )
+        
+       call shr_file_setLogUnit (shrlogunit)
+       call shr_file_setLogLevel(shrloglev)
+       
+    end if
+     
+#endif
+#endif
+   END SUBROUTINE wrf_init_mct
+
+   SUBROUTINE wrf_run_mct(&
+#ifdef CCSMCOUPLED
+#ifdef SEQ_MCT   
+   EClock_aa, EClock, cdata_a, cdata_c, x2a_a, a2x_a, x2c_c1, x2c_c2, c2x_c, twoway_coupling, twoway_nudging &
+#endif
+#endif
+   )
+!<DESCRIPTION>
+!     WRF run routine.
+!</DESCRIPTION>
+
+!<DESCRIPTION>
+! Once the top-level domain has been allocated, configured, and
+! initialized, the model time integration is ready to proceed.  The start
+! and stop times for the domain are set to the start and stop time of the
+! model run, and then <a href=integrate.html>integrate</a> is called to
+! advance the domain forward through that specified time interval.  On
+! return, the simulation is completed.
+!
+!</DESCRIPTION>
+
+!  The forecast integration for the most coarse grid is now started.  The
+!  integration is from the first step (1) to the last step of the simulation.
+!-----------------------------------------------------------------------
+!
+! Arguments
+!
+!      implicit none  !by Yuzhu Wang 2014-05-13
+!#if defined(DM_PARALLEL)
+ !    include "mpif.h"  !by Yuzhu Wang 2014-05-13
+!#endif
+
+
+
+
+#ifdef CCSMCOUPLED
+#ifdef SEQ_MCT	
+    type(CCSM_Clock)            ,intent(in)    :: EClock_aa  ! system clock for cam
+    type(CCSM_Clock)            ,intent(in)    :: EClock   ! system clock for wrf
+    type(seq_cdata)             ,intent(inout) :: cdata_a  ! wrf grid
+    type(seq_cdata)             ,intent(inout) :: cdata_c  ! cam grid
+    type(mct_aVect)             ,intent(inout) :: x2a_a
+    type(mct_aVect)             ,intent(inout) :: a2x_a
+    type(mct_aVect)             ,intent(inout) :: x2c_c1
+    type(mct_aVect)             ,intent(inout) :: x2c_c2
+    type(mct_aVect)             ,intent(inout) :: c2x_c
+    logical, intent(inout) :: twoway_coupling
+    integer, intent(inout) :: twoway_nudging
+
+!
+! Local variables
+!
+      type(seq_infodata_type),pointer :: infodata
+      integer :: lsize           ! size of attribute vector
+      integer :: DTime_Sync      ! integer timestep size
+      integer :: iradsw          ! shortwave radation frequency (time steps)
+      logical :: dosend          ! true => send data back to driver
+      integer :: dtime           ! time step increment (sec)
+      integer :: dtime_wrf       ! wrf coupling time increment (sec)
+      integer :: atm_cpl_dt      ! driver atm coupling time step
+      integer :: ymd_sync        ! Sync date (YYYYMMDD)
+      integer :: yr_sync         ! Sync current year
+      integer :: mon_sync        ! Sync current month
+      integer :: day_sync        ! Sync current day
+      integer :: tod_sync        ! Sync current time of day (sec)
+      real(r8):: nextsw_cday     ! calendar of next atm shortwave
+      logical :: nlend           ! Flag signaling last time-step
+      logical, save :: rstwr = .false.      ! .true. ==> write restart file before returning
+      logical :: rstwr_sync      ! .true. ==> write restart file before returning
+      logical :: nlend_sync      ! Flag signaling last time-step
+      logical :: restart    
+    
+      TYPE(WRFU_Time) :: current_time
+      type(WRFU_TimeInterval) :: off
+
+      integer :: start_ymd       ! CAM start date (YYYYMMDD)
+      integer :: start_tod       ! CAM start clock (sec)
+      integer :: ymd             ! WRF current date (YYYYMMDD)
+      integer :: yr              ! WRF current year
+      integer :: mon             ! WRF current month
+      integer :: day             ! WRF current day
+      integer :: hour             ! WRF current hour
+      integer :: minuate            ! WRF current minuate
+      integer :: second             ! WRF current second
+      integer :: tod             ! WRF current time of day (sec)
+      integer :: nstep           ! WRF nstep
+
+      INTEGER :: s_yr,s_mm,s_dd,s_h,s_m,s_s,rc
+      INTEGER :: e_yr,e_mm,e_dd,e_h,e_m,e_s
+      INTEGER :: startyr,startsec
+
+      real(r8) :: currdate        ! CAM current time (YYYYMMDDsec)
+      real(r8) :: startdate       ! WRF start time (YYYYMMDDsec)
+      real(r8) :: enddate        ! WRF end time (YYYYMMDDsec)
+      CHARACTER (LEN=19) :: current_timestr
+      character( 80) :: starttype ! infodata start type
+
+      integer :: ids,ide,jds,jde,kds,kde,ims,ime,jms,jme,kms,kme,ips,ipe,jps,jpe,kps,kpe,&
+	          i,j,ig
+      real(r8)::tv
+      real :: st
+
+      TYPE (grid_config_rec_type) :: config_flags
+      integer :: fort_number,mype,myierr  !by Yuzhu Wang 2014-05-13
+
+#endif
+#endif    
+!-----------------------------------------------------------------------
+
+#ifdef CCSMCOUPLED
+#ifdef SEQ_MCT
+
+       ! get the coupling parameters
+       twoway_coupling= model_config_rec%twoway_coupling
+       twoway_nudging= model_config_rec%twoway_nudging
+       model_config_rec%gwd_opt = 1 
+
+       ! Note that sync clock time should match wrf time at end of time step/loop not beginning
+       call seq_cdata_setptrs(cdata_a, infodata=infodata)
+
+       ! get the system running type
+       call seq_infodata_GetData( infodata, start_type=starttype)
+
+       ! get current time of CAM 
+       call seq_timemgr_EClockGetData(EClock_aa, start_ymd=start_ymd, start_tod=start_tod, &
+                                      curr_ymd=ymd, curr_tod=tod, dtime=dtime )
+
+       ! get time parameter of WRF
+       CALL nl_get_start_year(head_grid%id,s_yr)   
+       CALL nl_get_end_year(head_grid%id,e_yr)
+       CALL nl_get_start_month(head_grid%id,s_mm) 
+       CALL nl_get_end_month(head_grid%id,e_mm)
+       CALL nl_get_start_day(head_grid%id,s_dd)  
+       CALL nl_get_end_day(head_grid%id,e_dd)
+       CALL nl_get_start_hour(head_grid%id,s_h)    
+       CALL nl_get_end_hour(head_grid%id,e_h)
+       CALL nl_get_start_minute(head_grid%id,s_m)  
+       CALL nl_get_end_minute(head_grid%id,e_m)
+       CALL nl_get_start_second(head_grid%id,s_s)  
+       CALL nl_get_end_second(head_grid%id,e_s)
+
+       currdate=ymd*1.0_8+(tod-dtime)*1.0_8/100000  ! cam current time
+       startdate=(s_yr*10000+s_mm*100+s_dd)*1.0_8+(s_h*3600+s_m*60+s_s)*1.0_8/100000
+       enddate=(e_yr*10000+e_mm*100+e_dd)*1.0_8+(e_h*3600+e_m*60+e_s)*1.0_8/100000
+
+!       search_alltime = 0   !by Yuzhu Wang 2014-05-13
+!       search_alltime1 = 0   !by Yuzhu Wang 2014-05-13
+!       fort_number = 10+mytask   !by Yuzhu Wang 2014-05-13
+
+       if ( startdate.le.currdate.and.currdate.le.enddate) then ! begin the wrf simulation 
+
+       ! get the coupling interval of WRF
+       call seq_timemgr_EClockGetData(EClock,curr_ymd=ymd_sync,curr_tod=tod_sync,dtime=dtime_wrf)
+       
+       ! you can't use CAM EClock to find the restart signal
+       ! since seq_timemgr_RestartAlarmIsOn is clock specific 
+       nlend_sync = seq_timemgr_StopAlarmIsOn(EClock)
+       rstwr_sync = seq_timemgr_RestartAlarmIsOn(EClock)
+       if(rstwr_sync) rstwr=.true.
+
+       ! if it's start time, initialize WRF. We use CAM result at t=1 
+       startyr=s_yr*10000+s_mm*100+s_dd
+       startsec=s_h*3600+s_m*60+s_s
+  
+       call nl_get_restart(1,restart)
+       if((start_ymd.eq.startyr.and.start_tod.eq.startsec).or.&
+          (trim(adjustl(starttype)).eq.'continue'.and.(.not.restart))) then 
+        ! CAM and WRF has the same start date, use x2c_c1
+        if(ymd.eq.startyr.and.(tod-dtime).eq.startsec) then
+           go to 298
+        else
+           go to 299
+        endif
+       else 
+        ! CAM and WRF has the different start date, use x2c_c2
+        if(restart) then
+          if(loop.eq.1.and.dtime_wrf/dtime.gt.1) then  ! ignore the first couple during the restart when dtime_wrf/dtime>1
+            loop = 2
+            goto 399
+          else
+            goto 299
+          endif
+        else  ! not restart, wrf start during CAM run
+          if(ymd.eq.startyr.and.(tod-dtime).eq.startsec) loop=0
+          go to 299
+        endif
+
+        endif
+
+298     continue
+         loop=1 
+         call t_startf('wrf_preprocess_time')   ! by Yuzhu Wang, 2014-04-18
+         call t_startf('wrf_import_cam')   ! by Yuzhu Wang, 2014-04-24
+         call wrf_import_cam(x2c_c1, mgrid, loop )
+         call t_stopf  ('wrf_import_cam')  ! by Yuzhu Wang, 2014-04-24
+
+         call t_startf('wrf_metgrid_time')   ! by Yuzhu Wang, 2014-04-18
+         call metgrid(mgrid, head_grid, loop)
+         call t_stopf  ('wrf_metgrid_time')  ! by Yuzhu Wang, 2014-04-18
+ 
+         call t_startf('wrf_real_interp_time')   ! by Yuzhu Wang, 2014-04-1
+         call real_interp(head_grid, config_flags, loop)
+         call t_stopf  ('wrf_real_interp_time')  ! by Yuzhu Wang, 2014-04-18
+
+         ! initial head_grid 
+         CALL med_initialdata_input( head_grid , config_flags )
+ 
+         ! initial nest domains if one of nested domains start the simulation when the model begins running 
+         call t_startf('init_nest_domain')   ! by Yuzhu Wang, 2014-04-24
+         call init_nest_domain(mgrid, head_grid)
+         call t_stopf  ('init_nest_domain')  ! by Yuzhu Wang, 2014-04-24
+         call t_stopf  ('wrf_preprocess_time')  ! by Yuzhu Wang, 2014-04-18
+ 
+
+         ! if one way coupling or twoway coupling with the nudging techniques 
+         ! or the coupling interval more than the CAM timestep
+         ! let CAM leads WRF
+         if(dtime_wrf/dtime.gt.1) goto 399
+        
+299     continue
+
+       ! Map input from mct to wrf data structure
+       loop=loop+1
+
+!       call mpi_barrier(local_communicator, mpi_ierr)  ! by Yuzhu Wang, 2014-04-24
+
+       call t_startf('wrf_preprocess_time2')   ! by Yuzhu Wang, 2014-04-18
+       ! import the new x2c_c2
+       call t_startf('wrf_import_cam2')   ! by Yuzhu Wang, 2014-04-24
+       call wrf_import_cam(x2c_c2, mgrid, loop ) 
+       call t_stopf  ('wrf_import_cam2')  ! by Yuzhu Wang, 2014-04-24
+
+       if(dtime_wrf/dtime.eq.1.0.and.(.not.rstwr_sync)) then
+         call mct_aVect_copy(x2c_c2,x2c_old)  ! record the previous import
+       endif
+
+       ! read sst for sanity check, firstly get current seconds of WRF
+!       call read_sst(mgrid,ymd)
+!       call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+       call t_startf('wrf_metgrid_time2')   ! by Yuzhu Wang, 2014-04-18
+       call metgrid(mgrid, head_grid, loop)
+       call t_stopf  ('wrf_metgrid_time2')  ! by Yuzhu Wang, 2014-04-18
+
+      ! write(mytask,*) 'jjr test2: mytask,ids,ide,jds,jde,kds,kde=',mytask,ips,ipe,jps,jpe,kps,kpe  !by Yuzhu Wang, 2014-04-24
+
+
+!       call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+       call t_startf('wrf_real_interp_time2')   ! by Yuzhu Wang, 2014-04-1
+       call real_interp(head_grid, config_flags, loop)
+       call t_stopf  ('wrf_real_interp_time2')  ! by Yuzhu Wang, 2014-04-18
+
+!       call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+       if(loop.eq.1) then    
+       ! initial head_grid for the start during the simulation 
+        CALL med_initialdata_input( head_grid , config_flags )
+       end if
+
+!       call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+       ! initial nest domains if one of nested domains start the simulation during the model running 
+       call t_startf('init_nest_domain2')   ! by Yuzhu Wang, 2014-04-24     
+       call init_nest_domain(mgrid, head_grid)
+       call t_stopf  ('init_nest_domain2')  ! by Yuzhu Wang, 2014-04-24
+
+       ! prepare SST and surface information (ALBBCK, VEGFRAC) on the nest domain 
+       call nests_prepare_sst(mgrid, head_grid,loop)
+       call nests_prepare_surface(head_grid)
+       call t_stopf  ('wrf_preprocess_time2')  ! by Yuzhu Wang, 2014-04-18
+
+       ! if one way coupling or twoway coupling with the nudging techniques 
+       ! or the coupling interval more than the CAM timestep.or.loop=1,
+       ! let CAM leads WRF
+       ! for loop=1, the situation is WRF start while CAM already ran a period  
+       if(dtime_wrf/dtime.gt.1.and.loop.eq.1) goto 399
+        model_config_rec%gwd_opt = 0 
+
+       dosend = .false.
+       do while (.not. dosend)
+
+! When time is not updated at the end of the loop - then return only if
+! are in sync with clock before time is updated
+
+#endif
+#endif
+
+!        call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+        call t_startf('wrf_integrate_time')   ! by Yuzhu Wang, 2014-04-18
+        call integrate ( head_grid)
+        call t_stopf  ('wrf_integrate_time')  ! by Yuzhu Wang, 2014-04-18
+
+#ifdef CCSMCOUPLED
+#ifdef SEQ_MCT
+
+        ! Determine if dosend
+        ! ymd_sync and tod_sync is the next coupling time of WRF from ccsm. They 
+        ! are not ncessarilly equals to the current CCSM time or the wrf current
+        ! time. During the system, WRF need to ignore the singals 
+        ! (ymd_sync and tod_sync) at the supposed first time in order to   
+        ! get the initial field (x2c_c1) as well as the lateral boundary condition
+        ! (x2c_c2), so that it makes CAM lead WRF. Then, ymd_sync and tod_sync may 
+        ! lead WRF current time two coupling wrf/ccsm periods.
+        ! At the above situation, when the wrf/cam coupling period equals to 
+        ! the cam timestep, cam is already two coupling interval ahead of WRF
+        ! integration.It's necessary to make WRF catch cam by sustracting the 
+        ! current WRF time with the wrf/ccsm coupling time, so that WRF can 
+        ! integrate one more wrf/ccsm coupling time period and catch cam.
+        ! when the WRF/ccsm coupling preriod is larger than the cam timestep, 
+        ! it needs add one wrf/ccsm coupling period since the singals 
+        ! (ymd_sync and tod_sync) are already two coupling periods 
+        ! ahead of the current wrf time. it avoids WRF integraing two 
+        ! coupling interval during its first integration, which would  
+        ! make it lead CAM one coupling interval 
+        call domain_clock_get(head_grid, current_time=current_time)
+        if(dtime_wrf/dtime.eq.1) then 
+!        call WRFU_TimeIntervalSet( off, s=dtime)
+!        current_time = current_time -  off
+        elseif(dtime_wrf/dtime.gt.1) then 
+        call WRFU_TimeIntervalSet( off, s=dtime_wrf)
+        current_time = current_time +  off
+        else
+        endif 
+
+        call WRFU_timeget(current_time, yy=yr, mm=mon, dd=day, h=hour, m=minuate, s=second)
+        ymd = yr*10000 + mon*100 + day
+        tod = hour*3600+minuate*60+second
+        dosend = (seq_timemgr_EClockDateInSync( EClock, ymd, tod))
+
+       end do
+
+! Map output from wrf to mct data structures
+
+
+       ! if restart time, store x2c_c2, c2x_c
+       ! dtime_wrf/dtime>1, wrf external EClock leads CAM ECLOCK one couple time
+       ! dtime_wrf/dtime=1, wrf external EClock equals to CAM ECLOCK
+       if(dtime_wrf/dtime.gt.1) then  
+       if (.not.rstwr_sync.and.rstwr) then
+       call seq_timemgr_EClockGetData(EClock_aa,curr_ymd=ymd_sync,curr_tod=tod_sync, &
+       curr_yr=yr_sync,curr_mon=mon_sync,curr_day=day_sync) 
+       tod_sync=tod_sync-dtime
+       call wrf_write_srfrest_mct( cdata_c, x2c_c2, c2x_c, &
+            yr_spec=yr_sync, mon_spec=mon_sync, day_spec=day_sync, sec_spec=tod_sync) ! write wrf restart, added by juanxiong he 
+       rstwr=.false.
+       end if
+       else
+       if (rstwr_sync.and.rstwr) then
+       call seq_timemgr_EClockGetData(EClock,curr_ymd=ymd_sync,curr_tod=tod_sync, &
+       curr_yr=yr_sync,curr_mon=mon_sync,curr_day=day_sync)
+       call wrf_write_srfrest_mct( cdata_c, x2c_c2, c2x_c, &
+            yr_spec=yr_sync, mon_spec=mon_sync, day_spec=day_sync, sec_spec=tod_sync) ! write wrf restart, added by juanxiong he 
+       call wrf_write_srfrest_mct_app( cdata_c, x2c_old, c2x_c, &
+            yr_spec=yr_sync, mon_spec=mon_sync, day_spec=day_sync, sec_spec=tod_sync) ! write wrf restart, added by juanxiong he
+       rstwr=.false. 
+       end if 
+       endif
+
+! Check for consistency of internal wrf clock with master sync clock
+    
+      call domain_clock_get(head_grid, current_time=current_time)    
+      if(dtime_wrf/dtime.eq.1) then 
+!       call WRFU_TimeIntervalSet( off, s=dtime)
+!       if setting  current_time = current_time -  off, it means 
+!       WRF may run 2*off time and leads CAM off time. 
+!       current_time = current_time - off
+      elseif(dtime_wrf/dtime.gt.1) then 
+        call WRFU_TimeIntervalSet( off, s=dtime_wrf)
+        current_time = current_time +  off
+      else
+      end if
+      call WRFU_timeget(current_time, yy=yr, mm=mon, dd=day, h=hour, m=minuate, s=second)
+      ymd = yr*10000 + mon*100 + day
+      tod = hour*3600+minuate*60+second
+       
+      if ( .not. seq_timemgr_EClockDateInSync( EClock, ymd, tod ) )then
+       call seq_timemgr_EClockGetData(EClock, curr_ymd=ymd_sync, curr_tod=tod_sync )
+       write(iulog,*)  ' wrf ymd=',ymd     ,'  wrf tod= ',tod 
+       write(iulog,*)  ' sync ymd=',ymd_sync,' sync tod= ',tod_sync
+       call shr_sys_abort()
+      end if
+
+399   continue
+
+   endif  ! it's the wrf simulation time
+
+   if(loop.gt.2160) then
+     if(allocated(match_mask_array0)) deallocate(match_mask_array0)  !by Yuzhu Wang 2014-05-21 
+     if(allocated(match_mask_queue0)) deallocate(match_mask_queue0)  !by Yuzhu Wang 2014-05-21 
+     if(allocated(match_mask_found_valid0)) deallocate(match_mask_found_valid0)  !by Yuzhu Wang 2014-05-21 
+     if(allocated(match_mask_array1)) deallocate(match_mask_array1)  !by Yuzhu Wang 2014-05-21 
+     if(allocated(match_mask_queue1)) deallocate(match_mask_queue1)  !by Yuzhu Wang 2014-05-21 
+     if(allocated(match_mask_found_valid1)) deallocate(match_mask_found_valid1)  !by Yuzhu Wang 2014-05-21 
+   end if
+!   write(fort_number,*) 'loop=',loop,'dtime_wrf/dtime=',dtime_wrf/dtime
+
+!   write(fort_number,*) 'myrank=',mytask,'search_alltime=',search_alltime  !by Yuzhu Wang 2014-05-13
+!  write(fort_number,*) 'myrank=',mytask,'search_alltime1=',search_alltime1  !by Yuzhu Wang 2014-05-13
+!   if(loop.gt.72) then
+!     write(fort_number,*) 'myrank=',mytask,'search_allnumber=',search_allnumber !by Yuzhu Wang
+!     write(fort_number,*) 'myrank=',mytask,'loop_allnumber1=',loop_allnumber1 !by Yuzhu Wang
+!     write(fort_number,*) 'myrank=',mytask,'loop_allnumber2=',loop_allnumber2 !by Yuzhu Wang
+!   end if
+
+#endif
+#endif
+   END SUBROUTINE wrf_run_mct
+
+   SUBROUTINE wrf_final_mct( no_shutdown )
+!<DESCRIPTION>
+!     WRF finalize routine.
+!</DESCRIPTION>
+
+!<DESCRIPTION>
+! A Mediation Layer-provided
+! subroutine, <a href=med_shutdown_io.html>med_shutdown_io</a> is called
+! to allow the the model to do any I/O specific cleanup and shutdown, and
+! then the WRF Driver Layer routine <a
+! href=wrf_shutdown.html>wrf_shutdown</a> (quilt servers would be
+! directed to shut down here) is called to properly end the run,
+! including shutting down the communications (for example, most comm
+! layers would call MPI_FINALIZE at this point if they're using MPI).
+!
+!</DESCRIPTION>
+       LOGICAL, OPTIONAL, INTENT(IN) :: no_shutdown
+       TYPE (grid_config_rec_type) :: config_flags
+       logical :: twoway_coupling
+
+#if CCSMCOUPLED
+#if SEQ_MCT
+
+         twoway_coupling= model_config_rec%twoway_coupling
+
+         if(allocated(camarea)) deallocate(camarea)
+         if(allocated(gcoef)) deallocate(gcoef)
+         if(allocated(wrf_weight)) deallocate(wrf_weight)
+         if(allocated(wrf_bweight)) deallocate(wrf_bweight)
+         if(allocated(wrf_local_points)) deallocate(wrf_local_points)
+         if(allocated(wrf_boundary_points)) deallocate(wrf_boundary_points)
+         if(allocated(remap_wrfi)) deallocate(remap_wrfi)
+         if(allocated(remap_wrfj)) deallocate(remap_wrfj) 
+         if(allocated(remap_wrfbi)) deallocate(remap_wrfbi)
+         if(allocated(remap_wrfbj)) deallocate(remap_wrfbj)
+         IF (ASSOCIATED(processors)) DEALLOCATE (processors)
+        
+         call datalist_destroy() 
+
+         call final_metgrid(mgrid)
+
+         call final_real
+
+#endif
+#endif
+          
+     ! shut down I/O
+      CALL model_to_grid_config_rec ( 1, model_config_rec , config_flags )
+      CALL med_shutdown_io ( head_grid , config_flags )
+      CALL       wrf_debug ( 100 , 'wrf: back from med_shutdown_io' )
+
+      CALL       wrf_debug (   0 , 'wrf: SUCCESS COMPLETE WRF' )
+
+     ! Call wrf_shutdown() (which calls MPI_FINALIZE()
+     ! for DM parallel runs).
+      IF ( .NOT. PRESENT( no_shutdown ) ) THEN
+     ! Finalize time manager
+!      CALL WRFU_Finalize
+!      CALL wrf_shutdown
+     
+      ENDIF
+
+   END SUBROUTINE wrf_final_mct
+
+   SUBROUTINE wrf_dfi()
+
+#if CCSMCOUPLED
+#if SEQ_MCT
+#else
+#endif
+#else
+   
+!<DESCRIPTION>
+! Runs a digital filter initialization procedure.
+!</DESCRIPTION>
+      IMPLICIT NONE
+      TYPE (grid_config_rec_type) :: config_flags
+
+#if (EM_CORE == 1)
+      ! Initialization procedure
+      CALL model_to_grid_config_rec ( 1, model_config_rec , config_flags )
+
+      IF ( config_flags%dfi_opt .NE. DFI_NODFI ) THEN
+
+         SELECT CASE ( config_flags%dfi_opt )
+
+            CASE (DFI_DFL)
+               wrf_err_message = 'Initializing with DFL'
+               CALL wrf_message(TRIM(wrf_err_message))
+
+               wrf_err_message = '   Filtering forward in time'
+               CALL wrf_message(TRIM(wrf_err_message))
+
+               CALL wrf_dfi_fwd_init()
+               CALL wrf_run_mct()
+
+               CALL wrf_dfi_array_reset()
+
+               CALL wrf_dfi_fst_init()
+
+               IF ( config_flags%dfi_write_filtered_input ) THEN
+                  CALL wrf_dfi_write_initialized_state()
+               END IF
+
+            CASE (DFI_DDFI)
+               wrf_err_message = 'Initializing with DDFI'
+               CALL wrf_message(TRIM(wrf_err_message))
+
+               wrf_err_message = '   Integrating backward in time'
+               CALL wrf_message(TRIM(wrf_err_message))
+
+               CALL wrf_dfi_bck_init()
+               CALL wrf_run_mct()
+
+               wrf_err_message = '   Filtering forward in time'
+               CALL wrf_message(TRIM(wrf_err_message))
+
+               CALL wrf_dfi_fwd_init()
+               CALL wrf_run_mct()
+
+               CALL wrf_dfi_array_reset()
+
+               CALL wrf_dfi_fst_init()
+
+               IF ( config_flags%dfi_write_filtered_input ) THEN
+                  CALL wrf_dfi_write_initialized_state()
+               END IF
+
+            CASE (DFI_TDFI)
+               wrf_err_message = 'Initializing with TDFI'
+               CALL wrf_message(TRIM(wrf_err_message))
+
+               wrf_err_message = '   Integrating backward in time'
+               CALL wrf_message(TRIM(wrf_err_message))
+
+               CALL wrf_dfi_bck_init()
+               CALL wrf_run_mct()
+
+               CALL wrf_dfi_array_reset()
+
+               wrf_err_message = '   Filtering forward in time'
+               CALL wrf_message(TRIM(wrf_err_message))
+
+               CALL wrf_dfi_fwd_init()
+               CALL wrf_run_mct()
+
+               CALL wrf_dfi_array_reset()
+
+               CALL wrf_dfi_fst_init()
+
+               IF ( config_flags%dfi_write_filtered_input ) THEN
+                  CALL wrf_dfi_write_initialized_state()
+               END IF
+
+            CASE DEFAULT
+               wrf_err_message = 'Unrecognized DFI_OPT in namelist'
+               CALL wrf_error_fatal(TRIM(wrf_err_message))
+
+         END SELECT
+
+      END IF
+#endif
+#endif
+   END SUBROUTINE wrf_dfi
+
+   SUBROUTINE set_derived_rconfigs
+!<DESCRIPTION>
+! Some derived rconfig entries need to be set based on the value of other,
+! non-derived entries before package-dependent memory allocation takes place.
+! This might be employed when, for example, we want to allocate arrays in
+! a package that depends on the setting of two or more namelist variables.
+! In this subroutine, we do just that.
+!</DESCRIPTION>
+
+      IMPLICIT NONE
+
+      INTEGER :: i
+
+
+#if (EM_CORE == 1)
+      IF ( model_config_rec % dfi_opt .EQ. DFI_NODFI ) THEN
+        DO i = 1, model_config_rec % max_dom
+           model_config_rec % mp_physics_dfi(i) = -1
+        ENDDO
+      ELSE
+        DO i = 1, model_config_rec % max_dom
+           model_config_rec % mp_physics_dfi(i) = model_config_rec % mp_physics(i)
+        ENDDO
+      END IF
+#endif
+
+#if (DA_CORE == 1)
+      IF ( model_config_rec % dyn_opt .EQ. 2 ) THEN
+        DO i = 1, model_config_rec % max_dom
+           model_config_rec % mp_physics_4dvar(i) = -1
+        ENDDO
+      ELSE
+        DO i = 1, model_config_rec % max_dom
+           model_config_rec % mp_physics_4dvar(i) = model_config_rec % mp_physics(i)
+        ENDDO
+      END IF
+#endif
+
+   END SUBROUTINE set_derived_rconfigs
+   
+!================================================================================
+#ifdef CCSMCOUPLED
+#ifdef SEQ_MCT
+
+    subroutine wrf_SetgsMap_mct( grid, mpicom_atm, WRFID, GSMap_atm )
+
+!-------------------------------------------------------------------
+!
+! Arguments
+!
+       TYPE(domain) , POINTER :: grid
+       integer        , intent(in)  :: mpicom_atm
+       integer        , intent(in)  :: WRFID
+       type(mct_gsMap), intent(out) :: GSMap_atm
+!
+! Local variables
+!
+       integer, allocatable :: gindex(:)
+       integer :: i, j, k, n,lsize,gsize
+       integer :: ids,ide,jds,jde,kds,kde,ims,ime,jms,jme,kms,kme,ips,ipe,jps,jpe,kps,kpe
+       integer :: ier            ! error status
+!-------------------------------------------------------------------
+! Build the atmosphere grid numbering for MCT
+! NOTE:  Numbering scheme is: West to East and South to North
+! starting at south pole.  Should be the same as what's used in SCRIP
+! Determine global seg map
+       call get_ijk_from_grid (  grid ,                   &
+                              ids, ide, jds, jde, kds, kde,    &
+                              ims, ime, jms, jme, kms, kme,    &
+                              ips, ipe, jps, jpe, kps, kpe    )
+       if(jpe.eq.jde) jpe=jpe-1
+       if(ipe.eq.ide) ipe=ipe-1
+			      
+       lsize=0
+       do j=jps, jpe             
+       do i=ips,ipe
+             lsize = lsize+1  !local index
+       end do
+       end do
+
+       gsize=(ide-ids)*(jde-jds)
+       allocate(gindex(lsize))
+
+       n=0
+       do j=jps, jpe             
+       do i=ips,ipe
+          n=n+1
+          gindex(n) = (j-1)*(ide-ids)+i  ! global index
+       end do
+       end do
+
+       call mct_gsMap_init( gsMap_atm, gindex, mpicom_atm, WRFID, lsize, gsize)
+
+       deallocate(gindex)
+
+  end subroutine wrf_SetgsMap_mct
+
+!===============================================================================
+
+  subroutine wrf_import_mct( x2a_a, grid )
+
+!-----------------------------------------------------------------------
+!
+! Arguments
+!
+       TYPE(domain) , POINTER:: grid
+       type(mct_aVect)   , intent(inout) :: x2a_a
+
+!
+! Local variables
+!		
+       integer  :: mype            ! processor ID
+       integer  :: m             ! indices
+       integer  :: i,j,k,ig  ! indices    
+       integer :: ids,ide,jds,jde,kds,kde,ims,ime,jms,jme,kms,kme,ips,ipe,jps,jpe,kps,kpe    
+       logical :: intp
+       logical,save :: first_time=.true.
+       real :: ust, & ! friction velocity
+            znt ! roughness length
+            
+       real,dimension(:,:),allocatable :: taux,tauy    
+!-----------------------------------------------------------------------
+!
+! wrf sign convention is that fluxes are positive downward
+
+       call shr_file_getLogUnit (shrlogunit)
+       call shr_file_getLogLevel(shrloglev)
+       call shr_file_setLogUnit (iulog)
+
+	       
+       call shr_file_setLogUnit (shrlogunit)
+       call shr_file_setLogLevel(shrloglev)
+     
+  end subroutine wrf_import_mct
+
+!===============================================================================
+
+  subroutine wrf_export_mct( grid, a2x_a )
+  
+  USE module_state_description
+!-------------------------------------------------------------------
+!
+! Arguments
+!
+       TYPE(domain) , POINTER:: grid
+       type(mct_aVect)    , intent(out) :: a2x_a
+!
+! Local variables
+!
+       real :: u_phy,v_phy
+       real(r8)::z,tv,rd,g,xlapse,alpha,tstar,tt0,alph,beta,psfc,pslv,p
+       integer :: i,j,k,ig       ! indices    
+       integer :: ids,ide,jds,jde,kds,kde,ims,ime,jms,jme,kms,kme,ips,ipe,jps,jpe,kps,kpe
+!-----------------------------------------------------------------------
+! Copy from component arrays into chunk array data structure
+! Rearrange data from chunk structure into lat-lon buffer and subsequently
+! create attribute vector
+
+    
+       call shr_file_getLogUnit (shrlogunit)
+       call shr_file_getLogLevel(shrloglev)
+       call shr_file_setLogUnit (iulog)
+
+       call shr_file_setLogUnit (shrlogunit)
+       call shr_file_setLogLevel(shrloglev)    
+
+  end subroutine wrf_export_mct
+
+!===============================================================================
+
+  subroutine wrf_domain_mct( grid, lsize, gsMap_a, dom_a )
+
+!-------------------------------------------------------------------
+! Arguments
+!
+      TYPE(domain) , POINTER:: grid
+      integer        , intent(in)   :: lsize
+      type(mct_gsMap), intent(in)   :: gsMap_a
+      type(mct_ggrid), intent(inout):: dom_a    
+!
+! Local Variables
+!
+      integer  :: i,j,k,mm,nn           ! indices	
+      integer :: ids,ide,jds,jde,kds,kde,ims,ime,jms,jme,kms,kme,ips,ipe,jps,jpe,kps,kpe
+      real(r8)::del_phi,del_theta
+      real(r8),dimension(:,:,:),allocatable :: ew_vert,ns_vert,xcenterlat,xcenterlon ! vertex of cell    
+      real(r8),dimension(:,:),allocatable :: area          ! area in radians squared for each grid point
+      real(r8), pointer  :: data(:)     ! temporary
+      integer , pointer  :: idata(:)    ! temporary  
+      real :: lat, lon, ix ,jy
+    
+      type(proj_info) :: proj_shrink
+
+! Initialize mct atm domain
+
+         call mct_gGrid_init( GGrid=dom_a, CoordChars=trim(seq_flds_dom_coord), OtherChars=trim(seq_flds_dom_other), lsize=lsize )
+
+! Allocate memory
+
+         allocate(data(lsize))
+ 
+! Initialize attribute vector with special value
+
+         call mct_gsMap_orderedPoints(gsMap_a, mytask, idata)
+         call mct_gGrid_importIAttr(dom_a,'GlobGridNum',idata,lsize)
+
+! Determine domain (numbering scheme is: West to East and South to North to South pole)
+! Initialize attribute vector with special value
+
+        data(:) = -9999.0_R8 
+        call mct_gGrid_importRAttr(dom_a,"lat"  ,data,lsize) 
+        call mct_gGrid_importRAttr(dom_a,"lon"  ,data,lsize) 
+        call mct_gGrid_importRAttr(dom_a,"area" ,data,lsize) 
+        call mct_gGrid_importRAttr(dom_a,"aream",data,lsize) 
+        data(:) = 0.0_R8     
+        call mct_gGrid_importRAttr(dom_a,"mask" ,data,lsize) 
+        data(:) = 1.0_R8
+        call mct_gGrid_importRAttr(dom_a,"frac" ,data,lsize)
+
+!
+! Fill in correct values for domain components
+!
+       call get_ijk_from_grid (grid ,                   &
+                               ids, ide, jds, jde, kds, kde,    &
+                               ims, ime, jms, jme, kms, kme,    &    
+		       	       ips, ipe, jps, jpe, kps, kpe    )
+    
+       if(jpe.eq.jde) jpe=jpe-1
+       if(ipe.eq.ide) ipe=ipe-1    
+
+! lat	
+       nn=0
+       do j=jps, jpe             
+         do i=ips, ipe
+            nn = nn+1
+            data(nn) = grid%xlat(i,j)
+         end do
+       end do
+       call mct_gGrid_importRAttr(dom_a,"lat",data,lsize) 
+
+! lon
+       nn=0
+       do j=jps, jpe             
+          do i=ips,ipe
+            nn = nn+1
+            data(nn) = grid%xlong(i,j)
+          end do
+       end do
+       call mct_gGrid_importRAttr(dom_a,"lon",data,lsize) 
+       
+!--------------------------------------------------------------
+! the corner of the gridcells
+!--------------------------------------------------------------
+! (dx, dy) shrink to (dx/2, dy/2)	
+       mm=2*(ide-ids)+3 
+       nn=2*(jde-jds)+3
+	
+       allocate(area(ips:ipe,jps:jpe))
+       allocate(xcenterlat(1:mm,1:nn,1:1))
+       allocate(xcenterlon(1:mm,1:nn,1:1))
+       allocate(ew_vert(4,ids:ide,jds:jde))
+       allocate(ns_vert(4,ids:ide,jds:jde))
+	
+!  initial proj
+       call map_init(proj_shrink)
+             
+! set the map      
+
+       if (iproj_type == PROJ_MERC) then
+         call map_set(iproj_type, proj_shrink, &
+                      truelat1=truelat1, &
+                      lat1=ref_lat, &
+                      lon1=ref_lon, &
+                      knowni=(mm/2.0+1.0), &
+                      knownj=(nn/2.0+1.0), &
+                      dx=dxkm/2.0)
+  
+      else if (iproj_type == PROJ_CASSINI) then
+         call map_set(iproj_type, proj_shrink, &
+                      latinc=dlatdeg/2.0, &
+                      loninc=dlondeg/2.0, &
+                      dx=dxkm/2.0,       &
+                      dy=dykm/2.0,       &
+                      stdlon=stand_lon, &
+                      knowni=(mm/2.0+1.0), &
+                      knownj=(nn/2.0+1.0), &
+                      lat0=pole_lat, &
+                      lon0=pole_lon, &
+                      lat1=ref_lat, &
+                      lon1=ref_lon)
+  
+      else if (iproj_type == PROJ_LC) then
+         call map_set(iproj_type, proj_shrink, &
+                      truelat1=truelat1, &
+                      truelat2=truelat2, &
+                      stdlon=stand_lon, &
+                      lat1=ref_lat, &
+                      lon1=ref_lon, &
+                      knowni=(mm/2.0+1.0), &
+                      knownj=(nn/2.0+1.0), &
+                      dx=dxkm/2.0)
+    
+      else if (iproj_type == PROJ_PS) then
+         call map_set(iproj_type, proj_shrink, &
+                      truelat1=truelat1, &
+                      stdlon=stand_lon, &
+                      lat1=ref_lat, &
+                      lon1=ref_lon, &
+                      knowni=(mm/2.0+1.0), &
+                      knownj=(nn/2.0+1.0), &
+                      dx=dxkm/2.0)
+   
+      end if
+	
+! the (dx/2, dy/2) point	
+       do j=1,2*(jde-jds+1)+1
+         do i=1,2*(ide-ids+1)+1  
+           ix=i*1.0
+           jy=j*1.0
+           call ij_to_latlon(proj_shrink, ix, jy, lat, lon) 
+           xcenterlat(i,j,1)=lat
+           xcenterlon(i,j,1)=lon      
+         enddo
+       enddo       
+      
+       do j=1,jde-jds
+         do i=1,ide-ids
+
+          ns_vert(1,i,j) = xcenterlat(2*i-1,2*j+1,1)
+          ns_vert(2,i,j) = xcenterlat(2*i-1,2*j-1,1)
+          ns_vert(3,i,j) = xcenterlat(2*i+1,2*j-1,1)
+	  ns_vert(4,i,j) = xcenterlat(2*i+1,2*j+1,1)
+	  
+          if(xcenterlon(2*i-1,2*j+1,1).lt.0) xcenterlon(2*i-1,2*j+1,1)=xcenterlon(2*i-1,2*j+1,1)+360.0
+          if(xcenterlon(2*i-1,2*j-1,1).lt.0) xcenterlon(2*i-1,2*j-1,1)=xcenterlon(2*i-1,2*j-1,1)+360.0
+          if(xcenterlon(2*i+1,2*j-1,1).lt.0) xcenterlon(2*i+1,2*j-1,1)=xcenterlon(2*i+1,2*j-1,1)+360.0
+          if(xcenterlon(2*i+1,2*j+1,1).lt.0) xcenterlon(2*i+1,2*j+1,1)=xcenterlon(2*i+1,2*j+1,1)+360.0
+	  
+	    ew_vert(1,i,j) = xcenterlon(2*i-1,2*j+1,1)    
+            ew_vert(2,i,j) = xcenterlon(2*i-1,2*j-1,1)	    
+	    ew_vert(3,i,j) = xcenterlon(2*i+1,2*j-1,1)
+            ew_vert(4,i,j) = xcenterlon(2*i+1,2*j+1,1)
+         
+         enddo
+       enddo
+
+! area
+	do j=jps,jpe
+	 do i=ips,ipe
+! segement intersection
+	   area(i,j)=0.0
+	   do k=1,4
+	   mm=k+1
+	   if(mm.eq.5) mm=1
+	   del_phi = (dsin( ns_vert(k,i,j)*RAD_PER_DEG )+ dsin( ns_vert(mm,i,j)*RAD_PER_DEG))/2.0
+	   if(abs(ew_vert(k,i,j)-ew_vert(mm,i,j)).gt.190) then  !gridcell cross 0 longitude
+	    if(ew_vert(k,i,j).gt.ew_vert(mm,i,j)) then  
+	     del_theta = ( ew_vert(k,i,j)-ew_vert(mm,i,j)-360.0)*RAD_PER_DEG
+	    else 
+             del_theta = (ew_vert(k,i,j)+360.0-ew_vert(mm,i,j) )*RAD_PER_DEG
+	    endif
+	   else
+	     del_theta = (ew_vert(k,i,j)-ew_vert(mm,i,j) )*RAD_PER_DEG
+           endif
+           area(i,j) = area(i,j)+del_theta*del_phi
+	   enddo
+	   area(i,j)=dabs(area(i,j))
+
+          if(area(i,j).gt.1) then  ! cover the pole
+           area(i,j)=0.0
+	   do k=1,4
+	   mm=k+1
+	   if(mm.eq.5) mm=1
+	   del_phi = (dsin( ns_vert(k,i,j)*RAD_PER_DEG)+ dsin(ns_vert(mm,i,j)*RAD_PER_DEG))/2.0
+	   if(abs(ew_vert(k,i,j)-ew_vert(mm,i,j)).gt.190) then  !gridcell cross 0 longitude
+	    if(ew_vert(k,i,j).gt.ew_vert(mm,i,j)) then  
+	     del_theta = ( ew_vert(mm,i,j)+360-ew_vert(k,i,j) )*RAD_PER_DEG
+	    else 
+             del_theta = (ew_vert(k,i,j)-360.0-ew_vert(mm,i,j)  )*RAD_PER_DEG
+	    endif
+	   else
+	    del_theta = (ew_vert(k,i,j)-ew_vert(mm,i,j)  )*RAD_PER_DEG
+           endif
+           area(i,j) = area(i,j)+del_theta*(1.0-abs(del_phi))
+	   enddo
+	   area(i,j)=dabs(area(i,j))
+	  endif
+	  
+	 enddo
+      enddo
+
+      nn=0
+      do j=jps, jpe             
+       do i=ips, ipe
+          nn = nn+1
+          data(nn) = area(i,j) 
+       end do
+      end do
+      call mct_gGrid_importRAttr(dom_a,"area",data,lsize) 
+
+      nn=0
+      do j=jps, jpe             
+       do i=ips,ipe
+          nn = nn+1
+          data(nn) = 1._r8 ! mask
+       end do
+      end do
+      call mct_gGrid_importRAttr(dom_a,"mask"   ,data,lsize) 
+
+
+        if(associated(idata)) deallocate(idata)    
+	deallocate(data)
+	deallocate(area)
+	deallocate(xcenterlat)
+	deallocate(xcenterlon)
+	deallocate(ew_vert)
+	deallocate(ns_vert)
+
+  end subroutine wrf_domain_mct
+
+!===========================================================================================
+!
+  subroutine wrf_import_cam( x2c_c, grid, loop )
+     USE module_state_description
+!-----------------------------------------------------------------------
+! Arguments
+!
+     TYPE(metgrid_info) :: grid
+     type(mct_aVect)   , intent(inout) :: x2c_c
+     integer :: loop
+
+     ! Local variables
+	
+     integer  :: i,j,k,ig  ! indices    
+     integer :: ids,ide,jds,jde,kds,kde,ims,ime,jms,jme,kms,kme,ips,ipe,jps,jpe,kps,kpe    
+     real::z,tv,rd,g,xlapse,alpha,tstar,tt0,alph,beta,psfc,ppslv,p    
+     real*8,dimension(:,:,:),allocatable::z3d,u3d,v3d,q3d,t3d,rh3d,p3d 
+     real*8,dimension(:,:,:),allocatable::z3d_int,u3d_int,v3d_int,q3d_int,t3d_int,rh3d_int 
+     real*8,dimension(:,:),allocatable::psfcg,rhsf,tsf,usf,vsf,hsf 
+     real*8,dimension(1:27)::w3d 
+     real*8,dimension(1:26) :: a, b 
+     logical :: twoway_coupling     
+     logical,save :: first_sst=.true.     
+
+     data a/0.00354463800000001, 0.00738881350000001, 0.013967214, 0.023944625,&
+    0.0372302900000001, 0.0531146050000002, 0.0700591500000003, &
+    0.0779125700000003, 0.0766070100000003, 0.0750710850000003, &
+    0.0732641500000002, 0.071138385, 0.0686375349999999, 0.065695415, &
+    0.0622341550000001, 0.0581621650000002, 0.0533716800000001, &
+    0.0477359250000001, 0.041105755, 0.0333057, 0.02496844, 0.01709591, &
+    0.01021471, 0.00480317500000001, 0.00126068, 0 /
+     data b/ 0, 0, 0, 0, 0, 0, 0, 0.00752654500000002, 0.023907685, 0.04317925, &
+    0.0658512450000003, 0.0925236850000004, 0.1239024, 0.16081785, 0.204247, &
+    0.2553391, 0.315446300000001, 0.386159300000001, 0.469349500000002, &
+    0.567218500000003, 0.671827850000003, 0.770606150000003, &
+    0.856946050000001, 0.924845700000002, 0.969294150000001, 0.9925561 /
+     data w3d /200100,100000,97500,95000,92500,90000,85000,80000 &
+       ,75000,70000,65000,60000,55000,50000,45000,40000,35000 &
+       ,30000,25000,20000,15000,10000,7000,5000,3000,2000,1000/
+ 
+       call shr_file_getLogUnit (shrlogunit)
+       call shr_file_getLogLevel(shrloglev)
+       call shr_file_setLogUnit (iulog)
+     
+       twoway_coupling= model_config_rec%twoway_coupling       
+       call metgrid_decompose(grid, ids, ide, jds, jde, kds, kde, &
+                   ims,  ime,  jms,  jme,  kms,  kme, &
+                   ips,  ipe,  jps,  jpe,  kps,  kpe ) 
+      rd = 287.0
+      g = 9.81
+      xlapse= 6.5e-3
+
+      ig=grid%num_metgrid_levels
+      allocate(z3d(ipe-ips+1,1:ig-1,jpe-jps+1))
+      allocate(u3d(ipe-ips+1,1:ig-1,jpe-jps+1))
+      allocate(v3d(ipe-ips+1,1:ig-1,jpe-jps+1))
+      allocate(t3d(ipe-ips+1,1:ig-1,jpe-jps+1))
+      allocate(q3d(ipe-ips+1,1:ig-1,jpe-jps+1))
+      allocate(p3d(ipe-ips+1,1:ig-1,jpe-jps+1))
+      allocate(rh3d(ipe-ips+1,1:ig-1,jpe-jps+1))
+      allocate(z3d_int(ipe-ips+1,1:ig,jpe-jps+1))
+      allocate(u3d_int(ipe-ips+1,1:ig,jpe-jps+1))
+      allocate(v3d_int(ipe-ips+1,1:ig,jpe-jps+1))
+      allocate(t3d_int(ipe-ips+1,1:ig,jpe-jps+1))
+      allocate(q3d_int(ipe-ips+1,1:ig,jpe-jps+1))
+      allocate(rh3d_int(ipe-ips+1,1:ig,jpe-jps+1))
+      allocate(psfcg(ipe-ips+1,jpe-jps+1))
+      allocate(rhsf(ipe-ips+1,jpe-jps+1))
+      allocate(tsf(ipe-ips+1,jpe-jps+1))
+      allocate(usf(ipe-ips+1,jpe-jps+1))
+      allocate(vsf(ipe-ips+1,jpe-jps+1))
+      allocate(hsf(ipe-ips+1,jpe-jps+1))
+     
+      ig=1
+      do j=jps,jpe                                                        
+       do i =ips, ipe
+         
+          grid%xlat(i,j)       = x2c_c%rAttr(index_x2w_Sx_lat     ,ig)*180.0/3.1415926
+          grid%xlon(i,j)       = x2c_c%rAttr(index_x2w_Sx_lon     ,ig)*180.0/3.1415926 
+	  if(grid%xlon(i,j).lt.0) grid%xlon(i,j) = grid%xlon(i,j)+360 
+
+          grid%q3d(i,1,j)       = 0  
+
+	  do k = kstart, grid%num_metgrid_levels ! num_metgrid_levels=num_cam_levels+1
+            grid%q3d(i,k,j)       = 0  
+            grid%z3d(i,k,j) = x2c_c%rAttr(index_x2w_Sx_z3d(grid%num_metgrid_levels-k+1)     ,ig)
+            u3d(i-ips+1,k-1,j-jps+1) = x2c_c%rAttr(index_x2w_Sx_u3d(grid%num_metgrid_levels-k+1)     ,ig)
+            v3d(i-ips+1,k-1,j-jps+1) = x2c_c%rAttr(index_x2w_Sx_v3d(grid%num_metgrid_levels-k+1)     ,ig)
+            t3d(i-ips+1,k-1,j-jps+1) = x2c_c%rAttr(index_x2w_Sx_t3d(grid%num_metgrid_levels-k+1)     ,ig)
+            p3d(i-ips+1,k-1,j-jps+1) = 100000.0_8*a(grid%num_metgrid_levels-k+1) + x2c_c%rAttr(index_x2w_Sx_ps      ,ig)*b(grid%num_metgrid_levels-k+1)
+	    rh3d(i-ips+1,k-1,j-jps+1) = x2c_c%rAttr(index_x2w_Sx_w3d(grid%num_metgrid_levels-k+1)     ,ig) ! relative humidity, use w3d 
+          end do  
+
+	    rhsf(i-ips+1,j-jps+1) = x2c_c%rAttr(index_x2w_Sx_w3d(grid%num_metgrid_levels-1)     ,ig) ! record the lowest level as surface
+	    usf(i-ips+1,j-jps+1) = x2c_c%rAttr(index_x2w_Sx_u3d(grid%num_metgrid_levels-1)     ,ig) ! record the lowest level as surface
+	    vsf(i-ips+1,j-jps+1) = x2c_c%rAttr(index_x2w_Sx_v3d(grid%num_metgrid_levels-1)     ,ig) ! record the lowest level as surface
+	    tsf(i-ips+1,j-jps+1) = x2c_c%rAttr(index_x2w_Sx_q3d(2)     ,ig) ! record the lowest level as surface
+          
+            grid%psfc(i,j)       = x2c_c%rAttr(index_x2w_Sx_ps      ,ig)   
+
+            tsf(i-ips+1,j-jps+1) = tsf(i-ips+1,j-jps+1)*(1+0.0065* &
+                                  287.0/9.81*(grid%psfc(i,j)/p3d(i-ips+1,1,j-jps+1)-1)) !calculate the lowest level temperature
+
+           psfcg(i-ips+1,j-jps+1) = x2c_c%rAttr(index_x2w_Sx_ps      ,ig)
+
+           grid%pslv(i,j)       = x2c_c%rAttr(index_x2w_Sx_q3d(1)     ,ig)
+
+           grid%ht(i,j) =  x2c_c%rAttr(index_x2w_Sx_phis    ,ig)/g
+	   hsf(i-ips+1,j-jps+1) = x2c_c%rAttr(index_x2w_Sx_phis  ,ig)/g ! record the terrain
+
+! use the previous cam time sst not the present cam time sst
+! sicne cam time leads wrf time one couple time step
+           if (first_sst) then  
+           grid%sst(i,j) = x2c_c%rAttr(index_x2w_Sx_sst  ,ig)    
+           grid%xice(i,j) = x2c_c%rAttr(index_x2w_Sx_seaice  ,ig)
+           else
+           grid%sst(i,j) = grid%sstold(i,j)
+           grid%xice(i,j) = grid%xiceold(i,j)
+           end if
+           grid%sstold(i,j) =x2c_c%rAttr(index_x2w_Sx_sst  ,ig)
+           grid%xiceold(i,j) = x2c_c%rAttr(index_x2w_Sx_seaice  ,ig)
+
+   	   grid%tsk(i,j) = x2c_c%rAttr(index_x2w_Sx_ts  ,ig)      
+
+           grid%xland(i,j)= x2c_c%rAttr(index_x2w_Sx_ocnfrac  ,ig) ! used as land
+           grid%snow(i,j) = (grid%xland(i,j) *x2c_c%rAttr(index_x2w_Sx_snowhland  ,ig)  +grid%xice(i,j) * x2c_c%rAttr(index_x2w_Sx_snowhice   ,ig))
+
+           if(grid%xland(i,j).lt.0.5) then
+            grid%xland(i,j)=0
+           else
+            grid%xland(i,j)=1
+           endif
+
+           do k=1, grid%num_metgrid_soil_levels
+            grid%soildepth(i,k,j)       =  x2c_c%rAttr(index_x2w_Sx_soildepth(k),ig)*100.0  ! The unit is supposed as cm
+            grid%soilthick(i,k,j)       = x2c_c%rAttr(index_x2w_Sx_soilthick(k),ig)*100.0   !The unit is supposed as cm
+            grid%soilt(i,k,j)   = x2c_c%rAttr(index_x2w_Sx_soilt(k),ig)
+            grid%soilm(i,k,j)   = x2c_c%rAttr(index_x2w_Sx_soilm(k),ig) 
+            grid%soilt(i,k,j)    = x2c_c%rAttr(index_x2w_Sx_soilt(1),ig) ! use the first level
+            grid%soilm(i,k,j)    = 1.0 
+            if(grid%xland(i,j).eq.0) then ! set to surface temperature over the water 
+             grid%soilt(i,k,j)=grid%tsk(i,j)
+            endif
+           enddo
+ 
+            grid%soildepth(i,1,j)       = 10
+            grid%soilthick(i,1,j)       = 10
+            grid%soildepth(i,2,j)       = 40
+            grid%soilthick(i,2,j)       = 40
+            grid%soildepth(i,3,j)       = 100
+            grid%soilthick(i,3,j)       = 100
+            grid%soildepth(i,4,j)       = 200
+            grid%soilthick(i,4,j)       = 200
+
+           ! embed the surface into 3d  
+           grid%z3d(i,1,j)       = grid%ht(i,j)
+           if( grid%z3d(i,1,j) .lt.0)   grid%z3d(i,1,j) = 0 ! it may be littler than zero in the ocean for the terrain
+           if( grid%ht(i,j) .lt.0)   grid%ht(i,j) = 0 ! it may be littler than zero in the ocean for the terrain
+
+           do  k = kstart, grid%num_metgrid_levels
+              grid%z3d(i,k,j)  = grid%z3d(i,k,j)+grid%z3d(i,1,j) ! the original height is the height above the surface not the sea level
+           enddo
+
+          ig=ig+1
+         end do
+       end do                                   
+     
+       ig=grid%num_metgrid_levels
+
+      ! u 
+      call interpolate_to_standard_levels(grid%num_metgrid_levels &
+               ,ipe-ips+1,jpe-jps+1,grid%num_metgrid_levels-1 &
+               ,p3d,w3d,u3d,u3d_int,psfcg,tsf,hsf,0)
+       do j=jps,jpe
+        do k=kstart,ig
+         do i=ips,ipe
+           grid%u3d(i,k,j) = u3d_int(i-ips+1,k,j-jps+1)
+         enddo
+        enddo
+       enddo 
+
+       do j=jps,jpe
+         do i=ips,ipe
+           grid%u3d(i,1,j) =usf(i-ips+1,j-jps+1)
+         enddo
+       enddo
+
+       ! v 
+       call interpolate_to_standard_levels(grid%num_metgrid_levels &
+               ,ipe-ips+1,jpe-jps+1,grid%num_metgrid_levels-1 &
+               ,p3d,w3d,v3d,v3d_int,psfcg,tsf,hsf,0)
+       do j=jps,jpe
+        do k=kstart,ig
+         do i=ips,ipe
+           grid%v3d(i,k,j) = v3d_int(i-ips+1,k,j-jps+1)
+         enddo
+        enddo
+       enddo
+
+       do j=jps,jpe
+         do i=ips,ipe
+           grid%v3d(i,1,j) =vsf(i-ips+1,j-jps+1)
+         enddo
+       enddo
+
+       ! t
+       call interpolate_to_standard_levels(grid%num_metgrid_levels &
+               ,ipe-ips+1,jpe-jps+1,grid%num_metgrid_levels-1 &
+               ,p3d,w3d,t3d,t3d_int,psfcg,tsf,hsf,2)
+       do j=jps,jpe
+        do k=kstart,ig
+         do i=ips,ipe
+           grid%t3d(i,k,j) = t3d_int(i-ips+1,k,j-jps+1)
+         enddo
+        enddo
+       enddo
+
+       do j=jps,jpe
+         do i=ips,ipe
+           grid%t3d(i,1,j) =tsf(i-ips+1,j-jps+1)
+         enddo
+       enddo
+
+       ! rh 
+       call interpolate_to_standard_levels(grid%num_metgrid_levels &
+               ,ipe-ips+1,jpe-jps+1,grid%num_metgrid_levels-1 &
+               ,p3d,w3d,rh3d,rh3d_int,psfcg,tsf,hsf,0)
+       do j=jps,jpe
+        do k=kstart,ig
+         do i=ips,ipe
+           if(rh3d_int(i-ips+1,k,j-jps+1).lt.0) rh3d_int(i-ips+1,k,j-jps+1)=0
+           grid%rh3d(i,k,j) = rh3d_int(i-ips+1,k,j-jps+1)
+         enddo
+        enddo
+       enddo
+
+       do j=jps,jpe
+         do i=ips,ipe
+           grid%rh3d(i,1,j) =rhsf(i-ips+1,j-jps+1)
+         enddo
+       enddo
+
+       ! ght 
+       do j=jps,jpe
+        do k=1,ig-1
+         do i=ips,ipe
+           z3d(i-ips+1,k,j-jps+1) = grid%z3d(i,kstart+k-1,j)* 1.0_8
+         enddo
+        enddo
+       enddo
+       call interpolate_to_standard_levels(grid%num_metgrid_levels &
+               ,ipe-ips+1,jpe-jps+1,grid%num_metgrid_levels-1 &
+               ,p3d,w3d,z3d,z3d_int,psfcg,tsf,hsf,1)
+       do j=jps,jpe
+        do k=kstart,ig 
+         do i=ips,ipe
+           grid%z3d(i,k,j) = z3d_int(i-ips+1,k,j-jps+1)
+         enddo
+        enddo
+       enddo
+
+       ! p
+       do j=jps,jpe
+         do i=ips,ipe 
+           grid%p3d(i,1,j) = grid%psfc(i,j)
+         enddo
+       enddo 
+      
+       do j=jps,jpe
+        do k=kstart,ig  ! we keep the surface prresure
+         do i=ips,ipe
+           grid%p3d(i,k,j) = w3d(k)
+         enddo
+        enddo
+       enddo
+
+       if(first_sst) then
+       call metgrid_oncetogather(grid, ids, ide, jds, jde, 1, 1,  &
+                                grid%num_metgrid_levels, grid%num_metgrid_soil_levels, &
+                                ips, ipe, jps, jpe, 1, 1)
+       endif
+       call metgrid_alltogather(grid, ids, ide, jds, jde, 1, 1,  &
+                                grid%num_metgrid_levels, grid%num_metgrid_soil_levels, &
+                                ips, ipe, jps, jpe, 1, 1)
+       if(first_sst) first_sst=.false. 
+       call shr_file_setLogUnit (shrlogunit)
+       call shr_file_setLogLevel(shrloglev)
+
+       deallocate(z3d)
+       deallocate(u3d)
+       deallocate(v3d)
+       deallocate(q3d)
+       deallocate(t3d)
+       deallocate(rh3d)
+       deallocate(p3d)
+       deallocate(z3d_int)
+       deallocate(u3d_int)
+       deallocate(v3d_int)
+       deallocate(q3d_int)
+       deallocate(t3d_int)
+       deallocate(rh3d_int)
+       deallocate(psfcg)
+       deallocate(rhsf)
+       deallocate(tsf)
+       deallocate(vsf)
+       deallocate(usf)
+       deallocate(hsf)
+    
+  end subroutine wrf_import_cam
+
+!===============================================================================
+
+  subroutine wrf_export_cam( grid, w2x_w, avg_count, dtime )
+  
+  USE module_state_description
+!-------------------------------------------------------------------
+!
+! Arguments
+!
+     TYPE(domain) , POINTER:: grid
+     type(mct_aVect)    , intent(out) :: w2x_w
+     integer :: avg_count, dtime
+!
+! Local variables
+!
+     real :: u_phy,v_phy
+     real(r8)::z,tv,rd,g,xlapse,alpha,tstar,tt0,alph,beta,psfc,pslv,p
+     integer :: i,j,k,ig       ! indices
+     integer :: ids,ide,jds,jde,kds,kde,ims,ime,jms,jme,kms,kme,ips,ipe,jps,jpe,kps,kpe
+     TYPE (grid_config_rec_type)  :: config_flags
+     integer :: twoway_nudging
+!-----------------------------------------------------------------------
+! Copy from component arrays into chunk array data structure
+! Rearrange data from chunk structure into lat-lon buffer and subsequently
+! create attribute vector
+
+  end subroutine wrf_export_cam
+
+!===============================================================================
+	
+  subroutine wrf_SetgsMap_cam( grid, mpicom_atm, WRFID, GSMap_cc )
+
+!-------------------------------------------------------------------
+!
+! Arguments
+!
+      TYPE(metgrid_info) :: grid
+      integer        , intent(in)  :: mpicom_atm
+      integer        , intent(in)  :: WRFID
+      type(mct_gsMap), intent(out) :: GSMap_cc
+!
+! Local variables
+!
+      integer, allocatable :: gindex(:)
+      integer :: i, j, k, n,lsize,gsize
+      integer :: ids,ide,jds,jde,kds,kde,ims,ime,jms,jme,kms,kme,ips,ipe,jps,jpe,kps,kpe
+      integer :: ier            ! error status
+!-------------------------------------------------------------------
+! Build the atmosphere grid numbering for MCT
+! NOTE:  Numbering scheme is: West to East, bottom to level, and South to North
+! starting at south pole.  Should be the same as what's used in SCRIP
+! Determine global seg map
+	
+             ! prepare the decomposition of metgrid	
+      call metgrid_decompose(grid, ids, ide, jds, jde, kds, kde, &
+                             ims,  ime,  jms,  jme,  kms,  kme, &
+                             ips,  ipe,  jps,  jpe,  kps,  kpe )
+
+      lsize=0
+      do j=jps, jpe 
+       do i=ips, ipe
+             lsize = lsize+1  !local index
+       end do
+      end do
+   
+      gsize=(ide-ids+1)*(jde-jds+1)
+      allocate(gindex(lsize))
+
+      n=0
+      do j=jps, jpe  
+       do i=ips, ipe
+          n=n+1
+          gindex(n) =(j-1)*(ide-ids+1)+i  ! global index
+       end do
+      end do
+
+      call mct_gsMap_init( gsMap_cc, gindex, mpicom_atm, WRFID, lsize, gsize)
+
+      deallocate(gindex)
+
+  end subroutine wrf_SetgsMap_cam
+  
+!===============================================================================
+
+  subroutine wrf_domain_cam( grid, lsize, gsMap_c, dom_c )
+
+!-------------------------------------------------------------------
+! Arguments
+!
+      TYPE(metgrid_info) :: grid
+      integer     , intent(in)   :: lsize
+      TYpe(mct_gsMap), intent(in)   :: gsMap_c
+      type(mct_ggrid), intent(inout):: dom_c    
+!
+! Local Variables
+!
+      integer  :: i,j,k,mm,nn           ! indices	
+      integer :: ids,ide,jds,jde,kds,kde,ims,ime,jms,jme,kms,kme,ips,ipe,jps,jpe,kps,kpe
+      real(r8), pointer  :: data(:)     ! temporary
+      integer , pointer  :: idata(:)    ! temporary
+                
+! Initialize mct atm domain
+         call mct_gGrid_init( GGrid=dom_c, CoordChars=trim(seq_flds_dom_coord), OtherChars=trim(seq_flds_dom_other), lsize=lsize )
+
+! Allocate memory
+         allocate(data(lsize))
+ 
+! Initialize attribute vector with special value
+         call mct_gsMap_orderedPoints(gsMap_c, mytask, idata)
+         call mct_gGrid_importIAttr(dom_c,'GlobGridNum',idata,lsize)
+
+! Determine domain (numbering scheme is: West to East and South to North to South pole)
+! Initialize attribute vector with special value
+
+        data(:) = -9999.0_R8 
+        call mct_gGrid_importRAttr(dom_c,"lat"  ,data,lsize) 
+        call mct_gGrid_importRAttr(dom_c,"lon"  ,data,lsize) 
+        call mct_gGrid_importRAttr(dom_c,"area" ,data,lsize) 
+        call mct_gGrid_importRAttr(dom_c,"aream",data,lsize) 
+        data(:) = 0.0_R8     
+        call mct_gGrid_importRAttr(dom_c,"mask" ,data,lsize) 
+        data(:) = 1.0_R8
+        call mct_gGrid_importRAttr(dom_c,"frac" ,data,lsize)
+    
+        if(associated(idata)) deallocate(idata)    
+	deallocate(data)
+
+	end subroutine wrf_domain_cam
+	
+!===============================================================================
+
+  recursive subroutine init_nest_domain(mgrid, grid)
+
+       implicit none
+
+       !  Input data.
+       TYPE(domain) , POINTER :: grid
+       type(metgrid_info):: mgrid
+  
+       !  Local data
+       TYPE(domain) , POINTER :: grid_ptr , new_nest
+       INTEGER               :: nestid , kid
+       LOGICAL               :: a_nest_was_opened
+       logical :: restart     
+       integer::ips, ipe, jps ,jpe, kps, kpe, &
+               ids, ide, jds, jde, kds, kde, &
+               ims, ime, jms, jme, kms, kme
+       character(len=19)::current_timestr 
+       TYPE (grid_config_rec_type) :: config_flags, nest_config_flags
+
+       INTERFACE
+         SUBROUTINE med_interp_domain ( parent , nest )
+          USE module_domain	, ONLY : domain
+          TYPE(domain) , POINTER    :: parent , nest
+         END SUBROUTINE med_interp_domain
+         SUBROUTINE  copy_3d_field ( ter_interpolated , ter_input , &
+                           ids , ide , jds , jde , kds , kde , &
+                           ims , ime , jms , jme , kms , kme , &
+                           ips , ipe , jps , jpe , kps , kpe )
+            INTEGER                      :: ids , ide , jds , jde , kds , kde , &
+                                            ims , ime , jms , jme , kms , kme , &
+                                            ips , ipe , jps , jpe , kps , kpe
+            REAL , DIMENSION(ims:ime,jms:jme) :: ter_interpolated
+            REAL , DIMENSION(ims:ime,jms:jme) :: ter_input
+         END SUBROUTINE copy_3d_field   
+         SUBROUTINE med_pre_nest_initial ( parent , newid , config_flags )
+          USE module_domain
+          USE module_configure
+          TYPE (domain), POINTER ::  parent
+          INTEGER, INTENT(IN)    ::  newid
+          TYPE (grid_config_rec_type) config_flags
+         END SUBROUTINE med_pre_nest_initial
+         SUBROUTINE med_nest_initial ( parent , grid , config_flags )
+          USE module_domain
+          USE module_configure
+          TYPE (domain), POINTER ::  grid , parent
+          TYPE (grid_config_rec_type) config_flags
+         END SUBROUTINE med_nest_initial         
+         SUBROUTINE med_setup_step ( grid , config_flags )
+          USE module_domain
+          USE module_configure
+          TYPE (domain) grid
+          TYPE (grid_config_rec_type) config_flags
+         END SUBROUTINE med_setup_step     
+       END INTERFACE
+
+!            CALL model_to_grid_config_rec ( grid%id , model_config_rec , config_flags )
+!            call med_setup_step ( grid , config_flags )
+
+            CALL set_current_grid_ptr( grid )
+
+            a_nest_was_opened = .false.	
+            DO WHILE ( nests_to_open( grid , nestid , kid ) )
+               ! nestid is index into model_config_rec (module_configure) of the grid
+               ! to be opened; kid is index into an open slot in grid's list of children
+               a_nest_was_opened = .true.
+
+               CALL med_pre_nest_initial ( grid , nestid , config_flags )
+
+               CALL alloc_and_configure_domain ( domain_id  = nestid ,   &
+                                                 grid       = new_nest , &
+                                                 parent     = grid ,     &
+                                                 kid        = kid        )
+
+               CALL Setup_Timekeeping (new_nest)      
+
+               call get_ijk_from_grid ( new_nest,    &
+                               ids, ide, jds, jde, kds, kde,    &
+                               ims, ime, jms, jme, kms, kme,    &    
+		       	       ips, ipe, jps, jpe, kps, kpe    )               
+
+               if(grid%id.eq.1) then
+               model_config_rec%dx(new_nest%id) =dxkm/parent_grid_ratio(new_nest%id)
+               model_config_rec%dy(new_nest%id) =dykm/parent_grid_ratio(new_nest%id)
+               nest_config_flags%dx=dxkm/parent_grid_ratio(new_nest%id)
+               nest_config_flags%dy=dykm/parent_grid_ratio(new_nest%id)
+               else
+               model_config_rec%dx(new_nest%id) =model_config_rec%dx(grid%id)/parent_grid_ratio(new_nest%id)
+               model_config_rec%dy(new_nest%id) =model_config_rec%dy(grid%id)/parent_grid_ratio(new_nest%id)
+               nest_config_flags%dx=model_config_rec%dx(grid%id)/parent_grid_ratio(new_nest%id)
+               nest_config_flags%dy=model_config_rec%dy(grid%id)/parent_grid_ratio(new_nest%id)
+               end if 
+               ! the radiation, surface, pbl, cumulus, microphysical and the tke driver
+               ! as well as the hist output with mproj=6 use grid%dx and grid%dy instead of config_flags
+               new_nest%dx = nest_config_flags%dx
+               new_nest%dy = nest_config_flags%dy  
+               print *, nest_config_flags%dx, new_nest%dx, new_nest%parent_grid_ratio
+	       call nl_get_restart( 1, restart )
+
+               if(.not.restart) then
+! initialize nest with interpolated data from the parent
+               new_nest%first_force = .true.
+               new_nest%imask_nostag = 1
+               new_nest%imask_xstag = 1
+               new_nest%imask_ystag = 1
+               new_nest%imask_xystag = 1
+               CALL med_interp_domain( grid, new_nest )
+! initialize some other constants (and 1d arrays in z)
+               CALL init_domain_constants ( grid, new_nest )
+
+               IF ( new_nest%save_topo_from_real == 1 ) THEN
+                  CALL  copy_3d_field ( new_nest%ht_int  , new_nest%ht , &
+                                ids , ide , jds , jde , 1   , 1   , &
+                                ims , ime , jms , jme , 1   , 1   , &
+                                ips , ipe , jps , jpe , 1   , 1   )
+                  CALL  copy_3d_field ( new_nest%mub_fine , new_nest%mub , &
+                                ids , ide , jds , jde , 1   , 1   , &
+                                ims , ime , jms , jme , 1   , 1   , &
+                                ips , ipe , jps , jpe , 1   , 1   )
+                  CALL  copy_3d_field ( new_nest%phb_fine , new_nest%phb , &
+                                ids , ide , jds , jde , kds , kde , &
+                                ims , ime , jms , jme , kms , kme , &
+                                ips , ipe , jps , jpe , kps , kpe )
+               END IF  
+
+      	       call initial_ggrid(ggrid_info,ids, ide, jds, jde, kds, kde,    &
+                                  ims, ime, jms, jme, kms, kme,    &    
+		                  ips, ipe, jps, jpe, kps, kpe )   
+
+               call geogrid(new_nest%id, ips, ipe, jps ,jpe, kps, kpe, &
+               ids, ide, jds, jde, kds, kde, &
+               ims, ime, jms, jme, kms, kme, &
+               ggrid_info%ht_gc, ggrid_info%tmn_gc, ggrid_info%snoalb, ggrid_info%OC12D, ggrid_info%var2d, &
+               ggrid_info%oa1, ggrid_info%oa2, ggrid_info%oa3, ggrid_info%oa4, ggrid_info%ol1, ggrid_info%ol2, ggrid_info%ol3, ggrid_info%ol4, &
+               ggrid_info%xland, ggrid_info%lu_index, ggrid_info%toposlpx, ggrid_info%toposlpy,&
+               ggrid_info%sct_dom_gc, ggrid_info%scb_dom_gc, ggrid_info%slopecat, &
+               ggrid_info%xlat, ggrid_info%xlong, ggrid_info%xlat_gc, ggrid_info%xlong_gc, ggrid_info%clat, ggrid_info%clong, &
+               ggrid_info%f, ggrid_info%e, ggrid_info%sina, ggrid_info%cosa, ggrid_info%msftx, ggrid_info%msfty, &    
+               ggrid_info%albedo12m, ggrid_info%greenfrac, ggrid_info%soilctop, ggrid_info%soilcbot, &
+               ggrid_info%landusef, ggrid_info%msfux, ggrid_info%msfuy, ggrid_info%xlat_u, ggrid_info%xlong_u, &
+               ggrid_info%msfvx, ggrid_info%msfvy, ggrid_info%xlat_v, ggrid_info%xlong_v)
+
+               call transfer_ggrid(ggrid_info, new_nest,ids, ide, jds, jde, kds, kde,    &
+                                    ims, ime, jms, jme, kms, kme,    &    
+		       	            ips, ipe, jps, jpe, kps, kpe )
+
+               call final_ggrid(ggrid_info)             
+
+               endif               
+
+               call set_rconfig(model_config_rec, new_nest%id)
+
+               call domain_clock_get(new_nest,current_timestr = current_timestr )
+
+               current_date = trim(current_timestr)//'.0000'
+
+               if(.not.restart) then
+               call metgrid(mgrid, new_nest, 1)
+               call real_interp(new_nest,nest_config_flags, 1) 
+               endif
+
+               CALL model_to_grid_config_rec ( grid%id , model_config_rec , config_flags )
+
+               CALL med_nest_initial ( grid , new_nest , config_flags )               
+               print *, new_nest%i_parent_start, new_nest%j_parent_start,  &
+                        new_nest%parent_grid_ratio, new_nest%parent_grid_ratio
+       
+            END DO
+
+            CALL set_current_grid_ptr( grid )
+	
+            grid_ptr => grid
+            DO WHILE ( ASSOCIATED( grid_ptr ) )
+               DO kid = 1, max_nests
+                 IF ( ASSOCIATED( grid_ptr%nests(kid)%ptr ) ) THEN
+                   CALL set_current_grid_ptr( grid_ptr%nests(kid)%ptr )
+                   ! Recursive -- advance nests from previous time level to this time level.
+                   CALL init_nest_domain ( mgrid, grid_ptr%nests(kid)%ptr )                   
+                 END IF
+               END DO
+               grid_ptr => grid_ptr%sibling
+            END DO
+
+            CALL set_current_grid_ptr( grid )            
+
+   end subroutine init_nest_domain  
+
+!===============================================================================   
+  subroutine transfer_ggrid(ggrid_info, grid, ids, ide, jds, jde, kds, kde,    &
+                               ims, ime, jms, jme, kms, kme,    &    
+		       	       ips, ipe, jps, jpe, kps, kpe )
+      
+      implicit none  
+
+      integer,intent(in) :: ids, ide, jds, jde, kds, kde,    &
+                             ims, ime, jms, jme, kms, kme,    &    
+		       	     ips, ipe, jps, jpe, kps, kpe  
+      type(geogrid_info) :: ggrid_info
+      type(domain) :: grid
+      
+      integer :: i, j, k
+  
+!      print *, 'model_config_rec%gwd_opt = ', model_config_rec%gwd_opt
+      
+      do j=jps, min(jpe,jde-1)
+      do i=ips, min(ipe,ide-1)
+      grid%ht_gc(i,j ) = ggrid_info%ht_gc(i,j ) 
+      grid%tmn_gc(i,j ) = ggrid_info%tmn_gc(i,j )  
+      grid%snoalb(i,j ) = ggrid_info%snoalb(i,j )
+      
+      grid%OC12D(i,j ) = ggrid_info%OC12D(i,j ) 
+      grid%var2d(i,j ) = ggrid_info%var2d(i,j )  
+      grid%oa1(i,j ) = ggrid_info%oa1(i,j )  
+      grid%oa2(i,j ) = ggrid_info%oa2(i,j )  
+      grid%oa3(i,j ) = ggrid_info%oa3(i,j )  
+      grid%oa4(i,j ) = ggrid_info%oa4(i,j )  
+      grid%ol1(i,j ) = ggrid_info%ol1(i,j )  
+      grid%ol2(i,j ) = ggrid_info%ol2(i,j )  
+      grid%ol3(i,j ) = ggrid_info%ol3(i,j )  
+      grid%ol4(i,j ) = ggrid_info%ol4(i,j )
+            
+      grid%xland(i,j ) = ggrid_info%xland(i,j )  
+      grid%landmask(i,j ) = ggrid_info%xland(i,j ) ! landmask need by process_soil_real in module_initialize_real.F
+      grid%lu_index(i,j ) = ggrid_info%lu_index(i,j ) 
+      grid%toposlpx(i,j ) = ggrid_info%toposlpx(i,j ) 
+      grid%toposlpy(i,j ) = ggrid_info%toposlpy(i,j ) 
+      grid%sct_dom_gc(i,j ) = ggrid_info%sct_dom_gc(i,j ) 
+      grid%scb_dom_gc(i,j ) = ggrid_info%scb_dom_gc(i,j ) 
+      grid%slopecat(i,j ) = ggrid_info%slopecat(i,j ) 
+      grid%xlat(i,j ) = ggrid_info%xlat(i,j ) 
+      grid%xlong(i,j ) = ggrid_info%xlong(i,j ) 
+      grid%xlat_gc(i,j ) = ggrid_info%xlat_gc(i,j ) 
+      grid%xlong_gc(i,j ) = ggrid_info%xlong_gc(i,j ) 
+      grid%clat(i,j ) = ggrid_info%clat(i,j ) 
+      grid%clong(i,j ) = ggrid_info%clong(i,j ) 
+      grid%f(i,j ) = ggrid_info%f(i,j ) 
+      grid%e(i,j ) = ggrid_info%e(i,j ) 
+      grid%sina(i,j ) = ggrid_info%sina(i,j ) 
+      grid%cosa(i,j ) = ggrid_info%cosa(i,j ) 
+      grid%msftx(i,j ) = ggrid_info%msftx(i,j ) 
+      grid%msfty(i,j ) = ggrid_info%msfty(i,j ) 
+      grid%msft(i,j ) = ggrid_info%msftx(i,j )  ! msft isn't used in the integrate but will be used in the postprocess in vorticity and potential vorticity 
+
+      do k=1,12 
+      grid%albedo12m(i,k,j ) = ggrid_info%albedo12m(i,k,j )   
+      grid%greenfrac(i,k,j ) = ggrid_info%greenfrac(i,k,j )
+      enddo
+      do k=1,16
+      grid%soilctop(i,k,j ) = ggrid_info%soilctop(i,k,j ) 
+      grid%soilcbot(i,k,j ) = ggrid_info%soilcbot(i,k,j )
+      enddo
+      do k=1,24
+      grid%landusef(i,k,j ) = ggrid_info%landusef(i,k,j )
+      enddo   
+      enddo
+      enddo
+
+      do j=jps, min(jpe,jde-1)
+      do i=ips, ipe
+      grid%msfu(i,j ) = ggrid_info%msfux(i,j )      
+      grid%msfux(i,j ) = ggrid_info%msfux(i,j ) 
+      grid%msfuy(i,j ) = ggrid_info%msfuy(i,j ) 
+      grid%xlat_u(i,j ) = ggrid_info%xlat_u(i,j ) 
+      grid%xlong_u(i,j ) = ggrid_info%xlong_u(i,j ) 
+      enddo
+      enddo
+      
+      do j=jps, jpe
+      do i=ips, min(ipe,ide-1)
+      grid%msfv(i,j ) = ggrid_info%msfvx(i,j )
+      grid%msfvx(i,j ) = ggrid_info%msfvx(i,j ) 
+      grid%msfvy(i,j ) = ggrid_info%msfvy(i,j ) 
+      grid%xlat_v(i,j )  = ggrid_info%xlat_v(i,j ) 
+      grid%xlong_v(i,j ) = ggrid_info%xlong_v(i,j ) 
+      end do
+      end do
+  end subroutine transfer_ggrid  
+
+!===============================================================================
+  
+  subroutine set_rconfig(model_config_rec, domain_id)
+  
+      TYPE (model_config_rec_type) :: model_config_rec 
+      integer, intent(in) :: domain_id
+      
+!      print *,iproj_type
+      model_config_rec%cen_lat(domain_id) = ref_lat
+      model_config_rec%cen_lon(domain_id) = ref_lon
+      model_config_rec%truelat1(domain_id) = truelat1
+      model_config_rec%truelat2(domain_id) = truelat2
+      model_config_rec%moad_cen_lat(domain_id) = ref_lat
+      model_config_rec%stand_lon(domain_id) = stand_lon  
+      model_config_rec%pole_lat(domain_id) = pole_lat   
+      model_config_rec%pole_lon(domain_id) = pole_lon
+      model_config_rec%map_proj(domain_id) = iproj_type   
+      model_config_rec%FLAG_METGRID = 1 
+      model_config_rec%FLAG_SNOW = 0   
+      model_config_rec%FLAG_PSFC = 1   
+      model_config_rec%FLAG_SM000010 = 1
+      model_config_rec%FLAG_SM010040 = 1  
+      model_config_rec%FLAG_SM040100 = 1  
+      model_config_rec%FLAG_SM100200 = 1 
+      model_config_rec%FLAG_ST000010 = 1  
+      model_config_rec%FLAG_ST010040 = 1  
+      model_config_rec%FLAG_ST040100 = 1  
+      model_config_rec%FLAG_ST100200 = 1  
+      model_config_rec%FLAG_SLP  = 1     
+      model_config_rec%FLAG_MF_XY = 1     
+      model_config_rec%bdyfrq(domain_id) = 1    
+      model_config_rec%iswater(domain_id) = 16         
+      model_config_rec%islake(domain_id)  = -1    
+      model_config_rec%isice(domain_id) = 24           
+      model_config_rec%isurban(domain_id) = 1          
+      model_config_rec%isoilwater(domain_id) = 14     
+      model_config_rec%num_land_cat = 24
+      model_config_rec%num_soil_cat = 16
+
+  end subroutine set_rconfig
+
+!===============================================================================
+    subroutine wrf_cam_mapping(grid)
+
+     implicit none
+#if defined(DM_PARALLEL) 
+     include "mpif.h"
+#endif
+
+     TYPE(domain) :: grid
+
+     integer :: i,j,k,ix,jy,km,local_index,global_index1,global_index2,global_index3,global_index4
+     integer :: ids,ide,jds,jde,kds,kde,ims,ime,jms,jme,kms,kme,ips,ipe,jps,jpe,kps,kpe
+     integer :: mids,mide,mjds,mjde,mkds,mkde,mims,mime,mjms,mjme,mkms,mkme,mips,mipe,mjps,mjpe,mkps,mkpe
+
+     integer :: ax,ay,bx,by
+     integer :: c1,c2,c3,c4
+     integer :: lx,ly,lz
+     integer,dimension(1) :: mm1,mm2,nn1,nn2
+     integer,dimension(2,1) :: m1,m2,n1,n2,indexs
+     integer :: ierr
+     real :: s,ss,sn,se,sw
+     real :: lat,lon,slat,slon,sa
+     real :: pi=3.1415926
+  
+     real,dimension(:,:),allocatable:: ws,we,wn,ww
+     real,dimension(:),allocatable:: wrfx,wrfy,wrfa
+
+     real :: nudging_coef 
+
+       nudging_coef = model_config_rec%nudging_coef
+
+  end subroutine wrf_cam_mapping
+
+!===============================================================================
+  subroutine cam_pndg(grid,windgrid)
+
+     TYPE(domain) :: grid
+     TYPE(windgrid_info) :: windgrid
+      
+     ! Local variables  
+     integer  :: i,j,k,ix,jy,km,local_index,global_index1,global_index2
+     integer :: ids,ide,jds,jde,kds,kde,ims,ime,jms,jme,kms,kme,ips,ipe,jps,jpe,kps,kpe
+     integer :: mids,mide,mjds,mjde,mkds,mkde,mims,mime,mjms,mjme,mkms,mkme,mips,mipe,mjps,mjpe,mkps,mkpe
+
+     real :: s,wweight
+     real(8) :: psfc
+     logical :: if_cam_psfc
+     integer :: twoway_nudging
+
+     double precision,dimension(1:26) :: a, b                                           
+     data a/0.00354463800000001, 0.00738881350000001, 0.013967214, 0.023944625,&
+    0.0372302900000001, 0.0531146050000002, 0.0700591500000003, &
+    0.0779125700000003, 0.0766070100000003, 0.0750710850000003, &
+    0.0732641500000002, 0.071138385, 0.0686375349999999, 0.065695415, &
+    0.0622341550000001, 0.0581621650000002, 0.0533716800000001, &
+    0.0477359250000001, 0.041105755, 0.0333057, 0.02496844, 0.01709591, &
+    0.01021471, 0.00480317500000001, 0.00126068, 0 /
+     data b/ 0, 0, 0, 0, 0, 0, 0, 0.00752654500000002, 0.023907685, 0.04317925, &
+    0.0658512450000003, 0.0925236850000004, 0.1239024, 0.16081785, 0.204247, &
+    0.2553391, 0.315446300000001, 0.386159300000001, 0.469349500000002, &
+    0.567218500000003, 0.671827850000003, 0.770606150000003, &
+    0.856946050000001, 0.924845700000002, 0.969294150000001, 0.9925561 /
+
+
+       twoway_nudging = model_config_rec%twoway_nudging
+       if_cam_psfc = model_config_rec%if_cam_psfc
+
+  end subroutine cam_pndg
+     
+!===============================================================================
+
+    subroutine wrf_mapping_to_cam(grid,  &
+       ids, ide, jds, jde, kds, kde, &
+       ims, ime, jms, jme, kms, kme, &
+       ips, ipe, jps, jpe, kps, kpe )
+     
+     TYPE(domain) :: grid
+     integer ::   ids, ide, jds, jde, kds, kde, &
+                  ims, ime, jms, jme, kms, kme, &
+                  ips, ipe, jps, jpe, kps, kpe 
+
+     ! Local variables  
+     integer  :: i,j,k,ix,jy,km,local_index,global_index1,global_index2
+     integer :: mids, mide, mjds, mjde, mkds, mkde, &
+                mims, mime, mjms, mjme, mkms, mkme, &
+                mips, mipe, mjps, mjpe, mkps, mkpe
+     integer :: twoway_nudging
+     real(8),dimension(:,:,:),allocatable::p3d_temp, t3d_temp, &                                          
+                                           u1,u2,v1,v2,q1,q2,t1,t2
+     type(WRFU_Time) :: current_time
+     integer :: tod, hour, minuate, second
+
+    end subroutine wrf_mapping_to_cam
+    
+!=============================================================================================================
+
+    subroutine wrf_interpolate_to_cam(grid, windgrid, camt3d, camt3d_ac, symbol, &
+       ips, ipe, jps, jpe, kps, kpe, &
+       ims, ime, jms, jme, kms, kme, &
+       ids, ide, jds, jde, kds, kde, &
+       mips, mipe, mjps, mjpe, mkps, mkpe, &
+       mids, mide, mjds, mjde, mkds, mkde )
+
+     TYPE(domain) :: grid
+     TYPE(windgrid_info) :: windgrid
+     integer ::   ids, ide, jds, jde, kds, kde, &
+                  ips, ipe, jps, jpe, kps, kpe, &
+                  ims, ime, jms, jme, kms, kme, &
+                  mips, mipe, mjps, mjpe, mkps, mkpe, &
+                  mids, mide, mjds, mjde, mkds, mkde
+     real(8),dimension(mids:mide,1:grid%num_metgrid_levels,mjds:mjde) :: camt3d, camt3d_ac
+     character(len=*) :: symbol
+     
+     ! Local variables  
+     integer  :: i,j,k,ix,jy,km,local_index,global_index1,global_index2
+     INTEGER :: i_start, i_end, j_start, j_end, k_start, k_end
+     integer :: twoway_nudging
+     real(8) :: s, wweight
+     real(8),dimension(:,:,:),allocatable:: w3d, p3d,t3d, t3d_int
+     real :: es,qsat
+     real,parameter :: SVP1=0.61078, SVP2=17.2693882, SVP3=35.86, SVPT0=273.15,&
+                       r_d = 287.0, r_v = 461.6  ! extract from module_radiation_driver.F
+     real,parameter ::  ep_2=r_d/r_v
+
+#if defined(DM_PARALLEL) 
+     include "mpif.h"
+#endif
+
+      twoway_nudging = model_config_rec%twoway_nudging
+
+      return
+      end subroutine wrf_interpolate_to_cam
+      
+!===============================================================================
+        
+    subroutine calculate_cam_advection(grid, u1, u2, v1, v2, t1, t2, q1, q2, &
+                   mids, mide, mjds, mjde, mkds, mkde, &
+                   mims,  mime, mjms,  mjme,  mkms,  mkme, &
+                   mips,  mipe, mjps,  mjpe,  mkps,  mkpe )
+     TYPE(domain) :: grid
+     integer ::  mids, mide, mjds, mjde, mkds, mkde, &
+                  mims, mime, mjms, mjme, mkms, mkme, &
+                  mips, mipe, mjps, mjpe, mkps, mkpe 
+
+     ! Local variables  
+     integer  :: i,j,k,ix,jy,km
+     real :: radi     
+     real(8),dimension(mips:mipe,1:grid%num_metgrid_levels,mjps:mjpe) :: u1, u2, v1, v2, t1, t2, q1, q2 
+                  
+       end subroutine calculate_cam_advection        
+
+!===============================================================================
+
+      Subroutine interpolate_to_pressure_levels(kps,kpe &
+                   ,nx,ny,nz &
+                   ,P,P_int,field_data,field_data_int)
+
+       implicit none
+       integer,intent(in) :: kps,kpe,nx,ny,nz
+       real*8, dimension(nx,kps:kpe,ny), intent(in) :: field_data
+       real*8, dimension(nx,kps:kpe,ny), intent(in) :: p
+       real*8, dimension(nx,nz,ny), intent(in) :: P_int
+       real*8, dimension(nx,nz,ny), intent(out) :: field_data_int          
+        
+       real*8 :: X(kpe-kps+1),Y(kpe-kps+1),Y2(kpe-kps+1),XINT,YINT,yp1,ypn
+       integer :: i,j,k
+
+       yp1=2e30
+       ypn=2e30
+       ! interpolate from sigma to pressure coordinates:
+       do j=1,ny
+       do i=1,nx 
+        do k=kps,kpe
+         X(k-kps+1)=log(P(i,k,j))*1.0_8
+         Y(k-kps+1)=field_data(i,k,j)*1.0_8
+        enddo
+        call spline(X,Y,yp1,ypn,kpe-kps+1,Y2)
+        do k=1,nz
+         XINT=log(P_int(i,k,j))*1.0_8
+         call splint(X,Y,Y2,kpe-kps+1,XINT,YINT)
+         field_data_int(i,k,j)=YINT
+        end do
+       end do
+       end do
+       return
+      end subroutine interpolate_to_pressure_levels
+
+!===============================================================================
+
+       SUBROUTINE spline(x,y,yp1,ypn,n,y2) 
+             implicit none
+             INTEGER :: n
+             INTEGER, parameter :: NMAX=500
+             REAL*8 :: x(n),y(n),y2(n) 
+             INTEGER :: i,k
+             REAL*8 :: p,qn,sig,un,u(NMAX),yp1,ypn
+  
+           if(yp1.gt..99e30) then
+             y2(1)=0
+             u(1)=0
+           else
+             y2(1)=-0.5
+             u(1)=(3./(x(2)-x(1)))*((y(2)-y(1))/(x(2)-x(1))-yp1)
+           endif
+  
+             do i=2,n-1
+             sig=(x(i)-x(i-1))/(x(i+1)-x(i-1))
+             p=sig*y2(i-1)+2.
+             y2(i)=(sig-1.)/p
+             u(i)=(6.*((y(i+1)-y(i))/(x(i+1)-x(i))-(y(i)-y(i-1)) &
+             /(x(i)-x(i-1)))/(x(i+1)-x(i-1))-sig*u(i-1))/p
+             end do
+
+           if(ypn.gt..99e30) then
+             qn=0
+             un=0
+           else              
+             qn=0.5
+             un=(3./(x(n)-x(n-1)))*(ypn-(y(n)-y(n-1))/(x(n)-x(n-1)))
+            endif
+  
+             y2(n)=(un-qn*u(n-1))/(qn*y2(n-1)+1.)
+             
+             do k=n-1,1,-1
+             y2(k)=y2(k)*y2(k+1)+u(k)
+             end do
+             
+             return
+             
+       end SUBROUTINE spline
+
+!===============================================================================
+	
+       SUBROUTINE splint(xa,ya,y2a,n,x,y)
+         implicit none
+         INTEGER :: n
+         REAL*8 :: x,y,xa(n),y2a(n),ya(n)
+         INTEGER :: k,khi,klo
+         REAL*8 :: a,b,h
+
+         ! Eli: avoid actual extrapolation by using the end values:
+         if (x<xa(n)) then
+         	 y=ya(n)
+         elseif (x>xa(1)) then
+         	 y=ya(1)
+         else
+         ! Eli: end of my addition here.
+         	 klo=1
+         	 khi=n
+   1    if (khi-klo.gt.1) then
+             k=(khi+klo)/2
+         if(xa(k).lt.x)then
+         	 khi=k
+         else
+         	 klo=k
+         end if
+         goto 1
+        end if
+        h=xa(khi)-xa(klo)
+        if (h.eq.0.) pause 'bad xa input in splint'
+        a=(xa(khi)-x)/h
+        b=(x-xa(klo))/h
+        y=a*ya(klo)+b*ya(khi)+ &
+          ((a**3-a)*y2a(klo)+(b**3-b)*y2a(khi))*(h**2)/6.
+        end if
+        return
+       end SUBROUTINE splint
+
+!===============================================================================     
+      Subroutine interpolate_to_standard_levels(nz_WRF &
+                   ,nx_CAM,ny_CAM,nz_CAM &
+                   ,P,P_int,field_data,field_data_int,PS &
+                   ,ts,ht,vartype)
+
+       implicit none
+       integer,intent(in) :: nz_WRF,nx_CAM,ny_CAM,nz_CAM,vartype
+       real*8, dimension(nx_CAM,ny_CAM), intent(in) :: ts, ht
+       real*8, dimension(nx_CAM,nz_CAM,ny_CAM), intent(in) :: field_data
+       real*8, dimension(nx_CAM,nz_CAM,ny_CAM), intent(in) :: p
+       real*8, dimension(nx_CAM,nz_WRF,ny_CAM), intent(out) :: field_data_int
+       real*8, dimension(nx_CAM,ny_CAM), intent(in) :: PS
+       real*8, dimension(nz_WRF),intent(inout) :: P_int 
+        
+       real*8 :: X(nz_CAM),Y(nz_CAM),Y2(nz_CAM),XINT,YINT,yp1,ypn,alpha,beta,t0
+       integer :: i,j,k
+
+       yp1=2d30
+       ypn=2d30
+       ! interpolate from sigma to pressure coordinates:
+       do j=1,ny_CAM
+       do i=1,nx_CAM 
+        do k=1,nz_CAM
+         X(k)=log10(P(i,k,j))
+         Y(k)=field_data(i,k,j)
+        enddo
+        call spline(X,Y,yp1,ypn,nz_CAM,Y2)
+        do k=1,nz_WRF
+         if (abs(P_int(k)-200100).le.0.01) then
+            ! surface level:
+            XINT=log10(PS(i,j))
+         else
+            XINT=log10(P_int(k))
+         end if
+         call splint(X,Y,Y2,nz_CAM,XINT,YINT)
+         field_data_int(i,k,j)=YINT
+        end do
+
+        ! deal with the extrapolation for the level under the earth
+        if(vartype.gt.0) then
+        do k=1,nz_WRF
+          if(P_int(k).gt.PS(i,j).and.abs(P_int(k)-200100).gt.0.01) then
+             beta=log(P_int(k)/PS(i,j))
+             if(ht(i,j).lt.2000) alpha=0.0065*287.0/9.81*1.0_8
+             if(ht(i,j).ge.2000) then
+                t0=ts(i,j)+0.0065*ht(i,j)
+                if(ht(i,j).le.2500) t0=0.002_8*((2500-ht(i,j))*t0+(ht(i,j)-2000)*min(t0,298.0))
+                if(ht(i,j).gt.2500) t0=min(t0,298.0_8)
+                alpha=287.0_8/9.81*(t0-ts(i,j))/ht(i,j)
+             end if
+             ! geopotential height        
+             if(vartype.eq.1) field_data_int(i,k,j)=ht(i,j)-287.0_8*ts(i,j)*beta* &
+                              (1+0.5*alpha*beta+1.0*alpha*alpha*beta*beta/6.0)/9.81
+             ! temperature
+             if(vartype.eq.2) field_data_int(i,k,j)=ts(i,j)*(1+alpha*beta+ &
+                              0.5*alpha*beta*alpha*beta+1.0*alpha*alpha*beta*beta*alpha*beta/6.0)
+          end if
+        end do 
+        end if
+       end do
+       end do
+       return
+      end subroutine interpolate_to_standard_levels
+!===========================================================================================
+   recursive subroutine nests_prepare_sst ( mgrid, grid, loop)
+      use module_nesting, only : active_domain
+      use module_configure
+      use module_utility
+      use module_driver_constants, only : max_nests
+      IMPLICIT NONE
+      type(metgrid_info) :: mgrid
+      TYPE(domain), INTENT(IN)  :: grid
+      integer, intent(in) :: loop
+      ! Local data
+      TYPE(domain) , POINTER :: new_nest
+      INTEGER                :: kid
+      LOGICAL                :: grid_allowed     
+
+      DO kid = 1 , max_nests
+       IF ( ASSOCIATED ( grid%nests(kid)%ptr ) ) THEN
+        new_nest=>grid%nests(kid)%ptr
+        call metgrid(mgrid, new_nest, loop) 
+        CALL nl_get_grid_allowed( new_nest%id, grid_allowed )
+        IF ( active_domain(new_nest%id) .AND. grid_allowed ) THEN
+        call nests_prepare_sst ( mgrid, new_nest, loop)
+        END IF
+       END IF
+      END DO
+      RETURN
+   END SUBROUTINE nests_prepare_sst
+
+!===========================================================================================
+   recursive subroutine nests_prepare_surface(grid)
+      use module_nesting, only : active_domain
+      use module_configure
+      use module_utility
+      use module_driver_constants, only : max_nests
+      use module_bdy_prep, only:prep_surface_othertime
+      IMPLICIT NONE
+      TYPE(domain), INTENT(IN)  :: grid
+      ! Local data
+      TYPE(domain) , POINTER :: new_nest
+      INTEGER                :: kid
+      LOGICAL                :: grid_allowed
+
+      DO kid = 1 , max_nests
+       IF ( ASSOCIATED ( grid%nests(kid)%ptr ) ) THEN
+        new_nest=>grid%nests(kid)%ptr
+        call prep_surface_othertime(new_nest)
+        CALL nl_get_grid_allowed( new_nest%id, grid_allowed )
+        IF ( active_domain(new_nest%id) .AND. grid_allowed ) THEN
+        call nests_prepare_surface(new_nest)
+        END IF
+       END IF
+      END DO
+      RETURN
+   END SUBROUTINE nests_prepare_surface
+
+!------------------------------------------------------------
+! The following for the sanity check
+!------------------------------------------------------------
+      subroutine read_sst(mgrid,ymd)
+
+      implicit none
+      include 'netcdf.inc'
+
+      TYPE(metgrid_info) :: mgrid
+      integer :: ymd
+
+      integer:: i,j,k
+      integer :: ids,ide,jds,jde,kds,kde,ims,ime,jms,jme,kms,kme,ips,ipe,jps,jpe,kps,kpe
+      real,dimension(:,:,:),allocatable::sst
+
+      integer,dimension(1:3)::start,scount
+      integer::rhid,ncid,vlen,status      
+      real::add_offset,scale_factor,fillvalue
+      integer,dimension(1:11)::nmonth
+      data nmonth/31,59,90,120,151,181,212,243,273,304,334/
+
+       i=ymd/10000
+       j=(ymd-i*10000)/100
+       k=ymd-i*10000-j*100
+       if(j.eq.1) then
+       k=(i-1997)*365+k
+       else
+       k=(i-1997)*365+nmonth(j-1)+k
+       endif
+
+       start(1)=1
+       start(2)=1
+       start(3)=k
+   
+       scount(1)=ide
+       scount(2)=jde
+       scount(3)=1
+
+       allocate(sst(1:ide,1:jde,1:1))
+
+       STATUS=NF_OPEN('sst_control.nc',NF_NOWRITE,NCID) 
+       IF (STATUS .NE. NF_NOERR) CALL HANDLE_ERR(STATUS)
+
+       STATUS=NF_INQ_VARID(NCID,'SST_cpl',RHID)
+       IF (STATUS .NE. NF_NOERR) CALL HANDLE_ERR(STATUS)
+       STATUS=NF_GET_VARA_REAL(NCID,RHID,START,SCOUNT,sst)
+       IF (STATUS .NE. NF_NOERR) CALL HANDLE_ERR(STATUS)
+
+!       STATUS=NF_GET_ATT_REAL(NCID,RHID,'add_offset',add_offset)
+!       IF (STATUS .NE. NF_NOERR) CALL HANDLE_ERR(STATUS)
+
+!       STATUS=NF_GET_ATT_REAL(NCID,RHID,'scale_factor',scale_factor)
+!       IF (STATUS .NE. NF_NOERR) CALL HANDLE_ERR(STATUS)
+
+!       STATUS=NF_GET_ATT_REAL(NCID,RHID,'_FillValue',fillvalue)
+!       IF (STATUS .NE. NF_NOERR) CALL HANDLE_ERR(STATUS)
+
+       STATUS=NF_CLOSE(NCID) 
+       IF (STATUS .NE. NF_NOERR) CALL HANDLE_ERR(STATUS)
+     
+       do i=1,ide
+       do j=1,jde
+!       if(sst(i,j,1).ne.fillvalue) then
+!        mgrid%sst(i,j)=sst(i,j,1)*scale_factor+add_offset+273.15
+        mgrid%sst(i,j)=sst(i,j,1)+273.15
+!       endif
+       end do
+       end do
+
+       deallocate(sst)
+       
+      end subroutine read_sst
+
+      subroutine handle_err(status)
+
+      implicit none
+      include 'netcdf.inc'
+
+	integer status
+	write(*,*)'error: ',NF_STRERROR(status) 
+	stop 'stopped'
+      end subroutine handle_err
+
+#endif
+#endif
+  
+END MODULE wrf_comp_mct

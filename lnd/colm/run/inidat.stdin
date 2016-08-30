@@ -1,0 +1,22 @@
+&clminiexp
+site           = 'global'
+greenwich      = .true.
+start_yr       =  1990
+start_jday     =  1
+start_sec      =  1800
+fsrf           = '/home/jidy/CoLM_cpl/data/srfdata.1deg'
+fgrid          = '/home/jidy/CoLM_cpl/data/gridata.1deg'
+frivinp_rtm    = '/home/jidy/CoLM_cpl/data/rdirc.05'
+fsbcini        = '/home/jidy/CoLM_cpl/data/sbcini.1deg'
+flai           = ''
+fsoilini       = ''
+fmet           = '/home/jidy/swgfs/Princeton_30MIN'
+fconst         = '/home/jidy/swgfs/colm_cpl/global-rstTimeConst'
+frestart       = '/home/jidy/swgfs/colm_cpl/global-rstTimeVar'
+fout           = '/home/jidy/swgfs/colm_cpl/global/global'
+finfolist      = '/home/jidy/CoLM_cpl/run/clmini.infolist'
+lon_points     =  360
+lat_points     =  180
+dtime          =  1800
+mstep          =  150000
+/

@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<config_definition>
+
+<entry id="dyn"   value="iap"    />
+<entry id="hgrid" value="0.5x0.5" />
+
+</config_definition>

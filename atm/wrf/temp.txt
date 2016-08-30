@@ -1,0 +1,570 @@
+main/.svn/text-base/wrf_comp_mct.F.svn-base:! camgrid decomposition on wrf processors  
+main/wrf_comp_mct.F.0513:! camgrid decomposition on wrf processors  
+main/wrf_comp_mct.F.0513:        call set_metgrid(mgrid)
+main/wrf_comp_mct.F.0513:        call wrf_SetgsMap_cam(mgrid, mpicom_atm, WRFID, gsMap_cc ) 
+main/wrf_comp_mct.F.0513:        call wrf_domain_cam( mgrid, lsize, gsMap_cc, dom_c ) 
+main/wrf_comp_mct.F.0513:      call initial_metgrid(mgrid, mgrid%ids, mgrid%ide, mgrid%jds, mgrid%jde, &
+main/wrf_comp_mct.F.0513:                           mgrid%num_metgrid_levels, mgrid%num_metgrid_soil_levels )
+main/wrf_comp_mct.F.0513:        call init_nest_domain(mgrid, head_grid)
+main/wrf_comp_mct.F.0513:        call wrf_import_cam(x2c_c2, mgrid, loop )
+main/wrf_comp_mct.F.0513:        call metgrid(mgrid, head_grid, loop)
+main/wrf_comp_mct.F.0513:        call init_nest_domain(mgrid, head_grid)
+main/wrf_comp_mct.F.0513:         call wrf_import_cam(x2c_c1, mgrid, loop )
+main/wrf_comp_mct.F.0513:         call metgrid(mgrid, head_grid, loop)
+main/wrf_comp_mct.F.0513:         call init_nest_domain(mgrid, head_grid)
+main/wrf_comp_mct.F.0513:       call wrf_import_cam(x2c_c2, mgrid, loop ) 
+main/wrf_comp_mct.F.0513:!       call read_sst(mgrid,ymd)
+main/wrf_comp_mct.F.0513:       call metgrid(mgrid, head_grid, loop)
+main/wrf_comp_mct.F.0513:       call init_nest_domain(mgrid, head_grid)
+main/wrf_comp_mct.F.0513:       call nests_prepare_sst(mgrid, head_grid,loop)
+main/wrf_comp_mct.F.0513:         call final_metgrid(mgrid)
+main/wrf_comp_mct.F.0513:  recursive subroutine init_nest_domain(mgrid, grid)
+main/wrf_comp_mct.F.0513:       type(metgrid_info):: mgrid
+main/wrf_comp_mct.F.0513:               call metgrid(mgrid, new_nest, 1)
+main/wrf_comp_mct.F.0513:                   CALL init_nest_domain ( mgrid, grid_ptr%nests(kid)%ptr )                   
+main/wrf_comp_mct.F.0513:   recursive subroutine nests_prepare_sst ( mgrid, grid, loop)
+main/wrf_comp_mct.F.0513:      type(metgrid_info) :: mgrid
+main/wrf_comp_mct.F.0513:        call metgrid(mgrid, new_nest, loop) 
+main/wrf_comp_mct.F.0513:        call nests_prepare_sst ( mgrid, new_nest, loop)
+main/wrf_comp_mct.F.0513:      subroutine read_sst(mgrid,ymd)
+main/wrf_comp_mct.F.0513:      TYPE(metgrid_info) :: mgrid
+main/wrf_comp_mct.F.0513:!        mgrid%sst(i,j)=sst(i,j,1)*scale_factor+add_offset+273.15
+main/wrf_comp_mct.F.0513:        mgrid%sst(i,j)=sst(i,j,1)+273.15
+main/wrf_comp_mct.F:! camgrid decomposition on wrf processors  
+main/wrf_comp_mct.F:        call set_metgrid(mgrid)
+main/wrf_comp_mct.F:        call wrf_SetgsMap_cam(mgrid, mpicom_atm, WRFID, gsMap_cc ) 
+main/wrf_comp_mct.F:        call wrf_domain_cam( mgrid, lsize, gsMap_cc, dom_c ) 
+main/wrf_comp_mct.F:      call initial_metgrid(mgrid, mgrid%ids, mgrid%ide, mgrid%jds, mgrid%jde, &
+main/wrf_comp_mct.F:                           mgrid%num_metgrid_levels, mgrid%num_metgrid_soil_levels )
+main/wrf_comp_mct.F:        call init_nest_domain(mgrid, head_grid)
+main/wrf_comp_mct.F:        call wrf_import_cam(x2c_c2, mgrid, loop )
+main/wrf_comp_mct.F:        call metgrid(mgrid, head_grid, loop)
+main/wrf_comp_mct.F:        call init_nest_domain(mgrid, head_grid)
+main/wrf_comp_mct.F:         call wrf_import_cam(x2c_c1, mgrid, loop )
+main/wrf_comp_mct.F:         call metgrid(mgrid, head_grid, loop)
+main/wrf_comp_mct.F:         call init_nest_domain(mgrid, head_grid)
+main/wrf_comp_mct.F:       call wrf_import_cam(x2c_c2, mgrid, loop ) 
+main/wrf_comp_mct.F:!       call read_sst(mgrid,ymd)
+main/wrf_comp_mct.F:       call metgrid(mgrid, head_grid, loop)
+main/wrf_comp_mct.F:       call init_nest_domain(mgrid, head_grid)
+main/wrf_comp_mct.F:       call nests_prepare_sst(mgrid, head_grid,loop)
+main/wrf_comp_mct.F:         call final_metgrid(mgrid)
+main/wrf_comp_mct.F:  recursive subroutine init_nest_domain(mgrid, grid)
+main/wrf_comp_mct.F:       type(metgrid_info):: mgrid
+main/wrf_comp_mct.F:               call metgrid(mgrid, new_nest, 1)
+main/wrf_comp_mct.F:                   CALL init_nest_domain ( mgrid, grid_ptr%nests(kid)%ptr )                   
+main/wrf_comp_mct.F:   recursive subroutine nests_prepare_sst ( mgrid, grid, loop)
+main/wrf_comp_mct.F:      type(metgrid_info) :: mgrid
+main/wrf_comp_mct.F:        call metgrid(mgrid, new_nest, loop) 
+main/wrf_comp_mct.F:        call nests_prepare_sst ( mgrid, new_nest, loop)
+main/wrf_comp_mct.F:      subroutine read_sst(mgrid,ymd)
+main/wrf_comp_mct.F:      TYPE(metgrid_info) :: mgrid
+main/wrf_comp_mct.F:!        mgrid%sst(i,j)=sst(i,j,1)*scale_factor+add_offset+273.15
+main/wrf_comp_mct.F:        mgrid%sst(i,j)=sst(i,j,1)+273.15
+phys/.svn/text-base/module_ra_cam_support.F.svn-base:!  use pmgrid, only: masterproc
+phys/.svn/text-base/module_ra_cam_support.F.svn-base:!  use pmgrid,       only: masterproc, plev, plevp
+phys/.svn/text-base/module_ra_cam_support.F.svn-base:!   use pmgrid  ! masterproc is here
+phys/.svn/text-base/module_ra_cam.F.svn-base:!     use pmgrid
+phys/.svn/text-base/module_ra_cam.F.svn-base:!     use pmgrid
+phys/module_ra_cam.F:!     use pmgrid
+phys/module_ra_cam.F:!     use pmgrid
+phys/module_ra_cam.F~:!     use pmgrid
+phys/module_ra_cam.F~:!     use pmgrid
+phys/module_ra_cam_support.F:!  use pmgrid, only: masterproc
+phys/module_ra_cam_support.F:!  use pmgrid,       only: masterproc, plev, plevp
+phys/module_ra_cam_support.F:!   use pmgrid  ! masterproc is here
+prep/process_domain_module.F:   subroutine process_domain(mgrid, grid, n, rank_number, extra_row, extra_col)
+prep/process_domain_module.F:      type(metgrid_info):: mgrid
+prep/process_domain_module.F:      call process_single_met_time(grid, mgrid, n, rank_number, extra_row, extra_col, xlat, xlon, &  !rank_number added by Yuzhu Wang
+prep/process_domain_module.F:      call process_single_sst_time(grid, mgrid, n, extra_row, extra_col, xlat, xlon, &  !rank_number added by Yuzhu Wang
+prep/process_domain_module.F:   subroutine process_single_met_time(grid, mgrid, &
+prep/process_domain_module.F:      type(metgrid_info) :: mgrid
+prep/process_domain_module.F:          fg_data%nx = mgrid%ide
+prep/process_domain_module.F:          fg_data%ny = mgrid%jde
+prep/process_domain_module.F:          fg_data%iproj = mgrid%iproj ! 0-latlon, 1-mecartor, 3-lambert, 4-gauss, 5-polar steographic
+prep/process_domain_module.F:            fg_data % deltalat = 180.0/(mgrid%jde-1)  ! 1.9x2.5
+prep/process_domain_module.F:            fg_data % deltalon = 360.0/mgrid%ide
+prep/process_domain_module.F:            fg_data % startlat = mgrid%xlat(1,1)
+prep/process_domain_module.F:            fg_data % deltalat = mgrid%jde/2.0   
+prep/process_domain_module.F:            fg_data % deltalon = 360.0/mgrid%ide  
+prep/process_domain_module.F:          call get_interp_masks(mgrid)
+prep/process_domain_module.F:                 numlevel = mgrid%num_metgrid_soil_levels
+prep/process_domain_module.F:                 allocate(av(1:fg_data%nx, 1:mgrid%num_metgrid_soil_levels, 1:fg_data%ny))
+prep/process_domain_module.F:                 av = mgrid%soilthick
+prep/process_domain_module.F:                 numlevel = mgrid%num_metgrid_soil_levels
+prep/process_domain_module.F:                 allocate(av(1:fg_data%nx, 1:mgrid%num_metgrid_soil_levels, 1:fg_data%ny))
+prep/process_domain_module.F:                 av = mgrid%soilm
+prep/process_domain_module.F:                 numlevel = mgrid%num_metgrid_soil_levels
+prep/process_domain_module.F:                 allocate(av(1:fg_data%nx, 1:mgrid%num_metgrid_soil_levels, 1:fg_data%ny))
+prep/process_domain_module.F:                 av = mgrid%soilt 
+prep/process_domain_module.F:                 numlevel = mgrid%num_metgrid_soil_levels
+prep/process_domain_module.F:                 allocate(av(1:fg_data%nx, 1:mgrid%num_metgrid_soil_levels, 1:fg_data%ny))
+prep/process_domain_module.F:                 av = mgrid%soildepth  
+prep/process_domain_module.F:                 av(:,1,:)  = mgrid%xice(:,:)
+prep/process_domain_module.F:                 av(:,1,:)  = mgrid%snow(:,:) 
+prep/process_domain_module.F:                 av(:,1,:)  = mgrid%sst(:,:)
+prep/process_domain_module.F:                 av(:,1,:)  = mgrid%tsk(:,:)
+prep/process_domain_module.F:                 av(:,1,:)  = mgrid%psfc(:,:)  
+prep/process_domain_module.F:                 av(:,1,:) = mgrid%pslv(:,:)   
+prep/process_domain_module.F:                 numlevel = mgrid%num_metgrid_levels
+prep/process_domain_module.F:                 allocate(av(1:fg_data%nx, 1:mgrid%num_metgrid_levels, 1:fg_data%ny))
+prep/process_domain_module.F:                 av = mgrid%rh3d  
+prep/process_domain_module.F:                  numlevel = mgrid%num_metgrid_levels
+prep/process_domain_module.F:                 allocate(av(1:fg_data%nx, 1:mgrid%num_metgrid_levels, 1:fg_data%ny))
+prep/process_domain_module.F:                 av = mgrid%q3d   
+prep/process_domain_module.F:                 numlevel = mgrid%num_metgrid_levels
+prep/process_domain_module.F:                 allocate(av(1:fg_data%nx, 1:mgrid%num_metgrid_levels, 1:fg_data%ny))
+prep/process_domain_module.F:                 av = mgrid%t3d 
+prep/process_domain_module.F:                 numlevel = mgrid%num_metgrid_levels
+prep/process_domain_module.F:                 allocate(av(1:fg_data%nx, 1:mgrid%num_metgrid_levels, 1:fg_data%ny))
+prep/process_domain_module.F:                 av = mgrid%u3d  
+prep/process_domain_module.F:                 numlevel = mgrid%num_metgrid_levels
+prep/process_domain_module.F:                 allocate(av(1:fg_data%nx, 1:mgrid%num_metgrid_levels, 1:fg_data%ny))
+prep/process_domain_module.F:                 av = mgrid%v3d  
+prep/process_domain_module.F:                 numlevel = mgrid%num_metgrid_levels
+prep/process_domain_module.F:                 allocate(av(1:fg_data%nx, 1:mgrid%num_metgrid_levels, 1:fg_data%ny))
+prep/process_domain_module.F:                 av = mgrid%z3d  
+prep/process_domain_module.F:                 av(:,1,:) = mgrid%ht(:,:)
+prep/process_domain_module.F:   subroutine process_single_sst_time(grid, mgrid, &
+prep/process_domain_module.F:      type(metgrid_info) :: mgrid
+prep/process_domain_module.F:          fg_data%nx = mgrid%ide
+prep/process_domain_module.F:          fg_data%ny = mgrid%jde
+prep/process_domain_module.F:          fg_data%iproj = mgrid%iproj ! 0-latlon, 1-mecartor, 3-lambert, 4-gauss, 5-polar steographic
+prep/process_domain_module.F:            fg_data % deltalat = 180.0/(mgrid%jde-1)  ! 1.9x2.5
+prep/process_domain_module.F:            fg_data % deltalon = 360.0/mgrid%ide
+prep/process_domain_module.F:            fg_data % startlat = mgrid%xlat(1,1)
+prep/process_domain_module.F:            fg_data % deltalat = mgrid%jde/2.0   
+prep/process_domain_module.F:            fg_data % deltalon = 360.0/mgrid%ide  
+prep/process_domain_module.F:          call get_interp_masks(mgrid)
+prep/process_domain_module.F:                 av(:,1,:)  = mgrid%xice(:,:)
+prep/process_domain_module.F:                 av(:,1,:)  = mgrid%sst(:,:)  
+prep/process_domain_module.F:   subroutine get_interp_masks(mgrid)
+prep/process_domain_module.F:      type(metgrid_info):: mgrid
+prep/process_domain_module.F:          fg_data%nx = mgrid%ide
+prep/process_domain_module.F:          fg_data%ny = mgrid%jde
+prep/process_domain_module.F:          fg_data%slab = mgrid%xland
+prep/module_camdomain.F:   type camgrid_info
+prep/module_camdomain.F:   end type camgrid_info
+prep/module_camdomain.F:   type(metgrid_info):: mgrid
+prep/module_camdomain.F:   type(camgrid_info):: camgrid, camgrid_ac
+prep/module_camdomain.F:    subroutine set_metgrid(mgrid)
+prep/module_camdomain.F:      type(metgrid_info) :: mgrid
+prep/module_camdomain.F:      mgrid%num_metgrid_soil_levels = head_grid%num_metgrid_soil_levels
+prep/module_camdomain.F:      mgrid%num_metgrid_levels =  head_grid%num_metgrid_levels
+prep/module_camdomain.F:      mgrid%ids = 1
+prep/module_camdomain.F:      mgrid%ide = model_config_rec%cam_nx
+prep/module_camdomain.F:      mgrid%jds = 1
+prep/module_camdomain.F:      mgrid%jde = model_config_rec%cam_ny
+prep/module_camdomain.F:      mgrid%iproj =  model_config_rec%cam_proj
+prep/module_camdomain.F:    subroutine set_camgrid(camgrid)
+prep/module_camdomain.F:      type(camgrid_info) :: camgrid
+prep/module_camdomain.F:      camgrid%num_metgrid_soil_levels = head_grid%num_metgrid_soil_levels
+prep/module_camdomain.F:      camgrid%num_metgrid_levels =  head_grid%num_metgrid_levels
+prep/module_camdomain.F:      camgrid%ids = 1
+prep/module_camdomain.F:      camgrid%ide = model_config_rec%cam_nx
+prep/module_camdomain.F:      camgrid%jds = 1
+prep/module_camdomain.F:      camgrid%jde = model_config_rec%cam_ny
+prep/module_camdomain.F:    end subroutine set_camgrid
+prep/module_camdomain.F:    subroutine initial_metgrid(mgrid, ids, ide, jds, jde, &
+prep/module_camdomain.F:      type(metgrid_info)::mgrid
+prep/module_camdomain.F:      if(.not.associated(mgrid%u3d))         allocate( mgrid%u3d(ids:ide, 1:num_metgrid_levels, jds:jde) )
+prep/module_camdomain.F:      if(.not.associated(mgrid%v3d))        allocate( mgrid%v3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(mgrid%w3d))        allocate( mgrid%w3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(mgrid%q3d))         allocate( mgrid%q3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(mgrid%t3d))         allocate( mgrid%t3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(mgrid%z3d))           allocate( mgrid%z3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(mgrid%p3d))           allocate( mgrid%p3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(mgrid%rh3d))           allocate( mgrid%rh3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(mgrid%soilt))           allocate( mgrid%soilt(ids:ide, 1:num_metgrid_soil_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(mgrid%soilm))          allocate( mgrid%soilm(ids:ide, 1:num_metgrid_soil_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(mgrid%soilthick))     allocate( mgrid%soilthick(ids:ide, 1:num_metgrid_soil_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(mgrid%soildepth))     allocate( mgrid%soildepth(ids:ide, 1:num_metgrid_soil_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(mgrid%tsk))           allocate( mgrid%tsk(ids:ide, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(mgrid%sst))           allocate( mgrid%sst(ids:ide, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(mgrid%sstold))           allocate( mgrid%sstold(ids:ide, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(mgrid%snow))           allocate( mgrid%snow(ids:ide, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(mgrid%xice))           allocate( mgrid%xice(ids:ide, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(mgrid%xiceold))        allocate( mgrid%xiceold(ids:ide, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(mgrid%pslv))           allocate( mgrid%pslv(ids:ide, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(mgrid%psfc))           allocate( mgrid%psfc(ids:ide, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(mgrid%xlat))           allocate( mgrid%xlat(ids:ide, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(mgrid%xlon))           allocate( mgrid%xlon(ids:ide, jds:jde)  )        
+prep/module_camdomain.F:      if(.not.associated(mgrid%xland))           allocate( mgrid%xland(ids:ide, jds:jde)  )        
+prep/module_camdomain.F:      if(.not.associated(mgrid%ht))           allocate( mgrid%ht(ids:ide, jds:jde)  )        
+prep/module_camdomain.F:      mgrid%u3d = 0
+prep/module_camdomain.F:      mgrid%v3d = 0
+prep/module_camdomain.F:      mgrid%w3d = 0
+prep/module_camdomain.F:      mgrid%q3d = 0
+prep/module_camdomain.F:      mgrid%t3d = 0
+prep/module_camdomain.F:      mgrid%z3d = 0
+prep/module_camdomain.F:      mgrid%p3d = 0
+prep/module_camdomain.F:      mgrid%rh3d = 0
+prep/module_camdomain.F:      mgrid%soilt = 0
+prep/module_camdomain.F:      mgrid%soilm = 0
+prep/module_camdomain.F:      mgrid%soilthick = 0
+prep/module_camdomain.F:      mgrid%soildepth = 0
+prep/module_camdomain.F:      mgrid%tsk = 0
+prep/module_camdomain.F:      mgrid%sst = 0
+prep/module_camdomain.F:      mgrid%sstold = 0
+prep/module_camdomain.F:      mgrid%snow = 0
+prep/module_camdomain.F:      mgrid%xice = 0
+prep/module_camdomain.F:      mgrid%xiceold = 0
+prep/module_camdomain.F:      mgrid%pslv = 0
+prep/module_camdomain.F:      mgrid%psfc = 0
+prep/module_camdomain.F:      mgrid%xlat = 0
+prep/module_camdomain.F:      mgrid%xlon = 0
+prep/module_camdomain.F:      mgrid%xland = 0    
+prep/module_camdomain.F:      mgrid%ht = 0    
+prep/module_camdomain.F:    subroutine initial_camgrid(camgrid, ids, ide, jds, jde, &
+prep/module_camdomain.F:      type(camgrid_info)::camgrid
+prep/module_camdomain.F:      if(.not.associated(camgrid%u3d))         allocate( camgrid%u3d(ids:ide, 1:num_metgrid_levels, jds:jde) )
+prep/module_camdomain.F:      if(.not.associated(camgrid%v3d))        allocate( camgrid%v3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(camgrid%w3d))        allocate( camgrid%w3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(camgrid%q3d))         allocate( camgrid%q3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(camgrid%t3d))         allocate( camgrid%t3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(camgrid%z3d))           allocate( camgrid%z3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(camgrid%p3d))           allocate( camgrid%p3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(camgrid%dudt))           allocate( camgrid%dudt(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(camgrid%dvdt))           allocate( camgrid%dvdt(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(camgrid%dtdt))           allocate( camgrid%dtdt(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(camgrid%dqdt))           allocate( camgrid%dqdt(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(camgrid%uphyten))           allocate( camgrid%uphyten(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(camgrid%vphyten))           allocate( camgrid%vphyten(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(camgrid%tphyten))           allocate( camgrid%tphyten(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(camgrid%qphyten))           allocate( camgrid%qphyten(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(camgrid%u1))           allocate( camgrid%u1(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(camgrid%u2))           allocate( camgrid%u2(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(camgrid%v1))           allocate( camgrid%v1(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(camgrid%v2))           allocate( camgrid%v2(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(camgrid%t1))           allocate( camgrid%t1(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(camgrid%t2))           allocate( camgrid%t2(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(camgrid%q1))           allocate( camgrid%q1(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(camgrid%q2))           allocate( camgrid%q2(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(camgrid%tsk))           allocate( camgrid%tsk(ids:ide, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(camgrid%sst))           allocate( camgrid%sst(ids:ide, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(camgrid%snow))           allocate( camgrid%snow(ids:ide, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(camgrid%xice))           allocate( camgrid%xice(ids:ide, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(camgrid%pslv))           allocate( camgrid%pslv(ids:ide, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(camgrid%psfc))           allocate( camgrid%psfc(ids:ide, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(camgrid%xland))           allocate( camgrid%xland(ids:ide, jds:jde)  )
+prep/module_camdomain.F:      if(.not.associated(camgrid%ht))           allocate( camgrid%ht(ids:ide, jds:jde)  )
+prep/module_camdomain.F:      camgrid%u3d = 0.0_8
+prep/module_camdomain.F:      camgrid%v3d = 0.0_8
+prep/module_camdomain.F:      camgrid%w3d = 0.0_8
+prep/module_camdomain.F:      camgrid%q3d = 0.0_8
+prep/module_camdomain.F:      camgrid%t3d = 0.0_8
+prep/module_camdomain.F:      camgrid%z3d = 0.0_8
+prep/module_camdomain.F:      camgrid%p3d = 0.0_8
+prep/module_camdomain.F:      camgrid%dudt = 0.0_8
+prep/module_camdomain.F:      camgrid%dvdt = 0.0_8
+prep/module_camdomain.F:      camgrid%dtdt = 0.0_8
+prep/module_camdomain.F:      camgrid%dqdt = 0.0_8
+prep/module_camdomain.F:      camgrid%uphyten = 0.0_8
+prep/module_camdomain.F:      camgrid%vphyten = 0.0_8
+prep/module_camdomain.F:      camgrid%tphyten = 0.0_8
+prep/module_camdomain.F:      camgrid%qphyten = 0.0_8
+prep/module_camdomain.F:      camgrid%u1 = 0.0_8
+prep/module_camdomain.F:      camgrid%u2 = 0.0_8
+prep/module_camdomain.F:      camgrid%v1 = 0.0_8
+prep/module_camdomain.F:      camgrid%v2 = 0.0_8
+prep/module_camdomain.F:      camgrid%t1 = 0.0_8
+prep/module_camdomain.F:      camgrid%t2 = 0.0_8
+prep/module_camdomain.F:      camgrid%q1 = 0.0_8
+prep/module_camdomain.F:      camgrid%q2 = 0.0_8
+prep/module_camdomain.F:      camgrid%tsk = 0.0_8
+prep/module_camdomain.F:      camgrid%sst = 0.0_8
+prep/module_camdomain.F:      camgrid%snow = 0.0_8
+prep/module_camdomain.F:      camgrid%xice = 0.0_8
+prep/module_camdomain.F:      camgrid%pslv = 0.0_8
+prep/module_camdomain.F:      camgrid%psfc = 0.0_8
+prep/module_camdomain.F:      camgrid%xland = 0.0_8
+prep/module_camdomain.F:      camgrid%ht = 0.0_8
+prep/module_camdomain.F:  end subroutine initial_camgrid
+prep/module_camdomain.F:  subroutine final_metgrid(mgrid)
+prep/module_camdomain.F:      type(metgrid_info)::mgrid
+prep/module_camdomain.F:      if(associated(mgrid%u3d))    deallocate( mgrid%u3d )
+prep/module_camdomain.F:      if(associated(mgrid%v3d))   deallocate( mgrid%v3d )
+prep/module_camdomain.F:      if(associated(mgrid%w3d))   deallocate( mgrid%w3d )
+prep/module_camdomain.F:      if(associated(mgrid%q3d))    deallocate( mgrid%q3d )
+prep/module_camdomain.F:      if(associated(mgrid%t3d))    deallocate( mgrid%t3d )
+prep/module_camdomain.F:      if(associated(mgrid%z3d))      deallocate( mgrid%z3d )
+prep/module_camdomain.F:      if(associated(mgrid%p3d))      deallocate( mgrid%p3d )
+prep/module_camdomain.F:      if(associated(mgrid%rh3d))      deallocate( mgrid%rh3d )
+prep/module_camdomain.F:      if(associated(mgrid%tsk))      deallocate( mgrid%tsk )
+prep/module_camdomain.F:      if(associated(mgrid%sst))      deallocate( mgrid%sst )
+prep/module_camdomain.F:      if(associated(mgrid%sstold))      deallocate( mgrid%sstold )
+prep/module_camdomain.F:      if(associated(mgrid%pslv))      deallocate( mgrid%pslv )
+prep/module_camdomain.F:      if(associated(mgrid%psfc))      deallocate( mgrid%psfc )
+prep/module_camdomain.F:      if(associated(mgrid%xice))      deallocate( mgrid%xice )
+prep/module_camdomain.F:      if(associated(mgrid%xiceold))      deallocate( mgrid%xiceold )
+prep/module_camdomain.F:      if(associated(mgrid%snow))      deallocate( mgrid%snow )
+prep/module_camdomain.F:      if(associated(mgrid%xlat))     deallocate( mgrid%xlat )
+prep/module_camdomain.F:      if(associated(mgrid%xlon))     deallocate( mgrid%xlon )
+prep/module_camdomain.F:      if(associated(mgrid%xland))     deallocate( mgrid%xland )
+prep/module_camdomain.F:      if(associated(mgrid%soilt))    deallocate( mgrid%soilt)
+prep/module_camdomain.F:      if(associated(mgrid%soilm))    deallocate( mgrid%soilm)
+prep/module_camdomain.F:      if(associated(mgrid%soilthick)) deallocate( mgrid%soilthick )
+prep/module_camdomain.F:      if(associated(mgrid%soildepth))  deallocate( mgrid%soildepth )    
+prep/module_camdomain.F:      if(associated(mgrid%ht))  deallocate( mgrid%ht )    
+prep/module_camdomain.F:  subroutine final_camgrid(camgrid)
+prep/module_camdomain.F:      type(camgrid_info)::camgrid
+prep/module_camdomain.F:      if(associated(camgrid%u3d))    deallocate( camgrid%u3d )
+prep/module_camdomain.F:      if(associated(camgrid%v3d))   deallocate( camgrid%v3d )
+prep/module_camdomain.F:      if(associated(camgrid%w3d))   deallocate( camgrid%w3d )
+prep/module_camdomain.F:      if(associated(camgrid%q3d))    deallocate( camgrid%q3d )
+prep/module_camdomain.F:      if(associated(camgrid%t3d))    deallocate( camgrid%t3d )
+prep/module_camdomain.F:      if(associated(camgrid%z3d))      deallocate( camgrid%z3d )
+prep/module_camdomain.F:      if(associated(camgrid%p3d))      deallocate( camgrid%p3d )
+prep/module_camdomain.F:      if(associated(camgrid%dudt))      deallocate( camgrid%dudt )
+prep/module_camdomain.F:      if(associated(camgrid%dvdt))      deallocate( camgrid%dvdt )
+prep/module_camdomain.F:      if(associated(camgrid%dtdt))      deallocate( camgrid%dtdt )
+prep/module_camdomain.F:      if(associated(camgrid%dqdt))      deallocate( camgrid%dqdt ) 
+prep/module_camdomain.F:      if(associated(camgrid%uphyten))      deallocate( camgrid%uphyten )
+prep/module_camdomain.F:      if(associated(camgrid%vphyten))      deallocate( camgrid%vphyten )
+prep/module_camdomain.F:      if(associated(camgrid%tphyten))      deallocate( camgrid%tphyten )
+prep/module_camdomain.F:      if(associated(camgrid%qphyten))      deallocate( camgrid%qphyten )
+prep/module_camdomain.F:      if(associated(camgrid%u1))      deallocate( camgrid%u1 )
+prep/module_camdomain.F:      if(associated(camgrid%u2))      deallocate( camgrid%u2 )
+prep/module_camdomain.F:      if(associated(camgrid%v1))      deallocate( camgrid%v1 )
+prep/module_camdomain.F:      if(associated(camgrid%v2))      deallocate( camgrid%v2 )
+prep/module_camdomain.F:      if(associated(camgrid%t1))      deallocate( camgrid%t1 )
+prep/module_camdomain.F:      if(associated(camgrid%t2))      deallocate( camgrid%t2 )
+prep/module_camdomain.F:      if(associated(camgrid%q1))      deallocate( camgrid%q1 )
+prep/module_camdomain.F:      if(associated(camgrid%q2))      deallocate( camgrid%q2 )
+prep/module_camdomain.F:      if(associated(camgrid%tsk))      deallocate( camgrid%tsk )
+prep/module_camdomain.F:      if(associated(camgrid%sst))      deallocate( camgrid%sst )
+prep/module_camdomain.F:      if(associated(camgrid%pslv))      deallocate( camgrid%pslv )
+prep/module_camdomain.F:      if(associated(camgrid%psfc))      deallocate( camgrid%psfc )
+prep/module_camdomain.F:      if(associated(camgrid%xice))      deallocate( camgrid%xice )
+prep/module_camdomain.F:      if(associated(camgrid%snow))      deallocate( camgrid%snow )
+prep/module_camdomain.F:      if(associated(camgrid%xland))     deallocate( camgrid%xland )
+prep/module_camdomain.F:      if(associated(camgrid%ht))  deallocate( camgrid%ht )    
+prep/module_camdomain.F:  end subroutine final_camgrid
+prep/module_camdomain.F:   subroutine camgrid_gather_state(grid, ids, ide, jds, jde, kds, kde, &
+prep/module_camdomain.F:   type(camgrid_info)::grid
+prep/module_camdomain.F:   end subroutine camgrid_gather_state
+prep/module_camdomain.F:   subroutine camgrid_gather_tend(grid, ids, ide, jds, jde, kds, kde, &
+prep/module_camdomain.F:   type(camgrid_info)::grid
+prep/module_camdomain.F:   end subroutine camgrid_gather_tend  
+Binary file prep/.process_domain_module.F.swo matches
+prep/module_metgrid.F:   subroutine metgrid(mgrid, grid, n)
+prep/module_metgrid.F:   type(metgrid_info) :: mgrid
+prep/module_metgrid.F:       call process_domain(mgrid, grid, n, rank_number, extra_row, extra_col)
+prep/module_metgrid.F:         write(fort_test,*) 'jjr test: n=',n,'mgrid ids, ide, jds, jde, kds,kde=',mgrid%ids,mgrid%ide,mgrid%jds,mgrid%jde,mgrid%kds,mgrid%kde
+prep/module_metgrid.F:         write(fort_test,*) 'jjr test: n=',n,'mgrid ims, ime, jms, jme, kms,kme=',mgrid%ims,mgrid%ime,mgrid%jms,mgrid%jme,mgrid%kms,mgrid%kme
+prep/module_metgrid.F:         write(fort_test,*) 'jjr test: n=',n,'mgrid imsx, imex, jmsx, jmex, kmsx,kmex=',mgrid%imsx,mgrid%imex,mgrid%jmsx,mgrid%jmex,mgrid%kmsx,mgrid%kmex
+prep/module_metgrid.F:         write(fort_test,*) 'jjr test: n=',n,'mgrid imsy, imey, jmsy, jmey, kmsy,kmey=',mgrid%imsy,mgrid%imey,mgrid%jmsy,mgrid%jmey,mgrid%kmsy,mgrid%kmey
+prep/module_metgrid.F:         write(fort_test,*) 'jjr test: n=',n,'mgrid ips, ipe, jps, jpe, kps,kpe=',mgrid%ips,mgrid%ipe,mgrid%jps,mgrid%jpe,mgrid%kps,mgrid%kpe
+prep/module_metgrid.F:         write(fort_test,*) 'jjr test: n=',n,'mgrid ipsx, ipex, jpsx, jpex, kpsx,kpex=',mgrid%ipsx,mgrid%ipex,mgrid%jpsx,mgrid%jpex,mgrid%kpsx,mgrid%kpex
+prep/module_metgrid.F:         write(fort_test,*) 'jjr test: n=',n,'mgrid ipsy, ipey, jpsy, jpey, kpsy,kpey=',mgrid%ipsy,mgrid%ipey,mgrid%jpsy,mgrid%jpey,mgrid%kpsy,mgrid%kpey
+prep/module_metgrid.F:         !write(fort_test,*) 'jjr test: mytask=',mytask,'mgrid xlat=',mgrid%xlat
+prep/module_metgrid.F:         !write(fort_test,*) 'jjr test: mytask=',mytask,'mgrid xlon=',mgrid%xlon
+prep/module_camdomain.F.twoway.version1:   type camgrid_info
+prep/module_camdomain.F.twoway.version1:   end type camgrid_info
+prep/module_camdomain.F.twoway.version1:   type(metgrid_info):: mgrid
+prep/module_camdomain.F.twoway.version1:   type(camgrid_info):: camgrid
+prep/module_camdomain.F.twoway.version1:    subroutine set_metgrid(mgrid)
+prep/module_camdomain.F.twoway.version1:      type(metgrid_info) :: mgrid
+prep/module_camdomain.F.twoway.version1:      mgrid%num_metgrid_soil_levels = head_grid%num_metgrid_soil_levels
+prep/module_camdomain.F.twoway.version1:      mgrid%num_metgrid_levels =  head_grid%num_metgrid_levels
+prep/module_camdomain.F.twoway.version1:      mgrid%ids = 1
+prep/module_camdomain.F.twoway.version1:      mgrid%ide = model_config_rec%cam_nx
+prep/module_camdomain.F.twoway.version1:      mgrid%jds = 1
+prep/module_camdomain.F.twoway.version1:      mgrid%jde = model_config_rec%cam_ny
+prep/module_camdomain.F.twoway.version1:      mgrid%iproj =  model_config_rec%cam_proj
+prep/module_camdomain.F.twoway.version1:    subroutine set_camgrid(camgrid)
+prep/module_camdomain.F.twoway.version1:      type(camgrid_info) :: camgrid
+prep/module_camdomain.F.twoway.version1:      camgrid%num_metgrid_soil_levels = head_grid%num_metgrid_soil_levels
+prep/module_camdomain.F.twoway.version1:      camgrid%num_metgrid_levels =  head_grid%num_metgrid_levels
+prep/module_camdomain.F.twoway.version1:      camgrid%ids = 1
+prep/module_camdomain.F.twoway.version1:      camgrid%ide = model_config_rec%cam_nx
+prep/module_camdomain.F.twoway.version1:      camgrid%jds = 1
+prep/module_camdomain.F.twoway.version1:      camgrid%jde = model_config_rec%cam_ny
+prep/module_camdomain.F.twoway.version1:    end subroutine set_camgrid
+prep/module_camdomain.F.twoway.version1:    subroutine initial_metgrid(mgrid, ids, ide, jds, jde, &
+prep/module_camdomain.F.twoway.version1:      type(metgrid_info)::mgrid
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(mgrid%u3d))         allocate( mgrid%u3d(ids:ide, 1:num_metgrid_levels, jds:jde) )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(mgrid%v3d))        allocate( mgrid%v3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(mgrid%w3d))        allocate( mgrid%w3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(mgrid%q3d))         allocate( mgrid%q3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(mgrid%t3d))         allocate( mgrid%t3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(mgrid%z3d))           allocate( mgrid%z3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(mgrid%p3d))           allocate( mgrid%p3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(mgrid%rh3d))           allocate( mgrid%rh3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(mgrid%soilt))           allocate( mgrid%soilt(ids:ide, 1:num_metgrid_soil_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(mgrid%soilm))          allocate( mgrid%soilm(ids:ide, 1:num_metgrid_soil_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(mgrid%soilthick))     allocate( mgrid%soilthick(ids:ide, 1:num_metgrid_soil_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(mgrid%soildepth))     allocate( mgrid%soildepth(ids:ide, 1:num_metgrid_soil_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(mgrid%tsk))           allocate( mgrid%tsk(ids:ide, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(mgrid%sst))           allocate( mgrid%sst(ids:ide, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(mgrid%sstold))           allocate( mgrid%sstold(ids:ide, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(mgrid%snow))           allocate( mgrid%snow(ids:ide, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(mgrid%xice))           allocate( mgrid%xice(ids:ide, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(mgrid%xiceold))        allocate( mgrid%xiceold(ids:ide, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(mgrid%pslv))           allocate( mgrid%pslv(ids:ide, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(mgrid%psfc))           allocate( mgrid%psfc(ids:ide, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(mgrid%xlat))           allocate( mgrid%xlat(ids:ide, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(mgrid%xlon))           allocate( mgrid%xlon(ids:ide, jds:jde)  )        
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(mgrid%xland))           allocate( mgrid%xland(ids:ide, jds:jde)  )        
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(mgrid%ht))           allocate( mgrid%ht(ids:ide, jds:jde)  )        
+prep/module_camdomain.F.twoway.version1:      mgrid%u3d = 0
+prep/module_camdomain.F.twoway.version1:      mgrid%v3d = 0
+prep/module_camdomain.F.twoway.version1:      mgrid%w3d = 0
+prep/module_camdomain.F.twoway.version1:      mgrid%q3d = 0
+prep/module_camdomain.F.twoway.version1:      mgrid%t3d = 0
+prep/module_camdomain.F.twoway.version1:      mgrid%z3d = 0
+prep/module_camdomain.F.twoway.version1:      mgrid%p3d = 0
+prep/module_camdomain.F.twoway.version1:      mgrid%rh3d = 0
+prep/module_camdomain.F.twoway.version1:      mgrid%soilt = 0
+prep/module_camdomain.F.twoway.version1:      mgrid%soilm = 0
+prep/module_camdomain.F.twoway.version1:      mgrid%soilthick = 0
+prep/module_camdomain.F.twoway.version1:      mgrid%soildepth = 0
+prep/module_camdomain.F.twoway.version1:      mgrid%tsk = 0
+prep/module_camdomain.F.twoway.version1:      mgrid%sst = 0
+prep/module_camdomain.F.twoway.version1:      mgrid%sstold = 0
+prep/module_camdomain.F.twoway.version1:      mgrid%snow = 0
+prep/module_camdomain.F.twoway.version1:      mgrid%xice = 0
+prep/module_camdomain.F.twoway.version1:      mgrid%xiceold = 0
+prep/module_camdomain.F.twoway.version1:      mgrid%pslv = 0
+prep/module_camdomain.F.twoway.version1:      mgrid%psfc = 0
+prep/module_camdomain.F.twoway.version1:      mgrid%xlat = 0
+prep/module_camdomain.F.twoway.version1:      mgrid%xlon = 0
+prep/module_camdomain.F.twoway.version1:      mgrid%xland = 0    
+prep/module_camdomain.F.twoway.version1:      mgrid%ht = 0    
+prep/module_camdomain.F.twoway.version1:    subroutine initial_camgrid(camgrid, ids, ide, jds, jde, &
+prep/module_camdomain.F.twoway.version1:      type(camgrid_info)::camgrid
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%u3d))         allocate( camgrid%u3d(ids:ide, 1:num_metgrid_levels, jds:jde) )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%v3d))        allocate( camgrid%v3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%w3d))        allocate( camgrid%w3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%q3d))         allocate( camgrid%q3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%t3d))         allocate( camgrid%t3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%z3d))           allocate( camgrid%z3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%p3d))           allocate( camgrid%p3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%rh3d))           allocate( camgrid%rh3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%radthtend))           allocate( camgrid%radthtend(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%pblthtend))           allocate( camgrid%pblthtend(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%cumthtend))           allocate( camgrid%cumthtend(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%pblutend))           allocate( camgrid%pblutend(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%pblvtend))           allocate( camgrid%pblvtend(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%pblqtend))           allocate( camgrid%pblqtend(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%cumqtend))           allocate( camgrid%cumqtend(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%cldfra))           allocate( camgrid%cldfra(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%h_diabatic))   allocate( camgrid%h_diabatic(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%rqvmixtend))   allocate( camgrid%rqvmixtend(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%u1))           allocate( camgrid%u1(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%u2))           allocate( camgrid%u2(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%v1))           allocate( camgrid%v1(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%v2))           allocate( camgrid%v2(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%t1))           allocate( camgrid%t1(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%t2))           allocate( camgrid%t2(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%q1))           allocate( camgrid%q1(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%q2))           allocate( camgrid%q2(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%tsk))           allocate( camgrid%tsk(ids:ide, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%sst))           allocate( camgrid%sst(ids:ide, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%snow))           allocate( camgrid%snow(ids:ide, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%xice))           allocate( camgrid%xice(ids:ide, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%pslv))           allocate( camgrid%pslv(ids:ide, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%psfc))           allocate( camgrid%psfc(ids:ide, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%xland))           allocate( camgrid%xland(ids:ide, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      if(.not.associated(camgrid%ht))           allocate( camgrid%ht(ids:ide, jds:jde)  )
+prep/module_camdomain.F.twoway.version1:      camgrid%u3d = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%v3d = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%w3d = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%q3d = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%t3d = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%z3d = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%p3d = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%rh3d = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%radthtend = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%pblthtend = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%cumthtend = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%pblutend = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%pblvtend = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%pblqtend = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%cumqtend = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%cldfra = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%h_diabatic = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%rqvmixtend = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%u1 = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%u2 = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%v1 = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%v2 = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%t1 = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%t2 = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%q1 = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%q2 = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%tsk = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%sst = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%snow = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%xice = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%pslv = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%psfc = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%xland = 0.0_8
+prep/module_camdomain.F.twoway.version1:      camgrid%ht = 0.0_8
+prep/module_camdomain.F.twoway.version1:  end subroutine initial_camgrid
+prep/module_camdomain.F.twoway.version1:  subroutine final_metgrid(mgrid)
+prep/module_camdomain.F.twoway.version1:      type(metgrid_info)::mgrid
+prep/module_camdomain.F.twoway.version1:      if(associated(mgrid%u3d))    deallocate( mgrid%u3d )
+prep/module_camdomain.F.twoway.version1:      if(associated(mgrid%v3d))   deallocate( mgrid%v3d )
+prep/module_camdomain.F.twoway.version1:      if(associated(mgrid%w3d))   deallocate( mgrid%w3d )
+prep/module_camdomain.F.twoway.version1:      if(associated(mgrid%q3d))    deallocate( mgrid%q3d )
+prep/module_camdomain.F.twoway.version1:      if(associated(mgrid%t3d))    deallocate( mgrid%t3d )
+prep/module_camdomain.F.twoway.version1:      if(associated(mgrid%z3d))      deallocate( mgrid%z3d )
+prep/module_camdomain.F.twoway.version1:      if(associated(mgrid%p3d))      deallocate( mgrid%p3d )
+prep/module_camdomain.F.twoway.version1:      if(associated(mgrid%rh3d))      deallocate( mgrid%rh3d )
+prep/module_camdomain.F.twoway.version1:      if(associated(mgrid%tsk))      deallocate( mgrid%tsk )
+prep/module_camdomain.F.twoway.version1:      if(associated(mgrid%sst))      deallocate( mgrid%sst )
+prep/module_camdomain.F.twoway.version1:      if(associated(mgrid%sstold))      deallocate( mgrid%sstold )
+prep/module_camdomain.F.twoway.version1:      if(associated(mgrid%pslv))      deallocate( mgrid%pslv )
+prep/module_camdomain.F.twoway.version1:      if(associated(mgrid%psfc))      deallocate( mgrid%psfc )
+prep/module_camdomain.F.twoway.version1:      if(associated(mgrid%xice))      deallocate( mgrid%xice )
+prep/module_camdomain.F.twoway.version1:      if(associated(mgrid%xiceold))      deallocate( mgrid%xiceold )
+prep/module_camdomain.F.twoway.version1:      if(associated(mgrid%snow))      deallocate( mgrid%snow )
+prep/module_camdomain.F.twoway.version1:      if(associated(mgrid%xlat))     deallocate( mgrid%xlat )
+prep/module_camdomain.F.twoway.version1:      if(associated(mgrid%xlon))     deallocate( mgrid%xlon )
+prep/module_camdomain.F.twoway.version1:      if(associated(mgrid%xland))     deallocate( mgrid%xland )
+prep/module_camdomain.F.twoway.version1:      if(associated(mgrid%soilt))    deallocate( mgrid%soilt)
+prep/module_camdomain.F.twoway.version1:      if(associated(mgrid%soilm))    deallocate( mgrid%soilm)
+prep/module_camdomain.F.twoway.version1:      if(associated(mgrid%soilthick)) deallocate( mgrid%soilthick )
+prep/module_camdomain.F.twoway.version1:      if(associated(mgrid%soildepth))  deallocate( mgrid%soildepth )    
+prep/module_camdomain.F.twoway.version1:      if(associated(mgrid%ht))  deallocate( mgrid%ht )    
+prep/module_camdomain.F.twoway.version1:  subroutine final_camgrid(camgrid)
+prep/module_camdomain.F.twoway.version1:      type(camgrid_info)::camgrid
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%u3d))    deallocate( camgrid%u3d )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%v3d))   deallocate( camgrid%v3d )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%w3d))   deallocate( camgrid%w3d )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%q3d))    deallocate( camgrid%q3d )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%t3d))    deallocate( camgrid%t3d )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%z3d))      deallocate( camgrid%z3d )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%p3d))      deallocate( camgrid%p3d )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%rh3d))      deallocate( camgrid%rh3d )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%radthtend))      deallocate( camgrid%radthtend )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%pblthtend))      deallocate( camgrid%pblthtend )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%cumthtend))      deallocate( camgrid%cumthtend )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%pblutend))      deallocate( camgrid%pblutend ) 
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%pblvtend))      deallocate( camgrid%pblvtend )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%pblqtend))      deallocate( camgrid%pblqtend )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%cumqtend))      deallocate( camgrid%cumqtend )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%cldfra))      deallocate( camgrid%cldfra )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%h_diabatic))      deallocate( camgrid%h_diabatic )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%rqvmixtend))      deallocate( camgrid%rqvmixtend )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%u1))      deallocate( camgrid%u1 )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%u2))      deallocate( camgrid%u2 )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%v1))      deallocate( camgrid%v1 )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%v2))      deallocate( camgrid%v2 )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%t1))      deallocate( camgrid%t1 )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%t2))      deallocate( camgrid%t2 )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%q1))      deallocate( camgrid%q1 )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%q2))      deallocate( camgrid%q2 )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%tsk))      deallocate( camgrid%tsk )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%sst))      deallocate( camgrid%sst )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%pslv))      deallocate( camgrid%pslv )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%psfc))      deallocate( camgrid%psfc )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%xice))      deallocate( camgrid%xice )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%snow))      deallocate( camgrid%snow )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%xland))     deallocate( camgrid%xland )
+prep/module_camdomain.F.twoway.version1:      if(associated(camgrid%ht))  deallocate( camgrid%ht )    
+prep/module_camdomain.F.twoway.version1:  end subroutine final_camgrid
+prep/module_camdomain.F.twoway.version1:   subroutine camgrid_gatherall(grid, ids, ide, jds, jde, kds, kde, &
+prep/module_camdomain.F.twoway.version1:   type(camgrid_info)::grid
+prep/module_camdomain.F.twoway.version1:   end subroutine camgrid_gatherall  

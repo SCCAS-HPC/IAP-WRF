@@ -1,0 +1,784 @@
+chemistry/mozart/chemistry.F90:  subroutine chem_init(phys_state)
+chemistry/mozart/chemistry.F90:    type(physics_state), intent(in):: phys_state(begchunk:endchunk)
+chemistry/mozart/chemistry.F90:        call ghg_chem_init(phys_state, bndtvg, h2orates)
+chemistry/mozart/chemistry.F90:     call lin_strat_chem_inti(phys_state)
+chemistry/mozart/chemistry.F90:  subroutine chem_timestep_init(phys_state)
+chemistry/mozart/chemistry.F90:    type(physics_state), intent(inout) :: phys_state(begchunk:endchunk)                 
+chemistry/mozart/chemistry.F90:    call set_srf_emissions_time( phys_state )
+chemistry/mozart/chemistry.F90:    call extfrc_timestep_init( phys_state )
+chemistry/mozart/chemistry.F90:    call tracer_cnst_adv(phys_state)
+chemistry/mozart/chemistry.F90:    call tracer_srcs_adv(phys_state)
+chemistry/mozart/chemistry.F90:    call linoz_data_adv(phys_state)
+chemistry/mozart/chemistry.F90:       call ghg_chem_timestep_init(phys_state)
+chemistry/mozart/chemistry.F90:       call update_cfc11star( phys_state )
+chemistry/mozart/mo_ghg_chem.F90:  subroutine ghg_chem_init(phys_state, bndtvg, h2orates)
+chemistry/mozart/mo_ghg_chem.F90:    type(physics_state), intent(in) :: phys_state(begchunk:endchunk)
+chemistry/mozart/mo_ghg_chem.F90:    call boundarydata_init(bndtvg,phys_state,nc_names,ncnst,chemdata)
+chemistry/mozart/mo_ghg_chem.F90:          call boundarydata_init(h2orates,phys_state,(/h2orate_name/),1,h2orate_data)
+chemistry/mozart/mo_ghg_chem.F90:  subroutine ghg_chem_timestep_init(phys_state)
+chemistry/mozart/mo_ghg_chem.F90:    type(physics_state), intent(in) :: phys_state(begchunk:endchunk)
+chemistry/mozart/mo_ghg_chem.F90:    call boundarydata_update(phys_state,chemdata)
+chemistry/mozart/mo_ghg_chem.F90:       call boundarydata_update(phys_state,h2orate_data)
+chemistry/mozart/lin_strat_chem.F90:  subroutine lin_strat_chem_inti(phys_state)
+chemistry/mozart/lin_strat_chem.F90:    type(physics_state), intent(in) :: phys_state(begchunk:endchunk)
+chemistry/mozart/cfc11star.F90:  subroutine update_cfc11star( phys_state )
+chemistry/mozart/cfc11star.F90:    type(physics_state), intent(in):: phys_state(begchunk:endchunk)                 
+chemistry/mozart/cfc11star.F90:       lchnk = phys_state(c)%lchnk
+chemistry/mozart/cfc11star.F90:       ncol = phys_state(c)%ncol
+chemistry/mozart/cfc11star.F90:            phys_state(c)%q(:ncol,:,cfc11_ndx)  * rel_rf(1) + &
+chemistry/mozart/cfc11star.F90:            phys_state(c)%q(:ncol,:,cfc113_ndx) * rel_rf(2) + &
+chemistry/mozart/cfc11star.F90:            phys_state(c)%q(:ncol,:,ccl4_ndx)   * rel_rf(3) + &
+chemistry/mozart/cfc11star.F90:            phys_state(c)%q(:ncol,:,ch3ccl3_ndx)* rel_rf(4) + &
+chemistry/mozart/cfc11star.F90:            phys_state(c)%q(:ncol,:,hcfc22_ndx) * rel_rf(5) + &
+chemistry/mozart/cfc11star.F90:            phys_state(c)%q(:ncol,:,cf2clbr_ndx)* rel_rf(6) + &
+chemistry/mozart/cfc11star.F90:            phys_state(c)%q(:ncol,:,cf3br_ndx)  * rel_rf(7)
+chemistry/pp_none/chemistry.F90:  subroutine chem_init(phys_state)
+chemistry/pp_none/chemistry.F90:    type(physics_state), intent(in):: phys_state(begchunk:endchunk)
+chemistry/pp_none/chemistry.F90:  subroutine chem_timestep_init(phys_state)
+chemistry/pp_none/chemistry.F90:    type(physics_state), intent(in):: phys_state(begchunk:endchunk)                 
+chemistry/bulk_aero/aerosol_intr.F90:  subroutine prognostic_aerosol_initialize(phys_state)
+chemistry/bulk_aero/aerosol_intr.F90:    type(physics_state), intent(in) :: phys_state(:)
+control/cam_comp.F90:  type(physics_state), pointer :: phys_state(:)
+control/cam_comp.F90:   call phys_init( phys_state, phys_tend, pbuf, cam_out )
+control/cam_comp.F90:     nudging_state(i)=phys_state(i)
+control/cam_comp.F90:     cam_state_ac(i)=phys_state(i)
+control/cam_comp.F90:     cam_state(i)=phys_state(i)
+control/cam_comp.F90:     wrf_state(i)=phys_state(i)
+control/cam_comp.F90:           phys_state = cam_state
+control/cam_comp.F90:   call stepon_run1( dtime, phys_state, phys_tend, wrf_state, wrf_tend, &
+control/cam_comp.F90:   call phys_run1(phys_state, dtime, phys_tend, pbuf, cam_in, cam_out, cam_state, cam_tend)  ! juanxiong he
+control/cam_comp.F90:   call phys_run2(phys_state, dtime, phys_tend, pbuf, cam_out, cam_in )
+control/cam_comp.F90:      call cam_read_gfs(phys_state,nnstep)
+control/cam_comp.F90:      call cam_read_ncep2(phys_state,nnstep)
+control/cam_comp.F90:      call cam_read_ncep2_daily(phys_state,nnstep)
+control/cam_comp.F90:      call cam_read_cmip5_ccsm4_6hourly_eul(phys_state,nnstep)
+control/cam_comp.F90:      call cam_read_cmip5_ccsm4_daily_eul(phys_state,nnstep)
+control/cam_comp.F90:      call cam_read_cmip5_gfdlesm2m_daily_eul(phys_state,nnstep)
+control/cam_comp.F90:      call cam_read_cmip5_gfdlesm2m_6hourly_eul(phys_state,nnstep)
+control/cam_comp.F90:      call cam_read_cmip5_mpiesm2m_daily_eul(phys_state,nnstep)
+control/cam_comp.F90:       call cam_read_gfs(phys_state,nstep)
+control/cam_comp.F90:       call cam_read_ncep2(phys_state,nstep)
+control/cam_comp.F90:      call cam_read_ncep2_daily(phys_state,nstep)
+control/cam_comp.F90:      call cam_read_ccsmrcp85_6hourly(phys_state,nstep)
+control/cam_comp.F90:       call nudging(phys_state,phys_tend,nudging_state,nudging_tend,&
+control/cam_comp.F90:   call stepon_run2( phys_state, phys_tend, wrf_state, wrf_tend, &
+control/cam_comp.F90:   call stepon_run3( dtime, etamid, cam_out, phys_state, phys_tend, dyn_in, dyn_out, &
+control/cam_comp.F90:   call phys_final( phys_state, phys_tend )
+control/cam_nudging.F90: subroutine cam_read_gfs( phys_state, nstep )
+control/cam_nudging.F90:    type(physics_state), pointer :: phys_state(:)
+control/cam_nudging.F90:    call cmip5_to_cam_mapping(tmplon,tmplat,360,181,phys_state)
+control/cam_nudging.F90:     camlev(:)=phys_state(lchnk)%pmid(i,:)
+control/cam_nudging.F90:     phys_state(lchnk)%u_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%u_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%v_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%v_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%t_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%t_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%q_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%q_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90: subroutine cam_read_ccsmrcp85_6hourly( phys_state, nstep )
+control/cam_nudging.F90:    type(physics_state), pointer :: phys_state(:)
+control/cam_nudging.F90:    call cmip5_to_cam_mapping(templon,templat,lonlen,latlen,phys_state)
+control/cam_nudging.F90:     camlev(:)=phys_state(lchnk)%pmid(i,:)
+control/cam_nudging.F90:     phys_state(lchnk)%u_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%v_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%t_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%q_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%u_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%v_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%t_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%q_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90: subroutine cam_read_cmip5_ccsm4_6hourly_eul( phys_state, nstep )
+control/cam_nudging.F90:    type(physics_state), pointer :: phys_state(:)
+control/cam_nudging.F90:    call cmip5_to_cam_mapping(templon,templat,lonlen,latlen,phys_state)
+control/cam_nudging.F90:     camlev(:)=phys_state(lchnk)%pmid(i,:)
+control/cam_nudging.F90:     phys_state(lchnk)%u_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%v_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%t_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%q_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%u_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%v_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%t_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%q_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90:   subroutine cam_read_cmip5_ccsm4_daily_eul( phys_state, nstep )
+control/cam_nudging.F90:    type(physics_state), pointer :: phys_state(:)
+control/cam_nudging.F90:    call cmip5_to_cam_mapping(templon,templat,lonlen,latlen,phys_state)
+control/cam_nudging.F90:     camlev(:)=phys_state(lchnk)%pmid(i,:)
+control/cam_nudging.F90:     phys_state(lchnk)%u_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%u_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%v_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%v_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%t_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%t_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%q_ndg_old(i,:) = -9999.0
+control/cam_nudging.F90:     phys_state(lchnk)%q_ndg_new(i,:) = -9999.0
+control/cam_nudging.F90:   subroutine cam_read_cmip5_gfdlesm2m_daily_eul( phys_state, nstep )
+control/cam_nudging.F90:    type(physics_state), pointer :: phys_state(:)
+control/cam_nudging.F90:    call cmip5_to_cam_mapping(templon,templat,lonlen,latlen,phys_state)
+control/cam_nudging.F90:     camlev(:)=phys_state(lchnk)%pmid(i,:)
+control/cam_nudging.F90:     phys_state(lchnk)%u_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%u_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%v_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%v_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%t_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%t_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%q_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%q_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90:   subroutine cam_read_cmip5_gfdlesm2m_6hourly_eul( phys_state, nstep )
+control/cam_nudging.F90:    type(physics_state), pointer :: phys_state(:)
+control/cam_nudging.F90:    call cmip5_to_cam_mapping(templon,templat,lonlen,latlen,phys_state)
+control/cam_nudging.F90:     camlev(:)=phys_state(lchnk)%pmid(i,:)
+control/cam_nudging.F90:     phys_state(lchnk)%u_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%v_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%t_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%q_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%u_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%v_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%t_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%q_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90:   subroutine cam_read_cmip5_mpiesm2m_daily_eul( phys_state, nstep )
+control/cam_nudging.F90:    type(physics_state), pointer :: phys_state(:)
+control/cam_nudging.F90:    call cmip5_to_cam_mapping(templon,templat,lonlen,latlen,phys_state)
+control/cam_nudging.F90:     camlev(:)=phys_state(lchnk)%pmid(i,:)
+control/cam_nudging.F90:     phys_state(lchnk)%u_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%u_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%v_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%v_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%t_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%t_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%q_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%q_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90: subroutine cam_read_ncep2( phys_state, nstep )
+control/cam_nudging.F90:    type(physics_state), pointer :: phys_state(:)
+control/cam_nudging.F90:    call cmip5_to_cam_mapping(templon,templat,lonlen,latlen,phys_state)
+control/cam_nudging.F90:     camlev(:)=phys_state(lchnk)%pmid(i,:)
+control/cam_nudging.F90:     phys_state(lchnk)%u_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%v_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%t_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%q_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%u_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%v_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%t_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%q_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90: subroutine cam_read_ncep2_daily( phys_state, nstep )
+control/cam_nudging.F90:    type(physics_state), pointer :: phys_state(:)
+control/cam_nudging.F90:    call cmip5_to_cam_mapping(templon,templat,lonlen,latlen,phys_state)
+control/cam_nudging.F90:     camlev(:)=phys_state(lchnk)%pmid(i,:)
+control/cam_nudging.F90:     phys_state(lchnk)%u_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%v_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%t_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%q_ndg_old(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%u_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%v_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%t_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90:     phys_state(lchnk)%q_ndg_new(i,:) = fdatao(:)
+control/cam_nudging.F90: subroutine cam_read_ncep2_sfc( cam_in, phys_state, nstep )
+control/cam_nudging.F90:    type(physics_state), pointer :: phys_state(:)
+control/cam_nudging.F90:    call cmip5_to_cam_mapping(templon,templat,lonlensfc,latlensfc,phys_state)
+control/cam_nudging.F90:   subroutine cmip5_to_cam_mapping(templon,templat,lonlen,latlen,phys_state)
+control/cam_nudging.F90:     type(physics_state), pointer :: phys_state(:)
+control/cam_nudging.F90:       xlat(mm)=phys_state(lchnk)%lat(i)*180.0/pi
+control/cam_nudging.F90:       xlon(mm)=phys_state(lchnk)%lon(i)*180.0/pi
+dynamics/fv/dp_coupling.F90:  subroutine d_p_coupling(grid, phys_state, phys_tend, pbuf, dyn_out)
+dynamics/fv/dp_coupling.F90:    type(physics_state), intent(inout), dimension(begchunk:endchunk) :: phys_state
+dynamics/fv/dp_coupling.F90:          ncol = phys_state(lchnk)%ncol
+dynamics/fv/dp_coupling.F90:             phys_state(lchnk)%ps(i)   = psxy(ic,jc)
+dynamics/fv/dp_coupling.F90:             phys_state(lchnk)%phis(i) = phisxy(ic,jc)
+dynamics/fv/dp_coupling.F90:                phys_state(lchnk)%u    (i,k) = u3(ic,k,jc)
+dynamics/fv/dp_coupling.F90:                phys_state(lchnk)%v    (i,k) = v3(ic,k,jc)
+dynamics/fv/dp_coupling.F90:                phys_state(lchnk)%omega(i,k) = omgaxy(ic,k,jc)
+dynamics/fv/dp_coupling.F90:                phys_state(lchnk)%frontgf(i,k) = frontgf(ic,k,jc)
+dynamics/fv/dp_coupling.F90:                phys_state(lchnk)%frontga(i,k) = frontga(ic,k,jc)
+dynamics/fv/dp_coupling.F90:                phys_state(lchnk)%uzm(i,k)     = uzm(k,jc)
+dynamics/fv/dp_coupling.F90:                phys_state(lchnk)%t    (i,k) = ptxy(ic,jc,k) / (D1_0 + zvir*tracer(ic,jc,k,1))
+dynamics/fv/dp_coupling.F90:                phys_state(lchnk)%exner(i,k) = pic(i) / pkzxy(ic,jc,k) 
+dynamics/fv/dp_coupling.F90:                phys_state(lchnk)%pint  (i,k) = pexy  (ic,k,jc)
+dynamics/fv/dp_coupling.F90:                phys_state(lchnk)%lnpint(i,k) = pelnxy(ic,k,jc)
+dynamics/fv/dp_coupling.F90:                   phys_state(lchnk)%q(i,k,m) = &
+dynamics/fv/dp_coupling.F90:          ncol = phys_state(lchnk)%ncol
+dynamics/fv/dp_coupling.F90:             phys_state(lchnk)%pint  (i,pver+1) = cbuffer(cpter(i,0))
+dynamics/fv/dp_coupling.F90:             phys_state(lchnk)%lnpint(i,pver+1) = cbuffer(cpter(i,0)+1)
+dynamics/fv/dp_coupling.F90:             phys_state(lchnk)%ps(i)            = cbuffer(cpter(i,0)+2)
+dynamics/fv/dp_coupling.F90:             phys_state(lchnk)%phis(i)          = cbuffer(cpter(i,0)+3)
+dynamics/fv/dp_coupling.F90:                phys_state(lchnk)%pint  (i,k) = cbuffer(cpter(i,k))
+dynamics/fv/dp_coupling.F90:                phys_state(lchnk)%lnpint(i,k) = cbuffer(cpter(i,k)+1)
+dynamics/fv/dp_coupling.F90:                phys_state(lchnk)%u     (i,k) = cbuffer(cpter(i,k)+2)
+dynamics/fv/dp_coupling.F90:                phys_state(lchnk)%v     (i,k) = cbuffer(cpter(i,k)+3)
+dynamics/fv/dp_coupling.F90:                phys_state(lchnk)%omega (i,k) = cbuffer(cpter(i,k)+4)
+dynamics/fv/dp_coupling.F90:                phys_state(lchnk)%t     (i,k) = cbuffer(cpter(i,k)+5)
+dynamics/fv/dp_coupling.F90:                phys_state(lchnk)%exner (i,k) = cbuffer(cpter(i,k)+6)
+dynamics/fv/dp_coupling.F90:                phys_state(lchnk)%frontga(i,k)  = cbuffer(cpter(i,k)+7)
+dynamics/fv/dp_coupling.F90:                phys_state(lchnk)%frontgf(i,k)  = cbuffer(cpter(i,k)+8)
+dynamics/fv/dp_coupling.F90:                phys_state(lchnk)%uzm(i,k)      = cbuffer(cpter(i,k)+9)
+dynamics/fv/dp_coupling.F90:                   phys_state(lchnk)%q(i,k,m) = cbuffer(cpter(i,k)+boff+m)
+dynamics/fv/dp_coupling.F90:       ncol = phys_state(lchnk)%ncol
+dynamics/fv/dp_coupling.F90:             phys_state(lchnk)%pdel (i,k) = phys_state(lchnk)%pint(i,k+1) - phys_state(lchnk)%pint(i,k)
+dynamics/fv/dp_coupling.F90:             phys_state(lchnk)%rpdel(i,k) = D1_0/phys_state(lchnk)%pdel(i,k)
+dynamics/fv/dp_coupling.F90:             phys_state(lchnk)%pmid (i,k) = D0_5*(phys_state(lchnk)%pint(i,k) + phys_state(lchnk)%pint(i,k+1))
+dynamics/fv/dp_coupling.F90:             phys_state(lchnk)%lnpmid(i,k) = log(phys_state(lchnk)%pmid(i,k))
+dynamics/fv/dp_coupling.F90:             if (phys_state(lchnk)%q(i,pver,m) < qmin(m)) then
+dynamics/fv/dp_coupling.F90:                qmavl = phys_state(lchnk)%q (i,pver-1,m) - qmin(m)
+dynamics/fv/dp_coupling.F90:                dqreq = (qmin(m) - phys_state(lchnk)%q(i,pver,m))                         &
+dynamics/fv/dp_coupling.F90:                      * phys_state(lchnk)%pdel(i,pver) / phys_state(lchnk)%pdel(i,pver-1)
+dynamics/fv/dp_coupling.F90:                qbot   = phys_state(lchnk)%q(i,pver  ,m)
+dynamics/fv/dp_coupling.F90:                qbotm1 = phys_state(lchnk)%q(i,pver-1,m)
+dynamics/fv/dp_coupling.F90:                   phys_state(lchnk)%q(i,pver  ,m) = qmin(m)
+dynamics/fv/dp_coupling.F90:                   phys_state(lchnk)%q(i,pver-1,m) = phys_state(lchnk)%q(i,pver-1,m) - dqreq
+dynamics/fv/dp_coupling.F90:       call geopotential_t (phys_state(lchnk)%lnpint, phys_state(lchnk)%lnpmid  , phys_state(lchnk)%pint  , &
+dynamics/fv/dp_coupling.F90:                            phys_state(lchnk)%pmid  , phys_state(lchnk)%pdel    , phys_state(lchnk)%rpdel , &
+dynamics/fv/dp_coupling.F90:                            phys_state(lchnk)%t     , phys_state(lchnk)%q(1,1,1), rair,  gravit,  zvir    , &
+dynamics/fv/dp_coupling.F90:                            phys_state(lchnk)%zi    , phys_state(lchnk)%zm      , ncol                )
+dynamics/fv/dp_coupling.F90:             phys_state(lchnk)%s(i,k) = cpair*phys_state(lchnk)%t(i,k) &
+dynamics/fv/dp_coupling.F90:                                      + gravit*phys_state(lchnk)%zm(i,k) + phys_state(lchnk)%phis(i)
+dynamics/fv/dp_coupling.F90:       call set_state_pdry(phys_state(lchnk))    ! First get dry pressure to use for this timestep
+dynamics/fv/dp_coupling.F90:       call set_wet_to_dry(phys_state(lchnk))    ! Dynamics had moist, physics wants dry.
+dynamics/fv/dp_coupling.F90:       call check_energy_timestep_init(phys_state(lchnk), phys_tend(lchnk), pbuf)
+dynamics/fv/dp_coupling.F90:  subroutine p_d_coupling(grid, phys_state, phys_tend, &
+dynamics/fv/dp_coupling.F90:    type(physics_state), intent(inout), dimension(begchunk:endchunk) :: phys_state
+dynamics/fv/dp_coupling.F90:      call get_met_fields( phys_state, phys_tend, dtime )
+dynamics/fv/dp_coupling.F90:                   ptxy  (lons(i),lats(i),k) = phys_state(lchnk)%t(i,k)
+dynamics/fv/dp_coupling.F90:                   delpxy(lons(i),lats(i),k) = phys_state(lchnk)%pdel(i,k)
+dynamics/fv/dp_coupling.F90:                         phys_state(lchnk)%q(i,k,m)
+dynamics/fv/dp_coupling.F90:                   cbuffer(cpter(i,k)+2) = phys_state(lchnk)%t(i,k)
+dynamics/fv/dp_coupling.F90:                   cbuffer(cpter(i,k)+3) = phys_state(lchnk)%pdel(i,k)
+dynamics/fv/dp_coupling.F90:                      cbuffer(cpter(i,k)+3+m) = phys_state(lchnk)%q(i,k,m)
+dynamics/fv/dp_coupling.F90:  subroutine wrf_to_dynamics(grid, phys_state, phys_tend, &
+dynamics/fv/dp_coupling.F90:    type(physics_state), intent(inout), dimension(begchunk:endchunk) :: phys_state
+dynamics/fv/dp_coupling.F90:      call get_met_fields( phys_state, phys_tend, dtime )
+dynamics/fv/dp_coupling.F90:                   ptxy  (lons(i),lats(i),k) = phys_state(lchnk)%t(i,k)
+dynamics/fv/dp_coupling.F90:                   delpxy(lons(i),lats(i),k) = phys_state(lchnk)%pdel(i,k)
+dynamics/fv/dp_coupling.F90:                         phys_state(lchnk)%q(i,k,m)
+dynamics/fv/dp_coupling.F90:                   cbuffer(cpter(i,k)+2) = phys_state(lchnk)%t(i,k)
+dynamics/fv/dp_coupling.F90:                   cbuffer(cpter(i,k)+3) = phys_state(lchnk)%pdel(i,k)
+dynamics/fv/dp_coupling.F90:                      cbuffer(cpter(i,k)+3+m) = phys_state(lchnk)%q(i,k,m)
+dynamics/fv/stepon.F90:subroutine stepon_run1( dtime_out, phys_state, phys_tend, wrf_state, wrf_tend, &
+dynamics/fv/stepon.F90:   type(physics_state), intent(inout) :: phys_state(begchunk:endchunk)
+dynamics/fv/stepon.F90:   ! Move data into phys_state structure.
+dynamics/fv/stepon.F90:   call d_p_coupling(dyn_state%grid, phys_state, phys_tend, pbuf, dyn_out)
+dynamics/fv/stepon.F90:       cam_state_ac=phys_state
+dynamics/fv/stepon.F90:subroutine stepon_run2( phys_state, phys_tend, wrf_state, wrf_tend, &
+dynamics/fv/stepon.F90:   type(physics_state), intent(inout):: phys_state(begchunk:endchunk)
+dynamics/fv/stepon.F90:   ! Update dynamics variables using phys_state & phys_tend.
+dynamics/fv/stepon.F90:   call p_d_coupling(grid, phys_state, phys_tend, &
+dynamics/fv/stepon.F90:subroutine stepon_run3( dtime, etamid, cam_out, phys_state, phys_tend,  &
+dynamics/fv/stepon.F90:   type(physics_state), intent(inout):: phys_state(begchunk:endchunk) !juanxiong he
+dynamics/fv/stepon.F90:                   phys_state, ncdate, ncsecp, moist_physics)
+dynamics/fv/stepon.F90:     cam_state = phys_state
+dynamics/fv/nudging_driver.F90:  subroutine nudging(phys_state,phys_tend,nudging_state,nudging_tend,&
+dynamics/fv/nudging_driver.F90:   type(physics_state), pointer, intent(inout) :: phys_state(:), nudging_state(:)
+dynamics/fv/nudging_driver.F90:   call grid_nudging(phys_state(lchnk),phys_tend(lchnk),&
+dynamics/fv/fv_prints.F90:                      tracer, delp,  pe, surf_state, phys_state,          &
+dynamics/fv/fv_prints.F90:    type(physics_state), intent(in), dimension(begchunk:endchunk) :: phys_state
+dynamics/fv/fv_prints.F90:       pmax(lchnk) = maxval(phys_state(lchnk)%ps(1:ncol))
+dynamics/fv/fv_prints.F90:       pmin(lchnk) = minval(phys_state(lchnk)%ps(1:ncol))
+dynamics/fv/fv_prints.F90:       tmax(lchnk) = maxval(phys_state(lchnk)%t(1:ncol,1:pver))
+dynamics/fv/fv_prints.F90:       tmin(lchnk) = minval(phys_state(lchnk)%t(1:ncol,1:pver))
+dynamics/fv/fv_prints.F90:       umax(lchnk) = maxval(phys_state(lchnk)%u(1:ncol,1:pver))
+dynamics/fv/fv_prints.F90:       umin(lchnk) = minval(phys_state(lchnk)%u(1:ncol,1:pver))
+dynamics/fv/fv_prints.F90:       vmax(lchnk) = maxval(phys_state(lchnk)%v(1:ncol,1:pver))
+dynamics/fv/fv_prints.F90:       vmin(lchnk) = minval(phys_state(lchnk)%v(1:ncol,1:pver))
+dynamics/fv/fv_prints.F90:       wmax(lchnk) = maxval(phys_state(lchnk)%omega(1:ncol,1:pver))
+dynamics/fv/fv_prints.F90:       wmin(lchnk) = minval(phys_state(lchnk)%omega(1:ncol,1:pver))
+dynamics/iap/dp_coupling.F90:                          omga, phis, phys_state, phys_tend, pbuf, pdeld)
+dynamics/iap/dp_coupling.F90:    type(physics_state), intent(inout), dimension(begchunk:endchunk) :: phys_state
+dynamics/iap/dp_coupling.F90:          ncol = phys_state(lchnk)%ncol
+dynamics/iap/dp_coupling.F90:             phys_state(lchnk)%ps   (i)     = ps  (lons(i),lats(i))
+dynamics/iap/dp_coupling.F90:             phys_state(lchnk)%phis (i)     = phis(lons(i),lats(i))
+dynamics/iap/dp_coupling.F90:                phys_state(lchnk)%t    (i,k)   = t3  (lons(i),k,lats(i))
+dynamics/iap/dp_coupling.F90:                phys_state(lchnk)%u    (i,k)   = u3  (lons(i),k,lats(i))
+dynamics/iap/dp_coupling.F90:                phys_state(lchnk)%v    (i,k)   = v3  (lons(i),k,lats(i))
+dynamics/iap/dp_coupling.F90:                phys_state(lchnk)%omega(i,k)   = omga(lons(i),k,lats(i))
+dynamics/iap/dp_coupling.F90:                phys_state(lchnk)%q(i,k,1)     = q3  (lons(i),k,1,lats(i))
+dynamics/iap/dp_coupling.F90:                phys_state(lchnk)%pdeldry(i,k) = pdeld(lons(i),k,lats(i))
+dynamics/iap/dp_coupling.F90:                      phys_state(lchnk)%q(i,k,m) = q3(lons(i),k,m,lats(i))*(1._r8 - q3(lons(i),k,1,lats(i)))
+dynamics/iap/dp_coupling.F90:                      phys_state(lchnk)%q(i,k,m) = q3(lons(i),k,m,lats(i))
+dynamics/iap/dp_coupling.F90:          ncol = phys_state(lchnk)%ncol
+dynamics/iap/dp_coupling.F90:             phys_state(lchnk)%ps   (i)     = buf2(cpter(i,0))
+dynamics/iap/dp_coupling.F90:             phys_state(lchnk)%phis (i)     = buf2(cpter(i,0)+1)
+dynamics/iap/dp_coupling.F90:                phys_state(lchnk)%t    (i,k)   = buf2(cpter(i,k))
+dynamics/iap/dp_coupling.F90:                phys_state(lchnk)%u    (i,k)   = buf2(cpter(i,k)+1)
+dynamics/iap/dp_coupling.F90:                phys_state(lchnk)%v    (i,k)   = buf2(cpter(i,k)+2)
+dynamics/iap/dp_coupling.F90:                phys_state(lchnk)%omega (i,k)   = buf2(cpter(i,k)+3)
+dynamics/iap/dp_coupling.F90:                   phys_state(lchnk)%q (i,k,m) = buf2(cpter(i,k)+3+m)
+dynamics/iap/dp_coupling.F90:                phys_state(lchnk)%pdeldry(i,k) = buf2(cpter(i,k)+4+pcnst)
+dynamics/iap/dp_coupling.F90:       ncol = phys_state(lchnk)%ncol
+dynamics/iap/dp_coupling.F90:                   phys_state(lchnk)%ps,   phys_state(lchnk)%pint,    &
+dynamics/iap/dp_coupling.F90:                   phys_state(lchnk)%pmid, phys_state(lchnk)%pdel)
+dynamics/iap/dp_coupling.F90:             phys_state(lchnk)%lnpint(i,k) = log(phys_state(lchnk)%pint(i,k))
+dynamics/iap/dp_coupling.F90:             phys_state(lchnk)%rpdel(i,k)  = 1._r8/phys_state(lchnk)%pdel(i,k)
+dynamics/iap/dp_coupling.F90:             phys_state(lchnk)%lnpmid(i,k) = log(phys_state(lchnk)%pmid(i,k))
+dynamics/iap/dp_coupling.F90:             phys_state(lchnk)%exner (i,k) = (phys_state(lchnk)%pint(i,pver+1) &
+dynamics/iap/dp_coupling.F90:                                             / phys_state(lchnk)%pmid(i,k))**cappa
+dynamics/iap/dp_coupling.F90:       call geopotential_t (phys_state(lchnk)%lnpint, phys_state(lchnk)%lnpmid  , phys_state(lchnk)%pint  , &
+dynamics/iap/dp_coupling.F90:                            phys_state(lchnk)%pmid  , phys_state(lchnk)%pdel    , phys_state(lchnk)%rpdel , &
+dynamics/iap/dp_coupling.F90:                            phys_state(lchnk)%t     , phys_state(lchnk)%q(1,1,1), rair,  gravit,  zvir    , &
+dynamics/iap/dp_coupling.F90:                            phys_state(lchnk)%zi    , phys_state(lchnk)%zm      , ncol                )
+dynamics/iap/dp_coupling.F90:             phys_state(lchnk)%s(i,k) = cpair*phys_state(lchnk)%t(i,k) &
+dynamics/iap/dp_coupling.F90:                                      + gravit*phys_state(lchnk)%zm(i,k) + phys_state(lchnk)%phis(i)
+dynamics/iap/dp_coupling.F90:! Compute other dry fields in phys_state, using pdeld copied from dynamics above
+dynamics/iap/dp_coupling.F90:       call set_state_pdry(phys_state(lchnk),pdeld_calc=.false.)
+dynamics/iap/dp_coupling.F90:       call check_energy_timestep_init(phys_state(lchnk), phys_tend(lchnk), pbuf)
+dynamics/iap/dp_coupling.F90:  subroutine p_d_coupling(phys_state, phys_tend, t2, fu, fv, flx_net, qminus)
+dynamics/iap/dp_coupling.F90:    type(physics_state),intent(in), dimension(begchunk:endchunk) :: phys_state
+dynamics/iap/dp_coupling.F90:                qminusxy(lons(i),k,1,lats(i)) = phys_state(lchnk)%q(i,k,1)
+dynamics/iap/dp_coupling.F90:                      qminusxy(lons(i),k,m,lats(i)) = phys_state(lchnk)%q(i,k,m) /     &
+dynamics/iap/dp_coupling.F90:                           (1._r8 - phys_state(lchnk)%q(i,k,1))
+dynamics/iap/dp_coupling.F90:                      qminusxy(lons(i),k,m,lats(i)) = phys_state(lchnk)%q(i,k,m)
+dynamics/iap/dp_coupling.F90:                buf2(cpter(i,k)+3) = phys_state(lchnk)%q(i,k,1)
+dynamics/iap/dp_coupling.F90:                      buf2(cpter(i,k)+2+m) = phys_state(lchnk)%q(i,k,m) /     &
+dynamics/iap/dp_coupling.F90:                           (1._r8 - phys_state(lchnk)%q(i,k,1))
+dynamics/iap/dp_coupling.F90:                      buf2(cpter(i,k)+2+m) = phys_state(lchnk)%q(i,k,m)
+dynamics/iap/dp_coupling.F90:  subroutine wrf_to_dynamics_tend(phys_state, phys_tend, t2, fu, fv)
+dynamics/iap/dp_coupling.F90:    type(physics_state),intent(in), dimension(begchunk:endchunk) :: phys_state
+dynamics/iap/dp_coupling.F90:  subroutine wrf_to_dynamics(phys_state, ps, t3, u3, v3, q3)  ! juanxiong
+dynamics/iap/dp_coupling.F90:    type(physics_state),intent(in), dimension(begchunk:endchunk) :: phys_state
+dynamics/iap/dp_coupling.F90:               if(phys_state(lchnk)%t(i,k).ne.0.0) then
+dynamics/iap/dp_coupling.F90:                t3xy(lons(i),k,lats(i))   = phys_state(lchnk)%t (i,k)
+dynamics/iap/dp_coupling.F90:                u3xy(lons(i),k,lats(i))   = phys_state(lchnk)%u (i,k)
+dynamics/iap/dp_coupling.F90:                v3xy(lons(i),k,lats(i))   = phys_state(lchnk)%v (i,k)
+dynamics/iap/dp_coupling.F90:                q3xy(lons(i),k,1,lats(i)) = phys_state(lchnk)%q(i,k,1)
+dynamics/iap/dp_coupling.F90:            if(phys_state(lchnk)%ps(i).ne.0.0) then
+dynamics/iap/dp_coupling.F90:              psxy(lons(i),lats(i))   = phys_state(lchnk)%ps(i)
+dynamics/iap/dp_coupling.F90:           if(phys_state(lchnk)%ps(i).ne.0)   buf2(cpter(i,0)) = phys_state(lchnk)%ps(i)
+dynamics/iap/dp_coupling.F90:                buf2(cpter(i,k))   = phys_state(lchnk)%t (i,k)
+dynamics/iap/dp_coupling.F90:                buf2(cpter(i,k)+1) = phys_state(lchnk)%u (i,k)
+dynamics/iap/dp_coupling.F90:                buf2(cpter(i,k)+2) = phys_state(lchnk)%v (i,k)
+dynamics/iap/dp_coupling.F90:                buf2(cpter(i,k)+3) = phys_state(lchnk)%q(i,k,1)
+dynamics/iap/dp_coupling.F90:  subroutine dynamics_to_wrf(phys_state, ps, t3, u3, v3, q3, pdeld)
+dynamics/iap/dp_coupling.F90:    type(physics_state),intent(inout), dimension(begchunk:endchunk) :: phys_state
+dynamics/iap/dp_coupling.F90:          ncol = phys_state(lchnk)%ncol
+dynamics/iap/dp_coupling.F90:             phys_state(lchnk)%ps   (i)     = psxy  (lons(i),lats(i))
+dynamics/iap/dp_coupling.F90:                phys_state(lchnk)%t    (i,k)   = t3xy(lons(i),k,lats(i))
+dynamics/iap/dp_coupling.F90:                phys_state(lchnk)%u    (i,k)   = u3xy(lons(i),k,lats(i))
+dynamics/iap/dp_coupling.F90:                phys_state(lchnk)%v    (i,k)   = v3xy(lons(i),k,lats(i))
+dynamics/iap/dp_coupling.F90:                phys_state(lchnk)%q  (i,k,1)   = q3xy(lons(i),k,1,lats(i))
+dynamics/iap/dp_coupling.F90:                phys_state(lchnk)%pdel (i,k)   = pdeldxy(lons(i),k,lats(i))
+dynamics/iap/dp_coupling.F90:          ncol = phys_state(lchnk)%ncol
+dynamics/iap/dp_coupling.F90:             phys_state(lchnk)%ps   (i)     = buf2(cpter(i,0))
+dynamics/iap/dp_coupling.F90:                phys_state(lchnk)%t    (i,k)   = buf2(cpter(i,k))
+dynamics/iap/dp_coupling.F90:                phys_state(lchnk)%u    (i,k)   = buf2(cpter(i,k)+1)
+dynamics/iap/dp_coupling.F90:                phys_state(lchnk)%v    (i,k)   = buf2(cpter(i,k)+2)
+dynamics/iap/dp_coupling.F90:                phys_state(lchnk)%pdel (i,k)   = buf2(cpter(i,k)+2)
+dynamics/iap/dp_coupling.F90:                phys_state(lchnk)%q (i,k,1) = buf2(cpter(i,k)+3)
+dynamics/iap/dp_coupling.F90:       ncol = phys_state(lchnk)%ncol
+dynamics/iap/dp_coupling.F90:                   phys_state(lchnk)%ps,   phys_state(lchnk)%pint,    &
+dynamics/iap/dp_coupling.F90:                   phys_state(lchnk)%pmid, phys_state(lchnk)%pdel)
+dynamics/iap/dp_coupling.F90:             phys_state(lchnk)%lnpint(i,k) = log(phys_state(lchnk)%pint(i,k))
+dynamics/iap/dp_coupling.F90:             phys_state(lchnk)%rpdel(i,k)  = 1._r8/phys_state(lchnk)%pdel(i,k)
+dynamics/iap/dp_coupling.F90:             phys_state(lchnk)%lnpmid(i,k) = log(phys_state(lchnk)%pmid(i,k))
+dynamics/iap/dp_coupling.F90:             phys_state(lchnk)%exner (i,k) = (phys_state(lchnk)%pint(i,pver+1) &
+dynamics/iap/dp_coupling.F90:                                             / phys_state(lchnk)%pmid(i,k))**cappa
+dynamics/iap/dp_coupling.F90:       call geopotential_t (phys_state(lchnk)%lnpint, phys_state(lchnk)%lnpmid  , phys_state(lchnk)%pint  , &
+dynamics/iap/dp_coupling.F90:                            phys_state(lchnk)%pmid  , phys_state(lchnk)%pdel    , phys_state(lchnk)%rpdel , &
+dynamics/iap/dp_coupling.F90:                            phys_state(lchnk)%t     , phys_state(lchnk)%q(1,1,1), rair,  gravit,  zvir    , &
+dynamics/iap/dp_coupling.F90:                            phys_state(lchnk)%zi    , phys_state(lchnk)%zm      , ncol                )
+dynamics/iap/dp_coupling.F90:       call aqsat (phys_state(lchnk)%t, phys_state(lchnk)%pmid, tem2, ftem, pcols, &
+dynamics/iap/dp_coupling.F90:       phys_state(lchnk)%rh(:ncol,:) = phys_state(lchnk)%q(:ncol,:,1)/ftem(:ncol,:)*100._r8
+dynamics/iap/stepon.F90:  public phys_state      ! by Wang Yuzhu
+dynamics/iap/stepon.F90:  type(physics_state), pointer :: phys_state(:)   ! Physics state data
+dynamics/iap/stepon.F90:subroutine stepon_run1( ztodt, phys_state, phys_tend, wrf_state, wrf_tend,&
+dynamics/iap/stepon.F90:  type(physics_state), intent(inout) :: phys_state(begchunk:endchunk)
+dynamics/iap/stepon.F90:   nudging_state=phys_state
+dynamics/iap/stepon.F90:                     omgaxy, phisxy, phys_state, phys_tend, pbuf, pdeldxy(:,:,:,n3m1))
+dynamics/iap/stepon.F90:subroutine stepon_run2( phys_state, phys_tend,  wrf_state, wrf_tend,&
+dynamics/iap/stepon.F90:  type(physics_state), intent(in):: phys_state(begchunk:endchunk)
+dynamics/iap/stepon.F90:  call p_d_coupling (phys_state, phys_tend, t2, fu, fv, flx_net, &
+dynamics/iap/stepon.F90:subroutine stepon_run3( ztodt, etamid, cam_out, phys_state, phys_tend, &
+dynamics/iap/stepon.F90:  type(physics_state), intent(in):: phys_state(begchunk:endchunk)
+dynamics/iap/nudging_driver.F90:  subroutine nudging(phys_state,phys_tend,nudging_state,nudging_tend,&
+dynamics/iap/nudging_driver.F90:   type(physics_state), pointer, intent(inout) :: phys_state(:), nudging_state(:)
+dynamics/iap/nudging_driver.F90:   call grid_nudging(phys_state(lchnk),phys_tend(lchnk),&
+dynamics/iap/stepon.F90.yuanshi:  type(physics_state), pointer :: phys_state(:)   ! Physics state data
+dynamics/iap/stepon.F90.yuanshi:subroutine stepon_run1( ztodt, phys_state, phys_tend, wrf_state, wrf_tend,&
+dynamics/iap/stepon.F90.yuanshi:  type(physics_state), intent(inout) :: phys_state(begchunk:endchunk)
+dynamics/iap/stepon.F90.yuanshi:   nudging_state=phys_state
+dynamics/iap/stepon.F90.yuanshi:                     omgaxy, phisxy, phys_state, phys_tend, pbuf, pdeldxy(:,:,:,n3m1))
+dynamics/iap/stepon.F90.yuanshi:subroutine stepon_run2( phys_state, phys_tend,  wrf_state, wrf_tend,&
+dynamics/iap/stepon.F90.yuanshi:  type(physics_state), intent(in):: phys_state(begchunk:endchunk)
+dynamics/iap/stepon.F90.yuanshi:  call p_d_coupling (phys_state, phys_tend, t2, fu, fv, flx_net, &
+dynamics/iap/stepon.F90.yuanshi:subroutine stepon_run3( ztodt, etamid, cam_out, phys_state, phys_tend, &
+dynamics/iap/stepon.F90.yuanshi:  type(physics_state), intent(in):: phys_state(begchunk:endchunk)
+dynamics/homme/dp_coupling.F90:  subroutine d_p_coupling(phys_state, phys_tend, pbuf, dyn_out)
+dynamics/homme/dp_coupling.F90:    type(physics_state), intent(inout), dimension(begchunk:endchunk) :: phys_state
+dynamics/homme/dp_coupling.F90:             phys_state(lchnk)%ps(icol)=ps_tmp(ioff,ie)*100.D0
+dynamics/homme/dp_coupling.F90:             phys_state(lchnk)%phis(icol)=phis_tmp(ioff,ie)
+dynamics/homme/dp_coupling.F90:                phys_state(lchnk)%t(icol,ilyr)=T_tmp(ioff,ilyr,ie)	   
+dynamics/homme/dp_coupling.F90:                phys_state(lchnk)%u(icol,ilyr)=uv_tmp(ioff,1,ilyr,ie)
+dynamics/homme/dp_coupling.F90:                phys_state(lchnk)%v(icol,ilyr)=uv_tmp(ioff,2,ilyr,ie)
+dynamics/homme/dp_coupling.F90:                phys_state(lchnk)%omega(icol,ilyr)=omega_tmp(ioff,ilyr,ie)
+dynamics/homme/dp_coupling.F90:                   phys_state(lchnk)%q(icol,ilyr,m)=Q_tmp(ioff,ilyr,m,ie)
+dynamics/homme/dp_coupling.F90:          ncols = phys_state(lchnk)%ncol
+dynamics/homme/dp_coupling.F90:             phys_state(lchnk)%ps   (icol)     = cbuffer(cpter(icol,0))
+dynamics/homme/dp_coupling.F90:             phys_state(lchnk)%phis (icol)     = cbuffer(cpter(icol,0)+1)
+dynamics/homme/dp_coupling.F90:                phys_state(lchnk)%t     (icol,ilyr)   = cbuffer(cpter(icol,ilyr))
+dynamics/homme/dp_coupling.F90:                phys_state(lchnk)%u     (icol,ilyr)   = cbuffer(cpter(icol,ilyr)+1)
+dynamics/homme/dp_coupling.F90:                phys_state(lchnk)%v     (icol,ilyr)   = cbuffer(cpter(icol,ilyr)+2)
+dynamics/homme/dp_coupling.F90:                phys_state(lchnk)%omega (icol,ilyr)   = cbuffer(cpter(icol,ilyr)+3)
+dynamics/homme/dp_coupling.F90:                   phys_state(lchnk)%q  (icol,ilyr,m) = cbuffer(cpter(icol,ilyr)+3+m)
+dynamics/homme/dp_coupling.F90:    call derived_phys(phys_state,phys_tend,pbuf)
+dynamics/homme/dp_coupling.F90:             phys_state(lchnk)%omega(icol,ilyr)=phys_state(lchnk)%omega(icol,ilyr)*phys_state(lchnk)%pmid(icol,ilyr)
+dynamics/homme/dp_coupling.F90:         call outfld('T&IC',phys_state(lchnk)%t,pcols,lchnk)
+dynamics/homme/dp_coupling.F90:         call outfld('U&IC',phys_state(lchnk)%u,pcols,lchnk)
+dynamics/homme/dp_coupling.F90:         call outfld('V&IC',phys_state(lchnk)%v,pcols,lchnk)
+dynamics/homme/dp_coupling.F90:         call outfld('PS&IC',phys_state(lchnk)%ps,pcols,lchnk)
+dynamics/homme/dp_coupling.F90:            call outfld(trim(cnst_name(m))//'&IC',phys_state(lchnk)%q(1,1,m), pcols,lchnk)
+dynamics/homme/dp_coupling.F90:  subroutine p_d_coupling(phys_state, phys_tend, pbuf, dyn_in)
+dynamics/homme/dp_coupling.F90:    type(physics_state), intent(inout), dimension(begchunk:endchunk) :: phys_state
+dynamics/homme/dp_coupling.F90:                   q_tmp(ioff,ilyr,m,ie) = phys_state(lchnk)%q(icol,ilyr,m)
+dynamics/homme/dp_coupling.F90:                   cbuffer(cpter(icol,ilyr)+2+m) = phys_state(lchnk)%q(icol,ilyr,m)
+dynamics/homme/dp_coupling.F90:  subroutine derived_phys(phys_state, phys_tend, pbuf)
+dynamics/homme/dp_coupling.F90:    type(physics_state), intent(inout), dimension(begchunk:endchunk) :: phys_state
+dynamics/homme/dp_coupling.F90:             phys_state(lchnk)%pint(i,k)=hyai(k)*ps0+hybi(k)*phys_state(lchnk)%ps(i)
+dynamics/homme/dp_coupling.F90:             phys_state(lchnk)%pmid(i,k)=hyam(k)*ps0+hybm(k)*phys_state(lchnk)%ps(i)
+dynamics/homme/dp_coupling.F90:          call shr_vmath_log(phys_state(lchnk)%pint(1:ncol,k),phys_state(lchnk)%lnpint(1:ncol,k),ncol)
+dynamics/homme/dp_coupling.F90:          call shr_vmath_log(phys_state(lchnk)%pmid(1:ncol,k),phys_state(lchnk)%lnpmid(1:ncol,k),ncol)
+dynamics/homme/dp_coupling.F90:          phys_state(lchnk)%pint(i,pverp)=hyai(pverp)*ps0+hybi(pverp)*phys_state(lchnk)%ps(i)
+dynamics/homme/dp_coupling.F90:       call shr_vmath_log(phys_state(lchnk)%pint(1:ncol,pverp),phys_state(lchnk)%lnpint(1:ncol,pverp),ncol)
+dynamics/homme/dp_coupling.F90:             phys_state(lchnk)%pdel (i,k) = phys_state(lchnk)%pint(i,k+1) - phys_state(lchnk)%pint(i,k)
+dynamics/homme/dp_coupling.F90:             phys_state(lchnk)%rpdel(i,k) = 1._r8/phys_state(lchnk)%pdel(i,k)
+dynamics/homme/dp_coupling.F90:             phys_state(lchnk)%exner (i,k) = (phys_state(lchnk)%pint(i,pver+1) &
+dynamics/homme/dp_coupling.F90:                                             / phys_state(lchnk)%pmid(i,k))**cappa
+dynamics/homme/dp_coupling.F90:       call geopotential_t (phys_state(lchnk)%lnpint, phys_state(lchnk)%lnpmid  , phys_state(lchnk)%pint  , &
+dynamics/homme/dp_coupling.F90:            phys_state(lchnk)%pmid  , phys_state(lchnk)%pdel    , phys_state(lchnk)%rpdel , &
+dynamics/homme/dp_coupling.F90:            phys_state(lchnk)%t     , phys_state(lchnk)%q(1,1,1), rair,  gravit,  zvir    , &
+dynamics/homme/dp_coupling.F90:            phys_state(lchnk)%zi    , phys_state(lchnk)%zm      , ncol                )
+dynamics/homme/dp_coupling.F90:             phys_state(lchnk)%s(i,k) = cpair*phys_state(lchnk)%t(i,k) &
+dynamics/homme/dp_coupling.F90:                                      + phys_state(lchnk)%phis(i)
+dynamics/homme/dp_coupling.F90:             phys_state(lchnk)%s(i,k) = cpair*phys_state(lchnk)%t(i,k) &
+dynamics/homme/dp_coupling.F90:                  + gravit*phys_state(lchnk)%zm(i,k) + phys_state(lchnk)%phis(i)
+dynamics/homme/dp_coupling.F90:       call set_state_pdry(phys_state(lchnk))	 ! First get dry pressure to use for this timestep
+dynamics/homme/dp_coupling.F90:       call set_wet_to_dry(phys_state(lchnk))    ! Dynamics had moist, physics wants dry.
+dynamics/homme/dp_coupling.F90:       call check_energy_timestep_init(phys_state(lchnk), phys_tend(lchnk), pbuf)
+dynamics/homme/dp_coupling.F90:             ke(i,lchnk) = ke(i,lchnk) + ( 0.5_r8*(phys_state(lchnk)%u(i,k)**2 + phys_state(lchnk)%v(i,k)**2)*phys_state(lchnk)%pdel(i,k) )/gravit
+dynamics/homme/dp_coupling.F90:             se(i,lchnk) = se(i,lchnk) + phys_state(lchnk)%s(i,k         )*phys_state(lchnk)%pdel(i,k)/gravit
+dynamics/homme/dp_coupling.F90:!             wv = wv + phys_state(lchnk)%q(i,k,1       )*phys_state(lchnk)%pdel(i,k)
+dynamics/homme/dp_coupling.F90:!             wl = wl + phys_state(lchnk)%q(i,k,ixcldliq)*phys_state(lchnk)%pdel(i,k)
+dynamics/homme/dp_coupling.F90:!             wi = wi + phys_state(lchnk)%q(i,k,ixcldice)*phys_state(lchnk)%pdel(i,k)
+dynamics/homme/stepon.F90:subroutine stepon_run1( dtime_out, phys_state, phys_tend,               &
+dynamics/homme/stepon.F90:   type(physics_state), intent(inout):: phys_state(begchunk:endchunk)
+dynamics/homme/stepon.F90:   ! Move data into phys_state structure.
+dynamics/homme/stepon.F90:   call d_p_coupling (phys_state, phys_tend, pbuf, dyn_out )
+dynamics/homme/stepon.F90:subroutine stepon_run2(phys_state, phys_tend, dyn_in, dyn_out )
+dynamics/homme/stepon.F90:   type(physics_state), intent(inout):: phys_state(begchunk:endchunk)
+dynamics/homme/stepon.F90:   call p_d_coupling(phys_state, phys_tend, pbuf, dyn_in)
+dynamics/homme/stepon.F90:subroutine stepon_run3( dtime, etamid, cam_out, phys_state, dyn_in, dyn_out )
+dynamics/homme/stepon.F90:   type(physics_state), intent(inout) :: phys_state(begchunk:endchunk)
+dynamics/eul/dp_coupling.F90:                          omga, phis, phys_state, phys_tend, pbuf, pdeld)
+dynamics/eul/dp_coupling.F90:    type(physics_state), intent(inout), dimension(begchunk:endchunk) :: phys_state
+dynamics/eul/dp_coupling.F90:          ncol = phys_state(lchnk)%ncol
+dynamics/eul/dp_coupling.F90:             phys_state(lchnk)%ps   (i)     = ps  (lons(i),lats(i))
+dynamics/eul/dp_coupling.F90:             phys_state(lchnk)%phis (i)     = phis(lons(i),lats(i))
+dynamics/eul/dp_coupling.F90:                phys_state(lchnk)%t    (i,k)   = t3  (lons(i),k,lats(i))
+dynamics/eul/dp_coupling.F90:                phys_state(lchnk)%u    (i,k)   = u3  (lons(i),k,lats(i))
+dynamics/eul/dp_coupling.F90:                phys_state(lchnk)%v    (i,k)   = v3  (lons(i),k,lats(i))
+dynamics/eul/dp_coupling.F90:                phys_state(lchnk)%omega(i,k)   = omga(lons(i),k,lats(i))
+dynamics/eul/dp_coupling.F90:                phys_state(lchnk)%q(i,k,1)     = q3  (lons(i),k,1,lats(i))
+dynamics/eul/dp_coupling.F90:                phys_state(lchnk)%pdeldry(i,k) = pdeld(lons(i),k,lats(i))
+dynamics/eul/dp_coupling.F90:                      phys_state(lchnk)%q(i,k,m) = q3(lons(i),k,m,lats(i))*(1._r8 - q3(lons(i),k,1,lats(i)))
+dynamics/eul/dp_coupling.F90:                      phys_state(lchnk)%q(i,k,m) = q3(lons(i),k,m,lats(i))
+dynamics/eul/dp_coupling.F90:          ncol = phys_state(lchnk)%ncol
+dynamics/eul/dp_coupling.F90:             phys_state(lchnk)%ps   (i)     = buf2(cpter(i,0))
+dynamics/eul/dp_coupling.F90:             phys_state(lchnk)%phis (i)     = buf2(cpter(i,0)+1)
+dynamics/eul/dp_coupling.F90:                phys_state(lchnk)%t    (i,k)   = buf2(cpter(i,k))
+dynamics/eul/dp_coupling.F90:                phys_state(lchnk)%u    (i,k)   = buf2(cpter(i,k)+1)
+dynamics/eul/dp_coupling.F90:                phys_state(lchnk)%v    (i,k)   = buf2(cpter(i,k)+2)
+dynamics/eul/dp_coupling.F90:                phys_state(lchnk)%omega (i,k)   = buf2(cpter(i,k)+3)
+dynamics/eul/dp_coupling.F90:                   phys_state(lchnk)%q (i,k,m) = buf2(cpter(i,k)+3+m)
+dynamics/eul/dp_coupling.F90:                phys_state(lchnk)%pdeldry(i,k) = buf2(cpter(i,k)+4+pcnst)
+dynamics/eul/dp_coupling.F90:       ncol = phys_state(lchnk)%ncol
+dynamics/eul/dp_coupling.F90:                   phys_state(lchnk)%ps,   phys_state(lchnk)%pint,    &
+dynamics/eul/dp_coupling.F90:                   phys_state(lchnk)%pmid, phys_state(lchnk)%pdel)
+dynamics/eul/dp_coupling.F90:             phys_state(lchnk)%lnpint(i,k) = log(phys_state(lchnk)%pint(i,k))
+dynamics/eul/dp_coupling.F90:             phys_state(lchnk)%rpdel(i,k)  = 1._r8/phys_state(lchnk)%pdel(i,k)
+dynamics/eul/dp_coupling.F90:             phys_state(lchnk)%lnpmid(i,k) = log(phys_state(lchnk)%pmid(i,k))
+dynamics/eul/dp_coupling.F90:             phys_state(lchnk)%exner (i,k) = (phys_state(lchnk)%pint(i,pver+1) &
+dynamics/eul/dp_coupling.F90:                                             / phys_state(lchnk)%pmid(i,k))**cappa
+dynamics/eul/dp_coupling.F90:       call geopotential_t (phys_state(lchnk)%lnpint, phys_state(lchnk)%lnpmid  , phys_state(lchnk)%pint  , &
+dynamics/eul/dp_coupling.F90:                            phys_state(lchnk)%pmid  , phys_state(lchnk)%pdel    , phys_state(lchnk)%rpdel , &
+dynamics/eul/dp_coupling.F90:                            phys_state(lchnk)%t     , phys_state(lchnk)%q(1,1,1), rair,  gravit,  zvir    , &
+dynamics/eul/dp_coupling.F90:                            phys_state(lchnk)%zi    , phys_state(lchnk)%zm      , ncol                )
+dynamics/eul/dp_coupling.F90:             phys_state(lchnk)%s(i,k) = cpair*phys_state(lchnk)%t(i,k) &
+dynamics/eul/dp_coupling.F90:                                      + gravit*phys_state(lchnk)%zm(i,k) + phys_state(lchnk)%phis(i)
+dynamics/eul/dp_coupling.F90:! Compute other dry fields in phys_state, using pdeld copied from dynamics above
+dynamics/eul/dp_coupling.F90:       call set_state_pdry(phys_state(lchnk),pdeld_calc=.false.)
+dynamics/eul/dp_coupling.F90:       call check_energy_timestep_init(phys_state(lchnk), phys_tend(lchnk), pbuf)
+dynamics/eul/dp_coupling.F90:  subroutine p_d_coupling(phys_state, phys_tend, t2, fu, fv, flx_net, qminus)
+dynamics/eul/dp_coupling.F90:    type(physics_state),intent(in), dimension(begchunk:endchunk) :: phys_state
+dynamics/eul/dp_coupling.F90:                qminus(lons(i),k,1,lats(i)) = phys_state(lchnk)%q(i,k,1)
+dynamics/eul/dp_coupling.F90:                      qminus(lons(i),k,m,lats(i)) = phys_state(lchnk)%q(i,k,m) /     &
+dynamics/eul/dp_coupling.F90:                           (1._r8 - phys_state(lchnk)%q(i,k,1))
+dynamics/eul/dp_coupling.F90:                      qminus(lons(i),k,m,lats(i)) = phys_state(lchnk)%q(i,k,m)
+dynamics/eul/dp_coupling.F90:                buf2(cpter(i,k)+3) = phys_state(lchnk)%q(i,k,1)
+dynamics/eul/dp_coupling.F90:                      buf2(cpter(i,k)+2+m) = phys_state(lchnk)%q(i,k,m) /     &
+dynamics/eul/dp_coupling.F90:                           (1._r8 - phys_state(lchnk)%q(i,k,1))
+dynamics/eul/dp_coupling.F90:                      buf2(cpter(i,k)+2+m) = phys_state(lchnk)%q(i,k,m)
+dynamics/eul/dp_coupling.F90:  subroutine wrf_to_dynamics(phys_state, ps, t3, u3, v3, q3)  ! juanxiong
+dynamics/eul/dp_coupling.F90:    type(physics_state),intent(in), dimension(begchunk:endchunk) :: phys_state
+dynamics/eul/dp_coupling.F90:               if(phys_state(lchnk)%t(i,k).ne.0) then
+dynamics/eul/dp_coupling.F90:                t3(lons(i),k,lats(i))   = phys_state(lchnk)%t (i,k)
+dynamics/eul/dp_coupling.F90:                u3(lons(i),k,lats(i))   = phys_state(lchnk)%u (i,k)
+dynamics/eul/dp_coupling.F90:                v3(lons(i),k,lats(i))   = phys_state(lchnk)%v (i,k)
+dynamics/eul/dp_coupling.F90:                q3(lons(i),k,1,lats(i)) = phys_state(lchnk)%q(i,k,1)
+dynamics/eul/dp_coupling.F90:            if(phys_state(lchnk)%ps(i).ne.0)   ps(lons(i),lats(i))   = phys_state(lchnk)%ps(i)
+dynamics/eul/dp_coupling.F90:             buf2(cpter(i,0)) = phys_state(lchnk)%ps(i)
+dynamics/eul/dp_coupling.F90:                buf2(cpter(i,k))   = phys_state(lchnk)%t (i,k)
+dynamics/eul/dp_coupling.F90:                buf2(cpter(i,k)+1) = phys_state(lchnk)%u (i,k)
+dynamics/eul/dp_coupling.F90:                buf2(cpter(i,k)+2) = phys_state(lchnk)%v (i,k)
+dynamics/eul/dp_coupling.F90:                buf2(cpter(i,k)+3) = phys_state(lchnk)%q(i,k,1)
+dynamics/eul/dp_coupling.F90:  subroutine physics_to_uv(phys_state, ps, u3, v3)  ! juanxiong
+dynamics/eul/dp_coupling.F90:    type(physics_state),intent(in), dimension(begchunk:endchunk) :: phys_state
+dynamics/eul/dp_coupling.F90:               if(phys_state(lchnk)%t(i,k).ne.0) then
+dynamics/eul/dp_coupling.F90:                u3(lons(i),k,lats(i))   = phys_state(lchnk)%u (i,k)
+dynamics/eul/dp_coupling.F90:                v3(lons(i),k,lats(i))   = phys_state(lchnk)%v (i,k)
+dynamics/eul/dp_coupling.F90:            if(phys_state(lchnk)%ps(i).ne.0)   ps(lons(i),lats(i))   = phys_state(lchnk)%ps(i)
+dynamics/eul/dp_coupling.F90:             buf2(cpter(i,0)) = phys_state(lchnk)%ps(i)
+dynamics/eul/dp_coupling.F90:                buf2(cpter(i,k))   = phys_state(lchnk)%u (i,k)
+dynamics/eul/dp_coupling.F90:                buf2(cpter(i,k)+1) = phys_state(lchnk)%v (i,k)
+dynamics/eul/dp_coupling.F90:  subroutine uv_to_physics(ps, u3, v3, phys_state)
+dynamics/eul/dp_coupling.F90:    type(physics_state), intent(inout), dimension(begchunk:endchunk) :: phys_state
+dynamics/eul/dp_coupling.F90:          ncol = phys_state(lchnk)%ncol
+dynamics/eul/dp_coupling.F90:             phys_state(lchnk)%ps   (i)     = ps  (lons(i),lats(i))
+dynamics/eul/dp_coupling.F90:                phys_state(lchnk)%u    (i,k)   = u3  (lons(i),k,lats(i))
+dynamics/eul/dp_coupling.F90:                phys_state(lchnk)%v    (i,k)   = v3  (lons(i),k,lats(i))
+dynamics/eul/dp_coupling.F90:          ncol = phys_state(lchnk)%ncol
+dynamics/eul/dp_coupling.F90:!             phys_state(lchnk)%ps   (i)     = buf2(cpter(i,0))
+dynamics/eul/dp_coupling.F90:                phys_state(lchnk)%u    (i,k)   = buf2(cpter(i,k))
+dynamics/eul/dp_coupling.F90:                phys_state(lchnk)%v    (i,k)   = buf2(cpter(i,k)+1)
+dynamics/eul/dp_coupling.F90:  subroutine physics_to_tq(phys_state,ps,t3,q3)
+dynamics/eul/dp_coupling.F90:    type(physics_state),intent(in), dimension(begchunk:endchunk) :: phys_state
+dynamics/eul/dp_coupling.F90:               if(phys_state(lchnk)%t(i,k).ne.0) then
+dynamics/eul/dp_coupling.F90:                t3(lons(i),k,lats(i))   = phys_state(lchnk)%t (i,k)
+dynamics/eul/dp_coupling.F90:                q3(lons(i),k,1,lats(i))   = phys_state(lchnk)%q (i,k,1)
+dynamics/eul/dp_coupling.F90:            if(phys_state(lchnk)%ps(i).ne.0)   ps(lons(i),lats(i))   = phys_state(lchnk)%ps(i)
+dynamics/eul/dp_coupling.F90:             buf2(cpter(i,0)) = phys_state(lchnk)%ps(i)
+dynamics/eul/dp_coupling.F90:                buf2(cpter(i,k))   = phys_state(lchnk)%t (i,k)
+dynamics/eul/dp_coupling.F90:                buf2(cpter(i,k)+1) = phys_state(lchnk)%q (i,k,1)
+dynamics/eul/dp_coupling.F90:  subroutine tq_to_physics(ps,t3,q3,phys_state)
+dynamics/eul/dp_coupling.F90:    type(physics_state), intent(inout), dimension(begchunk:endchunk) :: phys_state
+dynamics/eul/dp_coupling.F90:          ncol = phys_state(lchnk)%ncol
+dynamics/eul/dp_coupling.F90:             phys_state(lchnk)%ps   (i)     = ps  (lons(i),lats(i))
+dynamics/eul/dp_coupling.F90:                phys_state(lchnk)%t    (i,k)   = t3  (lons(i),k,lats(i))
+dynamics/eul/dp_coupling.F90:                phys_state(lchnk)%q    (i,k,1) = q3  (lons(i),k,1,lats(i))
+dynamics/eul/dp_coupling.F90:          ncol = phys_state(lchnk)%ncol
+dynamics/eul/dp_coupling.F90:!             phys_state(lchnk)%ps   (i)     = buf2(cpter(i,0))
+dynamics/eul/dp_coupling.F90:                phys_state(lchnk)%t    (i,k)   = buf2(cpter(i,k))
+dynamics/eul/dp_coupling.F90:                phys_state(lchnk)%q    (i,k,1)   = buf2(cpter(i,k)+1)
+dynamics/eul/stepon.F90:  type(physics_state), pointer :: phys_state(:)   ! Physics state data
+dynamics/eul/stepon.F90:subroutine stepon_run1( ztodt, phys_state, phys_tend, wrf_state, wrf_tend,&
+dynamics/eul/stepon.F90:  type(physics_state), intent(inout) :: phys_state(begchunk:endchunk)
+dynamics/eul/stepon.F90:   nudging_state=phys_state
+dynamics/eul/stepon.F90:                     omga, phis, phys_state, phys_tend, pbuf, pdeld(:,:,:,n3m2))
+dynamics/eul/stepon.F90:subroutine stepon_run2( phys_state, phys_tend, wrf_state, wrf_tend, &
+dynamics/eul/stepon.F90:  type(physics_state), intent(in):: phys_state(begchunk:endchunk)
+dynamics/eul/stepon.F90:  call p_d_coupling (phys_state, phys_tend, t2, fu, fv, flx_net, &
+dynamics/eul/stepon.F90:subroutine stepon_run3( ztodt, etamid, cam_out, phys_state, phys_tend, &
+dynamics/eul/stepon.F90:  type(physics_state), intent(inout):: phys_state(begchunk:endchunk) ! juanxiong he
+dynamics/eul/nudging_driver.F90:  subroutine nudging(phys_state,phys_tend,nudging_state,nudging_tend,&
+dynamics/eul/nudging_driver.F90:   type(physics_state), pointer, intent(inout) :: phys_state(:), nudging_state(:)
+dynamics/eul/nudging_driver.F90:   ! phys_state the previous timestep takes part in the physical schemes
+dynamics/sld/dp_coupling.F90:                          omga, phis, phys_state, phys_tend, pbuf)
+dynamics/sld/dp_coupling.F90:    type(physics_state), intent(inout), dimension(begchunk:endchunk) :: phys_state
+dynamics/sld/dp_coupling.F90:          ncol = phys_state(lchnk)%ncol
+dynamics/sld/dp_coupling.F90:             phys_state(lchnk)%ps   (i)     = ps  (lons(i),lats(i))
+dynamics/sld/dp_coupling.F90:             phys_state(lchnk)%phis (i)     = phis(lons(i),lats(i))
+dynamics/sld/dp_coupling.F90:                phys_state(lchnk)%t    (i,k)   = t3  (lons(i),k,lats(i))
+dynamics/sld/dp_coupling.F90:                phys_state(lchnk)%u    (i,k)   = u3  (lons(i),k,lats(i))
+dynamics/sld/dp_coupling.F90:                phys_state(lchnk)%v    (i,k)   = v3  (lons(i),k,lats(i))
+dynamics/sld/dp_coupling.F90:                phys_state(lchnk)%omega(i,k)   = omga(lons(i),k,lats(i))
+dynamics/sld/dp_coupling.F90:                phys_state(lchnk)%q(i,k,1)     = q3  (lons(i),k,1,lats(i))
+dynamics/sld/dp_coupling.F90:                      phys_state(lchnk)%q(i,k,m) = q3(lons(i),k,m,lats(i))*(1._r8 - q3(lons(i),k,1,lats(i)))
+dynamics/sld/dp_coupling.F90:                      phys_state(lchnk)%q(i,k,m) = q3(lons(i),k,m,lats(i))
+dynamics/sld/dp_coupling.F90:          ncol = phys_state(lchnk)%ncol
+dynamics/sld/dp_coupling.F90:             phys_state(lchnk)%ps   (i)     = buf2(cpter(i,0))
+dynamics/sld/dp_coupling.F90:             phys_state(lchnk)%phis (i)     = buf2(cpter(i,0)+1)
+dynamics/sld/dp_coupling.F90:                phys_state(lchnk)%t    (i,k)   = buf2(cpter(i,k))
+dynamics/sld/dp_coupling.F90:                phys_state(lchnk)%u    (i,k)   = buf2(cpter(i,k)+1)
+dynamics/sld/dp_coupling.F90:                phys_state(lchnk)%v    (i,k)   = buf2(cpter(i,k)+2)
+dynamics/sld/dp_coupling.F90:                phys_state(lchnk)%omega (i,k)   = buf2(cpter(i,k)+3)
+dynamics/sld/dp_coupling.F90:                   phys_state(lchnk)%q (i,k,m) = buf2(cpter(i,k)+3+m)
+dynamics/sld/dp_coupling.F90:       ncol = phys_state(lchnk)%ncol
+dynamics/sld/dp_coupling.F90:                   phys_state(lchnk)%ps,   phys_state(lchnk)%pint,    &
+dynamics/sld/dp_coupling.F90:                   phys_state(lchnk)%pmid, phys_state(lchnk)%pdel)
+dynamics/sld/dp_coupling.F90:             phys_state(lchnk)%lnpint(i,k) = log(phys_state(lchnk)%pint(i,k))
+dynamics/sld/dp_coupling.F90:             phys_state(lchnk)%rpdel(i,k)  = 1._r8/phys_state(lchnk)%pdel(i,k)
+dynamics/sld/dp_coupling.F90:             phys_state(lchnk)%lnpmid(i,k) = log(phys_state(lchnk)%pmid(i,k))
+dynamics/sld/dp_coupling.F90:             phys_state(lchnk)%exner (i,k) = (phys_state(lchnk)%pint(i,pver+1) &
+dynamics/sld/dp_coupling.F90:                                             / phys_state(lchnk)%pmid(i,k))**cappa
+dynamics/sld/dp_coupling.F90:       call geopotential_t (phys_state(lchnk)%lnpint, phys_state(lchnk)%lnpmid  , phys_state(lchnk)%pint  , &
+dynamics/sld/dp_coupling.F90:                            phys_state(lchnk)%pmid  , phys_state(lchnk)%pdel    , phys_state(lchnk)%rpdel , &
+dynamics/sld/dp_coupling.F90:                            phys_state(lchnk)%t     , phys_state(lchnk)%q(1,1,1), rair,  gravit,  zvir    , &
+dynamics/sld/dp_coupling.F90:                            phys_state(lchnk)%zi    , phys_state(lchnk)%zm      , ncol                )
+dynamics/sld/dp_coupling.F90:             phys_state(lchnk)%s(i,k) = cpair*phys_state(lchnk)%t(i,k) &
+dynamics/sld/dp_coupling.F90:                                      + gravit*phys_state(lchnk)%zm(i,k) + phys_state(lchnk)%phis(i)
+dynamics/sld/dp_coupling.F90:       call set_state_pdry(phys_state(lchnk))
+dynamics/sld/dp_coupling.F90:       call check_energy_timestep_init(phys_state(lchnk), phys_tend(lchnk), pbuf)
+dynamics/sld/dp_coupling.F90:  subroutine p_d_coupling(phys_state, phys_tend, t2, fu, fv, flx_net, q3)
+dynamics/sld/dp_coupling.F90:    type(physics_state),intent(in), dimension(begchunk:endchunk) :: phys_state
+dynamics/sld/dp_coupling.F90:               q3(lons(i),k,1,lats(i)) = phys_state(lchnk)%q(i,k,1)
+dynamics/sld/dp_coupling.F90:                     q3(lons(i),k,m,lats(i)) = phys_state(lchnk)%q(i,k,m) /     &
+dynamics/sld/dp_coupling.F90:                          (1._r8 - phys_state(lchnk)%q(i,k,1))
+dynamics/sld/dp_coupling.F90:                     q3(lons(i),k,m,lats(i)) = phys_state(lchnk)%q(i,k,m)
+dynamics/sld/dp_coupling.F90:                buf2(cpter(i,k)+3) = phys_state(lchnk)%q(i,k,1)
+dynamics/sld/dp_coupling.F90:                      buf2(cpter(i,k)+2+m) = phys_state(lchnk)%q(i,k,m) /     &
+dynamics/sld/dp_coupling.F90:                           (1._r8 - phys_state(lchnk)%q(i,k,1))
+dynamics/sld/dp_coupling.F90:                      buf2(cpter(i,k)+2+m) = phys_state(lchnk)%q(i,k,m)
+dynamics/sld/stepon.F90:  type(physics_state), pointer :: phys_state(:)   ! Physics state data
+dynamics/sld/stepon.F90:subroutine stepon_run1( ztodt, phys_state, phys_tend, dyn_in, dyn_out )
+dynamics/sld/stepon.F90:   type(physics_state), intent(inout) :: phys_state(begchunk:endchunk)
+dynamics/sld/stepon.F90:                      omga, phis, phys_state, phys_tend, pbuf)
+dynamics/sld/stepon.F90:subroutine stepon_run2( phys_state, phys_tend, dyn_in, dyn_out )
+dynamics/sld/stepon.F90:  type(physics_state), intent(in):: phys_state(begchunk:endchunk)
+dynamics/sld/stepon.F90:   call p_d_coupling (phys_state, phys_tend, t2, fu, fv, flx_net,q3(1,1,1,beglat,n3))
+dynamics/sld/stepon.F90:subroutine stepon_run3( ztodt, etamid, cam_out, phys_state, dyn_in, dyn_out )
+dynamics/sld/stepon.F90:   type(physics_state), intent(in):: phys_state(begchunk:endchunk)
+physics/cam/aoa_tracers.F90:  subroutine aoa_tracers_timestep_init( phys_state )
+physics/cam/aoa_tracers.F90:    type(physics_state), intent(inout), dimension(begchunk:endchunk), optional :: phys_state    
+physics/cam/aoa_tracers.F90:          ncol = phys_state(c)%ncol
+physics/cam/aoa_tracers.F90:                phys_state(c)%q(i,k,ixht) = 2._r8 + sin(phys_state(c)%lat(i))
+physics/cam/aoa_tracers.F90:                phys_state(c)%q(i,k,ixvt) = real(pver-k+1,r8)
+physics/cam/tracers.F90:subroutine tracers_timestep_init( phys_state )
+physics/cam/tracers.F90:  ! phys_state argument is unused in this version
+physics/cam/tracers.F90:  type(physics_state), intent(inout), dimension(begchunk:endchunk), optional :: phys_state    
+physics/cam/physics_types.F90:  subroutine physics_type_alloc(phys_state, phys_tend, begchunk, endchunk)
+physics/cam/physics_types.F90:    type(physics_state), pointer :: phys_state(:)
+physics/cam/physics_types.F90:    allocate(phys_state(begchunk:endchunk), stat=ierr)
+physics/cam/physics_types.F90:       write(iulog,*) 'physics_types: phys_state allocation error = ',ierr
+physics/cam/physics_types.F90:       state => phys_state(lchnk)
+physics/cam/physics_types.F90:  subroutine physics_state_set_grid(lchnk, phys_state)
+physics/cam/physics_types.F90:    type(physics_state), intent(inout) :: phys_state
+physics/cam/physics_types.F90:    phys_state%ncol  = ncol
+physics/cam/physics_types.F90:    phys_state%lchnk = lchnk
+physics/cam/physics_types.F90:       phys_state%lat(i) = rlat(i)
+physics/cam/physics_types.F90:       phys_state%lon(i) = rlon(i)
+physics/cam/physics_types.F90:    call init_geo_unique(phys_state,ncol)
+physics/cam/physics_types.F90:  subroutine init_geo_unique(phys_state,ncol)
+physics/cam/physics_types.F90:    type(physics_state), intent(inout) :: phys_state
+physics/cam/physics_types.F90:    phys_state%ulat=-999.
+physics/cam/physics_types.F90:    phys_state%ulon=-999.
+physics/cam/physics_types.F90:    phys_state%latmapback=0
+physics/cam/physics_types.F90:    phys_state%lonmapback=0
+physics/cam/physics_types.F90:          if(phys_state%lat(i) .eq. phys_state%ulat(j)) then
+physics/cam/physics_types.F90:             phys_state%latmapback(i)=j
+physics/cam/physics_types.F90:          phys_state%ulat(ulatcnt)=phys_state%lat(i)
+physics/cam/physics_types.F90:          phys_state%latmapback(i)=ulatcnt
+physics/cam/physics_types.F90:          if(phys_state%lon(i) .eq. phys_state%ulon(j)) then
+physics/cam/physics_types.F90:             phys_state%lonmapback(i)=j
+physics/cam/physics_types.F90:          phys_state%ulon(uloncnt)=phys_state%lon(i)
+physics/cam/physics_types.F90:          phys_state%lonmapback(i)=uloncnt
+physics/cam/physics_types.F90:    phys_state%uloncnt=uloncnt
+physics/cam/physics_types.F90:    phys_state%ulatcnt=ulatcnt
+physics/cam/physics_types.F90:    call get_gcol_all_p(phys_state%lchnk,pcols,phys_state%cid)
+physics/cam/advnce.F90:subroutine advnce(phys_state, cam_out, pbuf)
+physics/cam/advnce.F90:  type(physics_state), intent(inout), dimension(begchunk:endchunk) :: phys_state
+physics/cam/advnce.F90:  call chem_surfvals_set(phys_state)
+physics/cam/advnce.F90:  call chem_timestep_init(phys_state)
+physics/cam/advnce.F90:  call prescribed_ozone_adv(phys_state)
+physics/cam/advnce.F90:  call prescribed_ghg_adv(phys_state)
+physics/cam/advnce.F90:  call prescribed_aero_adv(phys_state)
+physics/cam/advnce.F90:  call aircraft_emit_adv(phys_state)
+physics/cam/advnce.F90:  call prescribed_volcaero_adv(phys_state)
+physics/cam/advnce.F90:  call aerodep_flx_adv(phys_state, cam_out)
+physics/cam/advnce.F90:  if (cam3_aero_data_on) call cam3_aero_data_timestep_init(pbuf, phys_state)
+physics/cam/advnce.F90:  if (cam3_ozone_data_on) call cam3_ozone_data_timestep_init(pbuf, phys_state)
+physics/cam/advnce.F90:  call ghg_data_timestep_init(pbuf, phys_state)
+physics/cam/advnce.F90:  call radheat_timestep_init(phys_state)
+physics/cam/advnce.F90:  call vertical_diffusion_ts_init(phys_state)
+physics/cam/advnce.F90:  call tracers_timestep_init(phys_state)
+physics/cam/advnce.F90:  call aoa_tracers_timestep_init(phys_state)
+physics/cam/boundarydata.F90:  subroutine boundarydata_init(bndyfilename,phys_state,fieldnames,fieldcnt,bndydata,vertextrap)
+physics/cam/boundarydata.F90:    type(physics_state), intent(in):: phys_state(begchunk:endchunk)
+physics/cam/boundarydata.F90:    call boundarydata_read(phys_state,bndyfilename,fieldcnt,fieldnames,bndydata,datain)
+physics/cam/boundarydata.F90:       call boundarydata_interpolate(phys_state,datain,bndydata)
+physics/cam/boundarydata.F90:  subroutine boundarydata_update(phys_state, bndydata, update_out)
+physics/cam/boundarydata.F90:    type(physics_state), intent(in) :: phys_state(begchunk:endchunk)
+physics/cam/boundarydata.F90:                ncol=phys_state(lchnk)%ncol
+physics/cam/boundarydata.F90:             call boundarydata_interpolate(phys_state,datain,bndydata)
+physics/cam/boundarydata.F90:             latspan = phys_state(lchnk)%ncol
+physics/cam/boundarydata.F90:             latspan=phys_state(lchnk)%ulatcnt
+physics/cam/boundarydata.F90:  subroutine boundarydata_read(phys_state,bndyfilename,fieldcnt,fieldnames,bndydata,datain)
+physics/cam/boundarydata.F90:    type(physics_state), intent(in) :: phys_state(begchunk:endchunk)
+physics/cam/boundarydata.F90:          ncol=phys_state(lchnk)%ncol
+physics/cam/boundarydata.F90:          i=minval(phys_state(lchnk)%cid(1:ncol)) 
+physics/cam/boundarydata.F90:          i=maxval(phys_state(lchnk)%cid(1:ncol))
+physics/cam/boundarydata.F90:             do n=1,phys_state(lchnk)%ncol
+physics/cam/boundarydata.F90:                bndydata%ps(n ,lchnk,:) = tmp_ps(phys_state(lchnk)%cid(n),:)
+physics/cam/boundarydata.F90:             do n=1,phys_state(lchnk)%ncol
+physics/cam/boundarydata.F90:                bndydata%fields(n,:,lchnk,i,1:count(dimcnt)) = tmp_fld(phys_state(lchnk)%cid(n),:,:)
+physics/cam/boundarydata.F90:                do n=1,phys_state(lchnk)%ncol
+physics/cam/boundarydata.F90:                   bndydata%fields(n,:,lchnk,i,1:count(dimcnt)) = tmp_fld(phys_state(lchnk)%cid(n),:,:)
+physics/cam/boundarydata.F90:  subroutine boundarydata_interpolate(phys_state, datain, bndydata)
+physics/cam/boundarydata.F90:    type(physics_state), intent(in) :: phys_state(begchunk:endchunk)
+physics/cam/boundarydata.F90:       maxlatcnt=max(maxlatcnt,phys_state(lchnk)%ulatcnt)
+physics/cam/boundarydata.F90:       ulatcnt=phys_state(lchnk)%ulatcnt
+physics/cam/boundarydata.F90:          lato(j) = phys_state(lchnk)%ulat(j)*180._r8/pi          
+physics/cam/chem_surfvals.F90:subroutine chem_surfvals_set( phys_state )
+physics/cam/chem_surfvals.F90:   ! phys_state argument is unused in this version
+physics/cam/chem_surfvals.F90:   type(physics_state), intent(inout), dimension(begchunk:endchunk), optional :: phys_state    
+physics/cam/chem_surfvals.F90:      call flbc_gmean_vmr(co2vmr,ch4vmr,n2ovmr,f11vmr,f12vmr, phys_state)
+physics/cam/tphysbc.F90:! get value from phys_state, added juanxiong he 
+physics/cam/tphysbc.F90:! get value from phys_state, added juanxiong he 
+physics/cam/cam3_ozone_data.F90:subroutine cam3_ozone_data_init(phys_state)
+physics/cam/cam3_ozone_data.F90:   type(physics_state), intent(in) :: phys_state(begchunk:endchunk) 
+physics/cam/cam3_ozone_data.F90:   call boundarydata_init(bndtvo, phys_state, nc_name, 1, ozonedata, 3)
+physics/cam/cam3_ozone_data.F90:subroutine cam3_ozone_data_timestep_init(pbuf, phys_state)
+physics/cam/cam3_ozone_data.F90:   type(physics_state), intent(in) :: phys_state(begchunk:endchunk) 
+physics/cam/cam3_ozone_data.F90:   call boundarydata_update(phys_state, ozonedata)
+physics/cam/cam3_ozone_data.F90:      call ozone_data_get_cnst(phys_state(lchnk), pbuf(oz_idx)%fld_ptr(1,:,:,lchnk,1))
+physics/cam/rad_constituents.F90:subroutine rad_cnst_init(pbuf, phys_state)
+physics/cam/rad_constituents.F90:   type(physics_state), pointer    :: phys_state(:) 
+physics/cam/rad_constituents.F90:         call init_lists(namelist(i), gaslist(i), aerosollist(i), pbuf, phys_state)
+physics/cam/rad_constituents.F90:subroutine init_lists(namelist, gaslist, aerlist, pbuf, phys_state)
+physics/cam/rad_constituents.F90:   type(physics_state),       pointer    :: phys_state(:) 
+physics/cam/sslt_rebin.F90:  subroutine sslt_rebin_adv(pbuf, phys_state)
+physics/cam/sslt_rebin.F90:    type(physics_state), target, intent(in) :: phys_state
+physics/cam/sslt_rebin.F90:    lchnk = phys_state%lchnk
+physics/cam/sslt_rebin.F90:    ncol = phys_state%ncol
+physics/cam/sslt_rebin.F90:       sslt1 => phys_state%q(:,:,indices(1))
+physics/cam/sslt_rebin.F90:       sslt2 => phys_state%q(:,:,indices(2))
+physics/cam/sslt_rebin.F90:       sslt3 => phys_state%q(:,:,indices(3))
+physics/cam/sslt_rebin.F90:       sslt4 => phys_state%q(:,:,indices(4))
+physics/cam/cam3_aero_data.F90:subroutine cam3_aero_data_init(phys_state)
+physics/cam/cam3_aero_data.F90:   type(physics_state), intent(in) :: phys_state(begchunk:endchunk)
+physics/cam/cam3_aero_data.F90:      call boundarydata_init(bndtvaer, phys_state, tmp_aero_name, naer, &
+physics/cam/cam3_aero_data.F90:subroutine cam3_aero_data_timestep_init(pbuf, phys_state)
+physics/cam/cam3_aero_data.F90:   type(physics_state), intent(in), dimension(begchunk:endchunk) :: phys_state
+physics/cam/cam3_aero_data.F90:   call aerint(phys_state)
+physics/cam/cam3_aero_data.F90:      pint = phys_state(c)%pint
+physics/cam/cam3_aero_data.F90:subroutine aerint (phys_state)
+physics/cam/cam3_aero_data.F90:   type(physics_state), intent(in) :: phys_state(begchunk:endchunk)
+physics/cam/cam3_aero_data.F90:            ncol=phys_state(lchnk)%ncol
+physics/cam/physpkg.F90:!                            initialization of grid info in phys_state.
+physics/cam/physpkg.F90:subroutine phys_init( phys_state, phys_tend, pbuf, cam_out )
+physics/cam/physpkg.F90:   type(physics_state), pointer :: phys_state(:)
+physics/cam/physpkg.F90:   call physics_type_alloc(phys_state, phys_tend, begchunk, endchunk)
+physics/cam/physpkg.F90:      call physics_state_set_grid(lchnk, phys_state(lchnk))
+physics/cam/physpkg.F90:   if (cam3_aero_data_on) call cam3_aero_data_init(phys_state(begchunk:endchunk))
+physics/cam/physpkg.F90:   call rad_cnst_init(pbuf, phys_state)
+physics/cam/physpkg.F90:   call prognostic_aerosol_initialize(phys_state(begchunk:endchunk))
+physics/cam/physpkg.F90:   call chem_init(phys_state(begchunk:endchunk))
+physics/cam/physpkg.F90:   if (cam3_ozone_data_on) call cam3_ozone_data_init(phys_state(begchunk:endchunk))
+physics/cam/physpkg.F90:subroutine phys_run1(phys_state, ztodt, phys_tend, pbuf, cam_in, cam_out, cam_state, cam_tend)
+physics/cam/physpkg.F90:   type(physics_state), intent(inout), dimension(begchunk:endchunk) :: phys_state
+physics/cam/physpkg.F90:   call check_energy_gmean(phys_state, pbuf, ztodt, nstep)
+physics/cam/physpkg.F90:      call phys_run1_adiabatic_or_ideal(ztodt, phys_state, phys_tend, pbuf)
+physics/cam/physpkg.F90:      call advnce( phys_state, cam_out, pbuf)
+physics/cam/physpkg.F90:      call gmean_mass ('before tphysbc DRY', phys_state)
+physics/cam/physpkg.F90:                       fsns(1,c), fsnt(1,c), flns(1,c), flnt(1,c), phys_state(c),        &
+physics/cam/physpkg.F90:      call gmean_mass ('between DRY', phys_state)
+physics/cam/physpkg.F90:subroutine phys_run1_adiabatic_or_ideal(ztodt, phys_state, phys_tend, pbuf)
+physics/cam/physpkg.F90:   type(physics_state), intent(inout), dimension(begchunk:endchunk) :: phys_state
+physics/cam/physpkg.F90:      call diag_phys_writeout(phys_state(c))
+physics/cam/physpkg.F90:         call check_energy_fix(phys_state(c), ptend, nstep, flx_heat)
+physics/cam/physpkg.F90:         call physics_update(phys_state(c), phys_tend(c), ptend, ztodt)
+physics/cam/physpkg.F90:         call check_energy_chng(phys_state(c), phys_tend(c), "chkengyfix", nstep, ztodt, &
+physics/cam/physpkg.F90:         call tphysidl(ztodt, phys_state(c), phys_tend(c))
+physics/cam/physpkg.F90:      teout(:ncol) = phys_state(c)%te_cur(:ncol)
+physics/cam/physpkg.F90:subroutine phys_run2(phys_state, ztodt, phys_tend, pbuf, cam_out, &
+physics/cam/physpkg.F90:   type(physics_state), intent(inout), dimension(begchunk:endchunk) :: phys_state
+physics/cam/physpkg.F90:   call lightning_no_prod( phys_state, pbuf, cam_in )
+physics/cam/physpkg.F90:      call diag_surf(cam_in(c), cam_out(c), phys_state(c)%ps,trefmxav(1,c), trefmnav(1,c))
+physics/cam/physpkg.F90:                    phys_state(c), phys_tend(c), pbuf, fsds(1,c))
+physics/cam/physpkg.F90:   call gmean_mass ('after tphysac FV:WET)', phys_state)
+physics/cam/physpkg.F90:subroutine phys_final( phys_state, phys_tend )
+physics/cam/physpkg.F90:   type(physics_state), pointer :: phys_state(:)
+physics/cam/physpkg.F90:   deallocate(phys_state)

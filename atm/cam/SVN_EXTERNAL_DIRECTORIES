@@ -1,0 +1,6 @@
+src/physics/rrtmg/ext     https://svn-ccsm-models.cgd.ucar.edu/rrtmg/trunk_tags/rrtmg_101227.1/src
+chem_proc                 https://svn-ccsm-models.cgd.ucar.edu/tools/proc_atm/chem_proc/trunk_tags/chem_proc3_7_02
+tools/cprnc               https://svn-ccsm-models.cgd.ucar.edu/tools/cprnc/trunk_tags/cprnc_110307c
+src/physics/cosp          https://svn-ccsm-models.cgd.ucar.edu/cosp/trunk_tags/cosp_v1_3_110505/cosp
+src/physics/icarus-scops  https://svn-ccsm-models.cgd.ucar.edu/cosp/trunk_tags/cosp_v1_3_110505/icarus-scops
+src/dynamics/homme/share  https://svn-homme-model.cgd.ucar.edu/trunk_tags/homme_cam5_0_50/src/share

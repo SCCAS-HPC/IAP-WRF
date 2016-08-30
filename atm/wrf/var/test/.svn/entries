@@ -1,0 +1,43 @@
+10
+
+dir
+2
+svn+ssh://jhe@everest.msrc.sunysb.edu/ptmp/jhe/ccsm4_wrf_cam/models/atm/wrf/var/test
+svn+ssh://jhe@everest.msrc.sunysb.edu/ptmp/jhe/ccsm4_wrf_cam
+
+
+
+2010-06-18T16:09:52.573828Z
+2
+jhe
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+68e820c0-3f89-0410-90fa-e9089979da34
+
+4dvar
+dir
+
+tutorial
+dir
+
+radiance
+dir
+
+update_bc
+dir
+
+madis
+dir
+

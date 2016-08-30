@@ -1,0 +1,77 @@
+10
+
+dir
+71
+https://svn-ccsm-release.cgd.ucar.edu/model_versions/cesm1_0_3/models/drv
+https://svn-ccsm-release.cgd.ucar.edu
+
+
+
+2011-06-10T18:18:09.176859Z
+35
+fischer
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+6ec7379f-1bbc-4938-b9b9-58fa9e6a5fe1
+
+bld
+dir
+
+doc
+dir
+
+shr_esmf
+dir
+
+ChangeLog
+file
+
+
+
+
+2011-10-24T17:30:19.000000Z
+39e0df01cb3720cbe5f8feaa863ad741
+2011-06-10T18:18:09.176859Z
+35
+fischer
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+104305
+
+driver
+dir
+
+shr
+dir
+

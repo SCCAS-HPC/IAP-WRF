@@ -1,0 +1,489 @@
+module module_ouhe
+!for wrf-cam coupling directly
+!  use parallel_module 
+!  use module_dm
+!  USE module_comm_dm, ONLY : halo_em_phys_a_sub
+!  use module_domain
+  use camsrfexch_types , only: cam_out_t, cam_in_t     
+
+  use ppgrid           , only: pcols, begchunk, endchunk, pverp, pver ! by Wang Yuzhu
+  use phys_grid        , only: get_ncols_p, get_gcol_all_p, &
+                               ngcols, get_gcol_p, get_rlat_all_p, &
+                               get_rlon_all_p, get_area_all_p, &
+                               get_rlon_all_p, get_area_all_p, get_lat_all_p, get_lon_all_p  ! by Wang Yuzhu
+
+  use pmgrid, only: beglonxy, endlonxy, beglatxy, endlatxy, plev        !by Wang Yuzhu
+  use physics_types, only: physics_state, physics_tend  ! by Wang Yuzhu
+  use stepon, only: phys_state
+
+
+   type metgrid_info
+      integer :: num_metgrid_levels, num_metgrid_soil_levels,iproj
+      integer :: ids,  ide,  jds,  jde,  kds,  kde, &
+                 ims,  ime,  jms,  jme,  kms,  kme, &
+                 imsx, imex, jmsx, jmex, kmsx, kmex, &
+                 imsy, imey, jmsy, jmey, kmsy, kmey, &
+                 ips,  ipe,  jps,  jpe,  kps,  kpe, &
+                 ipsx, ipex, jpsx, jpex, kpsx, kpex, &
+                 ipsy, ipey, jpsy, jpey, kpsy, kpey 
+      real, pointer, dimension(:,:):: xlat,xlon
+      real, pointer, dimension(:,:):: tsk,sst,snow,xice,pslv,psfc,&
+                                      xland,ht,sstold,xiceold
+      real, pointer, dimension(:,:,:):: u3d,v3d,w3d,q3d,z3d,t3d,p3d,rh3d
+      real, pointer, dimension(:,:,:):: soilt,soilm,soildepth,soilthick      
+   end type metgrid_info
+
+   
+   public :: mgrid, mgrid2
+   type(metgrid_info) ::mgrid, mgrid2
+   contains
+!===============================================================================
+    subroutine set_metgrid(mgrid, num_soil_layers, num_cam_levs)
+!      use module_configure
+      type(metgrid_info) :: mgrid
+      integer            :: num_soil_layers
+      mgrid%num_metgrid_soil_levels = num_soil_layers
+!      mgrid%num_metgrid_levels =  head_grid%num_metgrid_levels
+      mgrid%num_metgrid_levels =  num_cam_levs
+      mgrid%ids = 1
+!      mgrid%ide = model_config_rec%cam_nx
+      mgrid%ide = 128
+      mgrid%jds = 1
+!      mgrid%jde = model_config_rec%cam_ny
+      mgrid%jde = 256
+!      mgrid%iproj =  model_config_rec%cam_proj
+
+    end subroutine set_metgrid
+
+!===============================================================================
+    subroutine initial_metgrid(mgrid, ids, ide, jds, jde, &
+                               num_metgrid_levels, num_metgrid_soil_levels )
+      integer,intent(in)::ids, ide, jds, jde, num_metgrid_levels, num_metgrid_soil_levels 
+      type(metgrid_info)::mgrid
+   
+      if(.not.associated(mgrid%u3d))         allocate( mgrid%u3d(ids:ide, 1:num_metgrid_levels, jds:jde) )
+      if(.not.associated(mgrid%v3d))        allocate( mgrid%v3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+      if(.not.associated(mgrid%w3d))        allocate( mgrid%w3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+      if(.not.associated(mgrid%q3d))         allocate( mgrid%q3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+      if(.not.associated(mgrid%t3d))         allocate( mgrid%t3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+      if(.not.associated(mgrid%z3d))           allocate( mgrid%z3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+      if(.not.associated(mgrid%p3d))           allocate( mgrid%p3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+      if(.not.associated(mgrid%rh3d))           allocate( mgrid%rh3d(ids:ide, 1:num_metgrid_levels, jds:jde)  )
+      if(.not.associated(mgrid%soilt))           allocate( mgrid%soilt(ids:ide, 1:num_metgrid_soil_levels, jds:jde)  )
+      if(.not.associated(mgrid%soilm))          allocate( mgrid%soilm(ids:ide, 1:num_metgrid_soil_levels, jds:jde)  )
+      if(.not.associated(mgrid%soilthick))     allocate( mgrid%soilthick(ids:ide, 1:num_metgrid_soil_levels, jds:jde)  )
+      if(.not.associated(mgrid%soildepth))     allocate( mgrid%soildepth(ids:ide, 1:num_metgrid_soil_levels, jds:jde)  )
+      if(.not.associated(mgrid%tsk))           allocate( mgrid%tsk(ids:ide, jds:jde)  )
+      if(.not.associated(mgrid%sst))           allocate( mgrid%sst(ids:ide, jds:jde)  )
+      if(.not.associated(mgrid%sstold))           allocate( mgrid%sstold(ids:ide, jds:jde)  )
+      if(.not.associated(mgrid%snow))           allocate( mgrid%snow(ids:ide, jds:jde)  )
+      if(.not.associated(mgrid%xice))           allocate( mgrid%xice(ids:ide, jds:jde)  )
+      if(.not.associated(mgrid%xiceold))        allocate( mgrid%xiceold(ids:ide, jds:jde)  )
+      if(.not.associated(mgrid%pslv))           allocate( mgrid%pslv(ids:ide, jds:jde)  )
+      if(.not.associated(mgrid%psfc))           allocate( mgrid%psfc(ids:ide, jds:jde)  )
+      if(.not.associated(mgrid%xlat))           allocate( mgrid%xlat(ids:ide, jds:jde)  )
+      if(.not.associated(mgrid%xlon))           allocate( mgrid%xlon(ids:ide, jds:jde)  )        
+      if(.not.associated(mgrid%xland))           allocate( mgrid%xland(ids:ide, jds:jde)  )        
+      if(.not.associated(mgrid%ht))           allocate( mgrid%ht(ids:ide, jds:jde)  )        
+
+      mgrid%u3d = 0
+      mgrid%v3d = 0
+      mgrid%w3d = 0
+      mgrid%q3d = 0
+      mgrid%t3d = 0
+      mgrid%z3d = 0
+      mgrid%p3d = 0
+      mgrid%rh3d = 0
+      mgrid%soilt = 0
+      mgrid%soilm = 0
+      mgrid%soilthick = 0
+      mgrid%soildepth = 0
+      mgrid%tsk = 0
+      mgrid%sst = 0
+      mgrid%sstold = 0
+      mgrid%snow = 0
+      mgrid%xice = 0
+      mgrid%xiceold = 0
+      mgrid%pslv = 0
+      mgrid%psfc = 0
+      mgrid%xlat = 0
+      mgrid%xlon = 0
+      mgrid%xland = 0    
+      mgrid%ht = 0    
+           
+  end subroutine initial_metgrid
+
+!===============================================================================
+!
+!  subroutine wrf_import_cam( x2c_c, grid, loop )
+  subroutine wrf_import_cam_test( grid, loop, cam_in, cam_state )
+!for wrf/cam coupling directly        ! Huyiqun Hao
+
+!     USE module_state_description
+!     use atm_comp_mct ! by Huiqun Hao
+!     #if defined(DM_PARALLEL)
+!        include "mpif.h"
+!     #endif
+!-----------------------------------------------------------------------
+! Arguments
+!
+     TYPE(metgrid_info) :: grid
+!     type(mct_aVect)   , intent(inout) :: x2c_c
+    type(physics_state) :: cam_state(begchunk:endchunk)
+    type(cam_in_t) :: cam_in(begchunk:endchunk)
+     integer :: loop
+
+
+
+     ! Local variables
+	
+     integer  :: i,j,k,ig  ! indices    
+     integer  :: ncol ! by Wang Yuzhu
+     integer :: lats(pcols)           ! array of latitude indices Wang Yuzhu
+     integer :: lons(pcols)           ! array of longitude indices Wang Yuzhu
+!     type(physics_state), intent(inout), dimension(begchunk:endchunk) :: phys_state ! by Wang Yuzhu
+     integer :: ids,ide,jds,jde,kds,kde,ims,ime,jms,jme,kms,kme,ips,ipe,jps,jpe,kps,kpe    
+     real::z,tv,rd,g,xlapse,alpha,tstar,tt0,alph,beta,psfc,ppslv,p    
+     real*8,dimension(:,:,:),allocatable::z3d,u3d,v3d,q3d,t3d,rh3d,p3d 
+     real*8,dimension(:,:,:),allocatable::z3d_int,u3d_int,v3d_int,q3d_int,t3d_int,rh3d_int 
+     real*8,dimension(:,:),allocatable::psfcg,rhsf,tsf,usf,vsf,hsf 
+     real*8,dimension(1:27)::w3d 
+     real*8,dimension(1:26) :: a, b 
+     logical :: twoway_coupling     
+     logical,save :: first_sst=.true.     
+!     real*8 :: ts1,ts2,te1,te2  !by Wang Yuzhu 2014-07-21
+
+     data a/0.00354463800000001, 0.00738881350000001, 0.013967214, 0.023944625,&
+    0.0372302900000001, 0.0531146050000002, 0.0700591500000003, &
+    0.0779125700000003, 0.0766070100000003, 0.0750710850000003, &
+    0.0732641500000002, 0.071138385, 0.0686375349999999, 0.065695415, &
+    0.0622341550000001, 0.0581621650000002, 0.0533716800000001, &
+    0.0477359250000001, 0.041105755, 0.0333057, 0.02496844, 0.01709591, &
+    0.01021471, 0.00480317500000001, 0.00126068, 0 /
+     data b/ 0, 0, 0, 0, 0, 0, 0, 0.00752654500000002, 0.023907685, 0.04317925, &
+    0.0658512450000003, 0.0925236850000004, 0.1239024, 0.16081785, 0.204247, &
+    0.2553391, 0.315446300000001, 0.386159300000001, 0.469349500000002, &
+    0.567218500000003, 0.671827850000003, 0.770606150000003, &
+    0.856946050000001, 0.924845700000002, 0.969294150000001, 0.9925561 /
+     data w3d /200100,100000,97500,95000,92500,90000,85000,80000 &
+       ,75000,70000,65000,60000,55000,50000,45000,40000,35000 &
+       ,30000,25000,20000,15000,10000,7000,5000,3000,2000,1000/
+ 
+       call shr_file_getLogUnit (shrlogunit)
+       call shr_file_getLogLevel(shrloglev)
+       call shr_file_setLogUnit (iulog)
+     
+!       ips=ATM_beglonxy  ! by Huiqun Hao, 2015-05-15
+!       ipe=ATM_endlonxy  ! by Huiqun Hao, 2015-05-15
+!       jps=ATM_beglatxy  ! by Huiqun Hao, 2015-05-15
+!       jpe=ATM_endlonxy  ! by Huiqun Hao, 2015-05-15
+!       kps=1             ! by Huiqun Hao, 2015-05-15
+!       kpe=ATM_plev      ! by Huiqun Hao, 2015-05-15
+
+!       twoway_coupling= model_config_rec%twoway_coupling
+       twoway_coupling= .false.       
+!       call metgrid_decompose(grid, ids, ide, jds, jde, kds, kde, &
+!                   ims,  ime,  jms,  jme,  kms,  kme, &
+!                   beglonxy,  endlonxy,  beglatxy,  endlonxy,  1,  plev )
+
+       call metgrid_decompose(grid, ids, ide, jds, jde, kds, kde, &
+                               ims,  ime,  jms,  jme,  kms,  kme, &
+                               ips,  ipe,  jps,  jpe,  kps,  kpe  ) 
+      ips=beglonxy
+      ipe=endlonxy
+      jps=beglatxy
+      jpe=endlatxy
+      kps=1
+      kpe=plev
+
+      rd = 287.0
+      g = 9.81
+      xlapse= 6.5e-3
+
+      ig=grid%num_metgrid_levels
+      allocate(z3d(ipe-ips+1,1:ig-1,jpe-jps+1))
+      allocate(u3d(ipe-ips+1,1:ig-1,jpe-jps+1))
+      allocate(v3d(ipe-ips+1,1:ig-1,jpe-jps+1))
+      allocate(t3d(ipe-ips+1,1:ig-1,jpe-jps+1))
+      allocate(q3d(ipe-ips+1,1:ig-1,jpe-jps+1))
+      allocate(p3d(ipe-ips+1,1:ig-1,jpe-jps+1))
+      allocate(rh3d(ipe-ips+1,1:ig-1,jpe-jps+1))
+      allocate(z3d_int(ipe-ips+1,1:ig,jpe-jps+1))
+      allocate(u3d_int(ipe-ips+1,1:ig,jpe-jps+1))
+      allocate(v3d_int(ipe-ips+1,1:ig,jpe-jps+1))
+      allocate(t3d_int(ipe-ips+1,1:ig,jpe-jps+1))
+      allocate(q3d_int(ipe-ips+1,1:ig,jpe-jps+1))
+      allocate(rh3d_int(ipe-ips+1,1:ig,jpe-jps+1))
+      allocate(psfcg(ipe-ips+1,jpe-jps+1))
+      allocate(rhsf(ipe-ips+1,jpe-jps+1))
+      allocate(tsf(ipe-ips+1,jpe-jps+1))
+      allocate(usf(ipe-ips+1,jpe-jps+1))
+      allocate(vsf(ipe-ips+1,jpe-jps+1))
+      allocate(hsf(ipe-ips+1,jpe-jps+1))
+
+      print*,'test 0',ig,ids,ide,jds,jde,kds,kde
+      ig=1
+      do j = begchunk,endchunk
+         ncol = get_ncols_p(j)
+         print*,'test 1',ncol,j
+
+         call get_lon_all_p(j, ncol, lons)
+         call get_lat_all_p(j, ncol, lats)
+		 print*,'test2',lons(1),lats(1)
+         do i=1,ncol
+            grid%xlat(lons(i),lats(i))       = cam_state(j)%lat(i)*180.0/3.1415926
+            grid%xlon(lons(i),lats(i))       = cam_state(j)%lon(i)*180.0/3.1415926
+			print*,'test jjr 2',i,j
+
+            if(grid%xlon(lons(i),lats(i)).lt.0) grid%xlon(lons(i),lats(i)) = grid%xlon(lons(i),lats(i))+360
+            grid%q3d(lons(i),1,lats(i))       = 0
+
+	  do k = kstart, grid%num_metgrid_levels ! num_metgrid_levels=num_cam_levels+1
+            grid%q3d(lons(i),k,lats(i))       = 0  
+            grid%z3d(lons(i),k,lats(i)) = cam_state(j)%zm(i,grid%num_metgrid_levels-k+1)
+            u3d(lons(i)-ips+1,k-1,lats(i)-jps+1) = cam_state(j)%u(i,grid%num_metgrid_levels-k+1)
+            v3d(lons(i)-ips+1,k-1,lats(i)-jps+1) = cam_state(j)%v(i,grid%num_metgrid_levels-k+1)
+            t3d(lons(i)-ips+1,k-1,lats(i)-jps+1) = cam_state(j)%t(i,grid%num_metgrid_levels-k+1)
+            p3d(lons(i)-ips+1,k-1,lats(i)-jps+1) = 100000.0_8*a(grid%num_metgrid_levels-k+1) + cam_state(j)%ps(i)*b(grid%num_metgrid_levels-k+1)
+	    rh3d(lons(i)-ips+1,k-1,lats(i)-jps+1) = cam_state(j)%rh(i,grid%num_metgrid_levels-k+1) ! relative humidity, use w3d 
+!            grid%q3d(i,k,j)       = 0  
+!            grid%z3d(i,k,j) = x2c_c%rAttr(index_x2w_Sx_z3d(grid%num_metgrid_levels-k+1)     ,ig)
+!            u3d(i-ips+1,k-1,j-jps+1) = x2c_c%rAttr(index_x2w_Sx_u3d(grid%num_metgrid_levels-k+1)     ,ig)
+!            v3d(i-ips+1,k-1,j-jps+1) = x2c_c%rAttr(index_x2w_Sx_v3d(grid%num_metgrid_levels-k+1)     ,ig)
+!            t3d(i-ips+1,k-1,j-jps+1) = x2c_c%rAttr(index_x2w_Sx_t3d(grid%num_metgrid_levels-k+1)     ,ig)
+!            p3d(i-ips+1,k-1,j-jps+1) = 100000.0_8*a(grid%num_metgrid_levels-k+1) + x2c_c%rAttr(index_x2w_Sx_ps      ,ig)*b(grid%num_metgrid_levels-k+1)
+!	    rh3d(i-ips+1,k-1,j-jps+1) = x2c_c%rAttr(index_x2w_Sx_w3d(grid%num_metgrid_levels-k+1)     ,ig) ! relative humidity, use w3d 
+          end do  
+
+	    rhsf(lons(i)-ips+1,lats(i)-jps+1) = cam_state(j)%rh(i,grid%num_metgrid_levels-1) ! record the lowest level as surface
+	    usf(lons(i)-ips+1,lats(i)-jps+1)  = cam_state(j)%u(i,grid%num_metgrid_levels-1) ! record the lowest level as surface
+	    vsf(lons(i)-ips+1,lats(i)-jps+1)  = cam_state(j)%v(i,grid%num_metgrid_levels-1) ! record the lowest level as surface
+	    tsf(lons(i)-ips+1,lats(i)-jps+1)  = cam_in(j)%tref(i) ! record the lowest level as surface
+            grid%psfc(lons(i),lats(i))        =  cam_state(j)%ps(i)   
+            tsf(lons(i)-ips+1,lats(i)-jps+1)  = tsf(lons(i)-ips+1,lats(i)-jps+1)*(1+0.0065* &
+                                  287.0/9.81*(grid%psfc(lons(i),lats(i))/p3d(lons(i)-ips+1,1,lats(i)-jps+1)-1)) !calculate the lowest level temperature
+            psfcg(lons(i)-ips+1,lats(i)-jps+1)= cam_state(j)%ps(i)
+            grid%pslv(lons(i),lats(i))        = cam_state(j)%psl(i)
+            grid%ht(lons(i),lats(i))          =  cam_state(j)%phis(i)/g
+	    hsf(lons(i)-ips+1,lats(i)-jps+1)  = cam_state(j)%phis(i)/g ! record the terrain
+
+
+! use the previous cam time sst not the present cam time sst
+! sicne cam time leads wrf time one couple time step
+           if (first_sst) then  
+           grid%sst(lons(i),lats(i)) = cam_in(j)%sst(i)    
+           grid%xice(lons(i),lats(i)) = cam_in(j)%icefrac(i)
+           else
+           grid%sst(lons(i),lats(i)) = grid%sstold(lons(i),lats(i))
+           grid%xice(lons(i),lats(i)) = grid%xiceold(lons(i),lats(i))
+           end if
+           grid%sstold(lons(i),lats(i)) =cam_in(j)%sst(i)
+           grid%xiceold(lons(i),lats(i)) = cam_in(j)%icefrac(i)
+
+   	   grid%tsk(lons(i),lats(i)) = cam_in(j)%ts(i)      
+
+           grid%xland(lons(i),lats(i))= cam_in(j)%landfrac(i) ! used as land
+!           grid%xland(i,j)= cam_in(j)%landfrac(i) ! used as land
+           grid%snow(lons(i),lats(i)) = (grid%xland(lons(i),lats(i)) *cam_in(j)%snowhland(i)  +grid%xice(lons(i),lats(i)) * cam_in(j)%snowhice(i))
+!           grid%snow(i,j) = (grid%xland(i,j) *cam_in(j)%snowhland(i)  +grid%xice(i,j) * cam_in(j)%snowhice(i))
+
+           if(grid%xland(lons(i),lats(i)).lt.0.5) then
+            grid%xland(lons(i),lats(i))=0
+           else
+            grid%xland(lons(i),lats(i))=1
+           endif
+
+           do k=1, grid%num_metgrid_soil_levels
+            grid%soildepth(lons(i),k,lats(i))       =  cam_in(j)%soildepth(i,k)*100.0  ! The unit is supposed as cm
+!            grid%soildepth(i,k,j)       =  cam_in(j)%soildepth(i,k)*100.0  ! The unit is supposed as cm
+            grid%soilthick(lons(i),k,lats(i))       = cam_in(j)%soilthick(i,k)*100.0   !The unit is supposed as cm
+!            grid%soilthick(i,k,j)       = cam_in(j)%soilthick(i,k)*100.0   !The unit is supposed as cm
+            grid%soilt(lons(i),k,lats(i))   = cam_in(j)%soilt(i,k)
+!            grid%soilt(i,k,j)   = cam_in(j)%soilt(i,k)
+            grid%soilm(lons(i),k,lats(i))   = cam_in(j)%soilm(i,k) 
+!            grid%soilm(i,k,j)   = cam_in(j)%soilm(i,k)
+            grid%soilt(lons(i),k,lats(i))    = cam_in(j)%soilt(i,1) ! use the first level
+!            grid%soilt(i,k,j)    = cam_in(j)%soilt(i,1) ! use the first level
+            grid%soilm(lons(i),k,lats(i))    = 1.0 
+            if(grid%xland(lons(i),lats(i)).eq.0) then ! set to surface temperature over the water 
+             grid%soilt(lons(i),k,lats(i))=grid%tsk(lons(i),lats(i))
+            endif
+           enddo
+ 
+            grid%soildepth(lons(i),1,lats(i))       = 10
+            grid%soilthick(lons(i),1,lats(i))       = 10
+            grid%soildepth(lons(i),2,lats(i))       = 40
+            grid%soilthick(lons(i),2,lats(i))       = 40
+            grid%soildepth(lons(i),3,lats(i))       = 100
+            grid%soilthick(lons(i),3,lats(i))       = 100
+            grid%soildepth(lons(i),4,lats(i))       = 200
+            grid%soilthick(lons(i),4,lats(i))       = 200
+
+           ! embed the surface into 3d  
+           grid%z3d(lons(i),1,lats(i))       = grid%ht(lons(i),lats(i))
+           if( grid%z3d(lons(i),1,lats(i)) .lt.0)   grid%z3d(lons(i),1,lats(i)) = 0 ! it may be littler than zero in the ocean for the terrain
+           if( grid%ht(lons(i),lats(i)) .lt.0)   grid%ht(lons(i),lats(i)) = 0 ! it may be littler than zero in the ocean for the terrain
+
+           do  k = kstart, grid%num_metgrid_levels
+              grid%z3d(lons(i),k,lats(i))  = grid%z3d(lons(i),k,lats(i))+grid%z3d(lons(i),1,lats(i)) ! the original height is the height above the surface not the sea level
+           enddo
+
+          ig=ig+1
+         end do
+       end do                                   
+     
+       ig=grid%num_metgrid_levels
+
+      ! u 
+      call interpolate_to_standard_levels(grid%num_metgrid_levels &
+               ,ipe-ips+1,jpe-jps+1,grid%num_metgrid_levels-1 &
+               ,p3d,w3d,u3d,u3d_int,psfcg,tsf,hsf,0)
+       do j=jps,jpe
+        do k=kstart,ig
+         do i=ips,ipe
+           grid%u3d(i,k,j) = u3d_int(i-ips+1,k,j-jps+1)
+         enddo
+        enddo
+       enddo 
+
+       do j=jps,jpe
+         do i=ips,ipe
+           grid%u3d(i,1,j) =usf(i-ips+1,j-jps+1)
+         enddo
+       enddo
+
+       ! v 
+       call interpolate_to_standard_levels(grid%num_metgrid_levels &
+               ,ipe-ips+1,jpe-jps+1,grid%num_metgrid_levels-1 &
+               ,p3d,w3d,v3d,v3d_int,psfcg,tsf,hsf,0)
+       do j=jps,jpe
+        do k=kstart,ig
+         do i=ips,ipe
+           grid%v3d(i,k,j) = v3d_int(i-ips+1,k,j-jps+1)
+         enddo
+        enddo
+       enddo
+
+       do j=jps,jpe
+         do i=ips,ipe
+           grid%v3d(i,1,j) =vsf(i-ips+1,j-jps+1)
+         enddo
+       enddo
+
+       ! t
+       call interpolate_to_standard_levels(grid%num_metgrid_levels &
+               ,ipe-ips+1,jpe-jps+1,grid%num_metgrid_levels-1 &
+               ,p3d,w3d,t3d,t3d_int,psfcg,tsf,hsf,2)
+       do j=jps,jpe
+        do k=kstart,ig
+         do i=ips,ipe
+           grid%t3d(i,k,j) = t3d_int(i-ips+1,k,j-jps+1)
+         enddo
+        enddo
+       enddo
+
+       do j=jps,jpe
+         do i=ips,ipe
+           grid%t3d(i,1,j) =tsf(i-ips+1,j-jps+1)
+         enddo
+       enddo
+
+       ! rh 
+       call interpolate_to_standard_levels(grid%num_metgrid_levels &
+               ,ipe-ips+1,jpe-jps+1,grid%num_metgrid_levels-1 &
+               ,p3d,w3d,rh3d,rh3d_int,psfcg,tsf,hsf,0)
+       do j=jps,jpe
+        do k=kstart,ig
+         do i=ips,ipe
+           if(rh3d_int(i-ips+1,k,j-jps+1).lt.0) rh3d_int(i-ips+1,k,j-jps+1)=0
+           grid%rh3d(i,k,j) = rh3d_int(i-ips+1,k,j-jps+1)
+         enddo
+        enddo
+       enddo
+
+       do j=jps,jpe
+         do i=ips,ipe
+           grid%rh3d(i,1,j) =rhsf(i-ips+1,j-jps+1)
+         enddo
+       enddo
+
+       ! ght 
+       do j=jps,jpe
+        do k=1,ig-1
+         do i=ips,ipe
+           z3d(i-ips+1,k,j-jps+1) = grid%z3d(i,kstart+k-1,j)* 1.0_8
+         enddo
+        enddo
+       enddo
+       call interpolate_to_standard_levels(grid%num_metgrid_levels &
+               ,ipe-ips+1,jpe-jps+1,grid%num_metgrid_levels-1 &
+               ,p3d,w3d,z3d,z3d_int,psfcg,tsf,hsf,1)
+       do j=jps,jpe
+        do k=kstart,ig 
+         do i=ips,ipe
+           grid%z3d(i,k,j) = z3d_int(i-ips+1,k,j-jps+1)
+         enddo
+        enddo
+       enddo
+
+       ! p
+       do j=jps,jpe
+         do i=ips,ipe 
+           grid%p3d(i,1,j) = grid%psfc(i,j)
+         enddo
+       enddo 
+      
+       do j=jps,jpe
+        do k=kstart,ig  ! we keep the surface prresure
+         do i=ips,ipe
+           grid%p3d(i,k,j) = w3d(k)
+         enddo
+        enddo
+       enddo
+
+       if(first_sst) then
+!       call cpu_time(ts1)  ! by Yuzhu Wang, 2014-07-21
+       call metgrid_oncetogather(grid, ids, ide, jds, jde, 1, 1,  &
+                                grid%num_metgrid_levels, grid%num_metgrid_soil_levels, &
+                                ips, ipe, jps, jpe, 1, 1)
+!       call cpu_time(te1)  ! by Yuzhu Wang, 2014-07-21
+!       oncetogather_alltime = oncetogather_alltime + (te1 - ts1)  ! by Yuzhu Wang, 2014-07-21
+       endif
+!       call cpu_time(ts2)  ! by Yuzhu Wang, 2014-07-21
+       call metgrid_alltogather2(grid, ids, ide, jds, jde, 1, 1,  &
+                                grid%num_metgrid_levels, grid%num_metgrid_soil_levels, &
+                                ips, ipe, jps, jpe, 1, 1)
+!       call cpu_time(te2)  ! by Yuzhu Wang, 2014-07-21
+!       alltogather_alltime = alltogather_alltime + (te2 - ts2)  ! by Yuzhu Wang, 2014-07-21
+       if(first_sst) first_sst=.false. 
+       call shr_file_setLogUnit (shrlogunit)
+       call shr_file_setLogLevel(shrloglev)
+
+       deallocate(z3d)
+       deallocate(u3d)
+       deallocate(v3d)
+       deallocate(q3d)
+       deallocate(t3d)
+       deallocate(rh3d)
+       deallocate(p3d)
+       deallocate(z3d_int)
+       deallocate(u3d_int)
+       deallocate(v3d_int)
+       deallocate(q3d_int)
+       deallocate(t3d_int)
+       deallocate(rh3d_int)
+       deallocate(psfcg)
+       deallocate(rhsf)
+       deallocate(tsf)
+       deallocate(vsf)
+       deallocate(usf)
+       deallocate(hsf)
+    
+
+  end subroutine wrf_import_cam_test
+
+!===============================================================================
+
+
+
+end module module_ouhe

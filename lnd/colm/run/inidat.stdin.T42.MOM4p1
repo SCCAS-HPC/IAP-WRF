@@ -1,0 +1,22 @@
+&clminiexp
+site           = 'T42'
+greenwich      = .true.
+start_yr       =  1990
+start_jday     =  1
+start_sec      =  1800
+fsrf           = '/home/jidy/CoLM_csm/data/srfdata.T42.MOM4p1'
+fgrid          = '/home/jidy/CoLM_csm/data/CoLM_T42_MOM4p1_gridata'
+frivinp_rtm    = '/home/jidy/CoLM_csm/data/rdirc.05'
+fsbcini        = '/home/jidy/CoLM_csm/data/CoLM_T42_MOM4p1_sbcini'
+flai           = ''
+fsoilini       = ''
+fmet           = '/home/jidy/swgfs/Princeton_30MIN'
+fconst         = '/home/jidy/CoLM_csm/data/CoLM_T42_MOM4p1_const'
+frestart       = '/home/jidy/CoLM_csm/data/CoLM_T42_MOM4p1_restart'
+fout           = '/home/jidy/CoLM_csm/output/global'
+finfolist      = '/home/jidy/CoLM_csm/run/clmini.infolist.MOM4p1'
+lon_points     =  128
+lat_points     =   64
+dtime          =  1800
+mstep          =  150000
+/

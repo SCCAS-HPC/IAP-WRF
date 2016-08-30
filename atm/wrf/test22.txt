@@ -1,0 +1,467 @@
+dyn_em/.svn/text-base/nest_init_utils.F.svn-base:   USE module_dm, ONLY : ntasks, ntasks_x, ntasks_y, itrace, local_communicator, mytask
+dyn_em/.svn/text-base/solve_em.F.svn-base:                  local_communicator, mytask, ntasks, ntasks_x, ntasks_y                   &
+dyn_em/.svn/text-base/solve_em.F.svn-base:                 ,local_communicator_periodic, wrf_dm_maxval
+dyn_em/.svn/text-base/shift_domain_em.F.svn-base:   USE module_dm, ONLY : local_communicator, mytask, ntasks, ntasks_x, ntasks_y, local_communicator_periodic, itrace
+dyn_em/.svn/text-base/shift_domain_em.F.svn-base:   USE module_dm, ONLY : local_communicator, mytask, ntasks, ntasks_x, ntasks_y, local_communicator_periodic, itrace
+dyn_em/.svn/text-base/start_em.F.svn-base:        local_communicator_periodic, local_communicator, mytask, ntasks 
+dyn_em/.svn/text-base/module_first_rk_step_part2.F.svn-base:    USE module_dm, ONLY : local_communicator, mytask, ntasks, ntasks_x, ntasks_y, local_communicator_periodic, wrf_dm_maxval, wrf_err_message
+dyn_em/.svn/text-base/couple_or_uncouple_em.F.svn-base:   USE module_dm, ONLY : local_communicator, mytask, ntasks, ntasks_x, ntasks_y, local_communicator_periodic
+dyn_em/.svn/text-base/module_first_rk_step_part1.F.svn-base:    USE module_dm, ONLY : local_communicator, mytask, ntasks, ntasks_x, ntasks_y, local_communicator_periodic, wrf_dm_maxval
+dyn_em/.svn/text-base/module_polarfft.F.svn-base:   USE module_dm, ONLY : local_communicator, mytask, ntasks, ntasks_x, ntasks_y &
+dyn_em/.svn/text-base/module_polarfft.F.svn-base:                       , local_communicator_periodic, itrace                    &
+dyn_em/.svn/text-base/module_polarfft.F.svn-base:                       , local_communicator_x 
+dyn_em/solve_em.F:                  local_communicator, mytask, ntasks, ntasks_x, ntasks_y                   &
+dyn_em/solve_em.F:                 ,local_communicator_periodic, wrf_dm_maxval
+dyn_em/shift_domain_em.F:   USE module_dm, ONLY : local_communicator, mytask, ntasks, ntasks_x, ntasks_y, local_communicator_periodic, itrace
+dyn_em/shift_domain_em.F:   USE module_dm, ONLY : local_communicator, mytask, ntasks, ntasks_x, ntasks_y, local_communicator_periodic, itrace
+dyn_em/couple_or_uncouple_em.F:   USE module_dm, ONLY : local_communicator, mytask, ntasks, ntasks_x, ntasks_y, local_communicator_periodic
+dyn_em/module_polarfft.F:   USE module_dm, ONLY : local_communicator, mytask, ntasks, ntasks_x, ntasks_y &
+dyn_em/module_polarfft.F:                       , local_communicator_periodic, itrace                    &
+dyn_em/module_polarfft.F:                       , local_communicator_x 
+dyn_em/start_em.F:        local_communicator_periodic, local_communicator, mytask, ntasks 
+dyn_em/nest_init_utils.F:   USE module_dm, ONLY : ntasks, ntasks_x, ntasks_y, itrace, local_communicator, mytask
+dyn_em/module_first_rk_step_part1.F:    USE module_dm, ONLY : local_communicator, mytask, ntasks, ntasks_x, ntasks_y, local_communicator_periodic, wrf_dm_maxval
+dyn_em/module_first_rk_step_part2.F:    USE module_dm, ONLY : local_communicator, mytask, ntasks, ntasks_x, ntasks_y, local_communicator_periodic, wrf_dm_maxval, wrf_err_message
+dyn_nmm/module_initialize_real.F:   USE module_dm,                    ONLY : LOCAL_COMMUNICATOR       &
+dyn_nmm/.svn/text-base/solve_nmm.F.svn-base:      USE MODULE_DM,                    ONLY : LOCAL_COMMUNICATOR       &
+dyn_nmm/.svn/text-base/start_domain_nmm.F.svn-base:      USE MODULE_DM,                    ONLY : LOCAL_COMMUNICATOR       &
+dyn_nmm/.svn/text-base/module_initialize_real.F.svn-base:   USE module_dm,                    ONLY : LOCAL_COMMUNICATOR       &
+dyn_nmm/.svn/text-base/module_IGWAVE_ADJUST.F.svn-base:      USE MODULE_DM,                    ONLY : LOCAL_COMMUNICATOR       &
+dyn_nmm/.svn/text-base/module_IGWAVE_ADJUST.F.svn-base:      USE MODULE_DM,                    ONLY : LOCAL_COMMUNICATOR       &
+dyn_nmm/module_IGWAVE_ADJUST.F:      USE MODULE_DM,                    ONLY : LOCAL_COMMUNICATOR       &
+dyn_nmm/module_IGWAVE_ADJUST.F:      USE MODULE_DM,                    ONLY : LOCAL_COMMUNICATOR       &
+dyn_nmm/solve_nmm.F:      USE MODULE_DM,                    ONLY : LOCAL_COMMUNICATOR       &
+dyn_nmm/start_domain_nmm.F:      USE MODULE_DM,                    ONLY : LOCAL_COMMUNICATOR       &
+external/io_pnetcdf/.svn/text-base/wrf_io.F90.svn-base:    integer                               :: ntasks_x, local_communicator_x
+external/io_pnetcdf/.svn/text-base/wrf_io.F90.svn-base:  integer local_communicator_x, ntasks_x
+external/io_pnetcdf/.svn/text-base/wrf_io.F90.svn-base:!  CALL get_value_pnetcdf( 'LOCAL_COMMUNICATOR_X', SysDepInfo ,loccomm_str )
+external/io_pnetcdf/.svn/text-base/wrf_io.F90.svn-base:!    READ(loccomm_str,*)local_communicator_x
+external/io_pnetcdf/.svn/text-base/wrf_io.F90.svn-base:    CALL wrf_get_dm_communicator_x(local_communicator_x) 
+external/io_pnetcdf/.svn/text-base/wrf_io.F90.svn-base:    DH%local_communicator_x = local_communicator_x
+external/io_pnetcdf/.svn/text-base/wrf_io.F90.svn-base:       call trans_z2x ( DH%ntasks_x, DH%local_communicator_x, 1                   &
+external/io_pnetcdf/wrf_io.F90:    integer                               :: ntasks_x, local_communicator_x
+external/io_pnetcdf/wrf_io.F90:  integer local_communicator_x, ntasks_x
+external/io_pnetcdf/wrf_io.F90:!  CALL get_value_pnetcdf( 'LOCAL_COMMUNICATOR_X', SysDepInfo ,loccomm_str )
+external/io_pnetcdf/wrf_io.F90:!    READ(loccomm_str,*)local_communicator_x
+external/io_pnetcdf/wrf_io.F90:    CALL wrf_get_dm_communicator_x(local_communicator_x) 
+external/io_pnetcdf/wrf_io.F90:    DH%local_communicator_x = local_communicator_x
+external/io_pnetcdf/wrf_io.F90:       call trans_z2x ( DH%ntasks_x, DH%local_communicator_x, 1                   &
+external/RSL_LITE/period.c: the period routines should be called with "local_communicator_periodic", which
+external/RSL_LITE/gen_comms.c:    fprintf(fp," CALL RSL_LITE_INIT_EXCH ( local_communicator, %s, 0, &\n",maxstenwidth) ;
+external/RSL_LITE/gen_comms.c:    gen_packs_halo( fp, p, maxstenwidth, 0, 0, "RSL_LITE_PACK", "local_communicator" ) ;
+external/RSL_LITE/gen_comms.c:    fprintf(fp,"   CALL RSL_LITE_EXCH_Y ( local_communicator , mytask, ntasks, ntasks_x, ntasks_y, &\n") ;
+external/RSL_LITE/gen_comms.c:    gen_packs_halo( fp, p, maxstenwidth, 0, 1 , "RSL_LITE_PACK", "local_communicator" ) ;
+external/RSL_LITE/gen_comms.c:    fprintf(fp," CALL RSL_LITE_INIT_EXCH ( local_communicator, %s, 1, &\n",maxstenwidth) ;
+external/RSL_LITE/gen_comms.c:    gen_packs_halo( fp, p, maxstenwidth, 1, 0, "RSL_LITE_PACK", "local_communicator" ) ;
+external/RSL_LITE/gen_comms.c:    fprintf(fp,"   CALL RSL_LITE_EXCH_X ( local_communicator , mytask, ntasks, ntasks_x, ntasks_y, &\n") ;
+external/RSL_LITE/gen_comms.c:    gen_packs_halo( fp, p, maxstenwidth, 1, 1, "RSL_LITE_PACK", "local_communicator" ) ;
+external/RSL_LITE/gen_comms.c:      print_call_or_def(fpcall, p, "CALL", commname, "local_communicator", need_config_flags );
+external/RSL_LITE/gen_comms.c:      print_call_or_def(fpsub, p, "SUBROUTINE", commname, "local_communicator", need_config_flags );
+external/RSL_LITE/gen_comms.c:      print_decl(fpsub, p, "local_communicator", need_config_flags );
+external/RSL_LITE/gen_comms.c:    print_call_or_def(fpcall, p, "CALL", commname, "local_communicator_periodic", 1 );
+external/RSL_LITE/gen_comms.c:    print_call_or_def(fpsub, p, "SUBROUTINE", commname, "local_communicator_periodic", 1 );
+external/RSL_LITE/gen_comms.c:    print_decl(fpsub, p, "local_communicator_periodic", 1 );
+external/RSL_LITE/gen_comms.c:    fprintf(fp,"CALL RSL_LITE_INIT_PERIOD ( local_communicator_periodic, %d , &\n",maxperwidth) ;
+external/RSL_LITE/gen_comms.c:    gen_packs( fp, p, maxperwidth, 1, 0, "RSL_LITE_PACK_PERIOD", "local_communicator_periodic" ) ;
+external/RSL_LITE/gen_comms.c:    fprintf(fp,"   CALL RSL_LITE_EXCH_PERIOD_X ( local_communicator_periodic , mytask, ntasks, ntasks_x, ntasks_y )\n") ;
+external/RSL_LITE/gen_comms.c:    gen_packs( fp, p, maxperwidth, 1, 1, "RSL_LITE_PACK_PERIOD", "local_communicator_periodic" ) ;
+external/RSL_LITE/gen_comms.c:    fprintf(fp,"CALL RSL_LITE_INIT_PERIOD ( local_communicator_periodic, %d , &\n",maxperwidth) ;
+external/RSL_LITE/gen_comms.c:    gen_packs( fp, p, maxperwidth, 0, 0, "RSL_LITE_PACK_PERIOD", "local_communicator_periodic" ) ;  
+external/RSL_LITE/gen_comms.c:    fprintf(fp,"   CALL RSL_LITE_EXCH_PERIOD_Y ( local_communicator_periodic , mytask, ntasks, ntasks_x, ntasks_y )\n") ;
+external/RSL_LITE/gen_comms.c:    gen_packs( fp, p, maxperwidth, 0, 1, "RSL_LITE_PACK_PERIOD", "local_communicator_periodic" ) ;  
+external/RSL_LITE/gen_comms.c:    fprintf(fp,"CALL RSL_LITE_INIT_SWAP ( local_communicator, %d , &\n", xy ) ;
+external/RSL_LITE/gen_comms.c:    gen_packs( fp, p, 1, xy, 0, "RSL_LITE_PACK_SWAP", "local_communicator" ) ;
+external/RSL_LITE/gen_comms.c:    fprintf(fp,"   CALL RSL_LITE_SWAP ( local_communicator , mytask, ntasks, ntasks_x, ntasks_y )\n") ;
+external/RSL_LITE/gen_comms.c:    gen_packs( fp, p, 1, xy, 1, "RSL_LITE_PACK_SWAP", "local_communicator" ) ;
+external/RSL_LITE/gen_comms.c:    fprintf(fp,"CALL RSL_LITE_INIT_CYCLE ( local_communicator, %d , %d, &\n", xy, inout ) ;
+external/RSL_LITE/gen_comms.c:    gen_packs( fp, p, inout, xy, 0, "RSL_LITE_PACK_CYCLE", "local_communicator" ) ;
+external/RSL_LITE/gen_comms.c:    fprintf(fp,"   CALL RSL_LITE_CYCLE ( local_communicator , mytask, ntasks, ntasks_x, ntasks_y )\n") ;
+external/RSL_LITE/gen_comms.c:    gen_packs( fp, p, inout, xy, 1, "RSL_LITE_PACK_CYCLE", "local_communicator" ) ;
+external/RSL_LITE/gen_comms.c:        fprintf(fp,"  call trans_z2x ( ntasks_x, local_communicator_x, 1, RWORDSIZE, IWORDSIZE, DATA_ORDER_%s , &\n", memord ) ;
+external/RSL_LITE/gen_comms.c:        fprintf(fp,"  call trans_z2x ( ntasks_x, local_communicator_x, 0, RWORDSIZE, IWORDSIZE, DATA_ORDER_%s , &\n", memord ) ;
+external/RSL_LITE/gen_comms.c:        fprintf(fp,"  call trans_x2y ( ntasks_y, local_communicator_y, 1, RWORDSIZE, IWORDSIZE, DATA_ORDER_%s , &\n", memord ) ;
+external/RSL_LITE/gen_comms.c:        fprintf(fp,"  call trans_x2y ( ntasks_y, local_communicator_y, 0, RWORDSIZE, IWORDSIZE, DATA_ORDER_%s , &\n", memord ) ;
+external/RSL_LITE/gen_comms.c:        fprintf(fp,"  call trans_x2y ( ntasks_y, local_communicator_y, 0, RWORDSIZE, IWORDSIZE, DATA_ORDER_%s , &\n", memord ) ;
+external/RSL_LITE/gen_comms.c:        fprintf(fp,"  call trans_z2x ( ntasks_x, local_communicator_x, 0, RWORDSIZE, IWORDSIZE, DATA_ORDER_%s , &\n", memord ) ;
+external/RSL_LITE/gen_comms.c:        fprintf(fp,"  call trans_z2x ( ntasks_x, local_communicator_x, 1, RWORDSIZE, IWORDSIZE, DATA_ORDER_%s , &\n", memord ) ;
+external/RSL_LITE/gen_comms.c:        fprintf(fp,"  call trans_x2y ( ntasks_y, local_communicator_y, 1, RWORDSIZE, IWORDSIZE, DATA_ORDER_%s , &\n", memord ) ;
+external/RSL_LITE/gen_comms.c:        fprintf(fp,"CALL %s( local_communicator, msize*RWORDSIZE                               &\n",info_name ) ;
+external/RSL_LITE/gen_comms.c:        fprintf(fp,"CALL %s( local_communicator, msize*RWORDSIZE                               &\n",info_name ) ;
+external/RSL_LITE/.svn/text-base/period.c.svn-base: the period routines should be called with "local_communicator_periodic", which
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:   INTEGER local_communicator, local_communicator_periodic, local_iocommunicator
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:   INTEGER local_communicator_x, local_communicator_y ! subcommunicators for rows and cols of mesh
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      CALL mpi_cart_create( new_local_comm, 2, dims, isperiodic, .false., local_communicator, ierr )
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      CALL mpi_cart_create( new_local_comm, 2, dims, isperiodic, .false., local_communicator_periodic, ierr )
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      CALL mpi_comm_rank( local_communicator_periodic, mytask, ierr )
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      CALL mpi_cart_coords( local_communicator_periodic, mytask, 2, coords, ierr )
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      CALL mpi_comm_rank( local_communicator, mytask, ierr )
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      CALL mpi_cart_coords( local_communicator, mytask, 2, coords, ierr )
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      CALL MPI_Comm_split(comdup,mytask_y,mytask,local_communicator_x,ierr)
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      CALL MPI_Comm_split(comdup,mytask_x,mytask,local_communicator_y,ierr)
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      CALL wrf_set_dm_communicator ( local_communicator )
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      CALL mpi_allreduce ( inval, retval , 1, getrealmpitype(), MPI_MAX, local_communicator, ierr )
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      CALL mpi_allreduce ( inval, retval , 1, getrealmpitype(), MPI_MIN, local_communicator, ierr )
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      CALL mpi_allreduce ( inval, retval , n, getrealmpitype(), MPI_MIN, local_communicator, ierr )
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      CALL mpi_allreduce ( inval, retval , 1, getrealmpitype(), MPI_SUM, local_communicator, ierr )
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      CALL mpi_allreduce ( inval, retval, SIZE(inval), getrealmpitype(), MPI_SUM, local_communicator, ierr )
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      CALL mpi_allreduce ( inval, retval , 1, MPI_INTEGER, MPI_SUM, local_communicator, ierr )
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      CALL mpi_allgather ( dex, 2, MPI_INTEGER, dex_all , 2, MPI_INTEGER, local_communicator, ierr )
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      CALL mpi_allgather ( val, 1, getrealmpitype(), val_all , 1, getrealmpitype(), local_communicator, ierr )
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      CALL mpi_allgather ( dex, 2, MPI_INTEGER, dex_all , 2, MPI_INTEGER, local_communicator, ierr )
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      CALL mpi_allgather ( val, 1, MPI_DOUBLE_PRECISION, val_all , 1, MPI_DOUBLE_PRECISION, local_communicator, ierr )
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      CALL mpi_allgather ( dex, 2, MPI_INTEGER, dex_all , 2, MPI_INTEGER, local_communicator, ierr )
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      CALL mpi_allgather ( val, 1, MPI_INTEGER, val_all , 1, MPI_INTEGER, local_communicator, ierr )
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:   USE module_dm , ONLY : local_communicator
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:   CALL BYTE_BCAST ( buf , size, local_communicator )
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      USE module_dm , ONLY : local_communicator
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      communicator = local_communicator
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      USE module_dm , ONLY : local_communicator_x
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      communicator = local_communicator_x
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      USE module_dm , ONLY : local_communicator_y
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      communicator = local_communicator_y
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      USE module_dm , ONLY : local_communicator
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      local_communicator = communicator
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:       USE module_dm, ONLY : local_communicator, ntasks
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:       CALL collect_on_comm0 (  local_communicator , IWORDSIZE ,  &
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:       CALL collect_on_comm0 (  local_communicator , typesize ,  &
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:       USE module_dm, ONLY : local_communicator, ntasks
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:       CALL collect_on_comm0 (  local_communicator , IWORDSIZE ,  &
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:       CALL dist_on_comm0 (  local_communicator , typesize ,  &
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      USE module_dm, ONLY : ntasks, ntasks_x, ntasks_y, local_communicator, mytask
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      USE module_dm, ONLY : ntasks, ntasks_x, ntasks_y, itrace, local_communicator, &
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      USE module_dm, ONLY : ntasks, ntasks_x, ntasks_y, itrace, local_communicator, &
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      USE module_dm, ONLY : ntasks, ntasks_x, ntasks_y, itrace, local_communicator, mytask
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      USE module_dm, ONLY : ntasks, ntasks_x, ntasks_y, itrace, local_communicator, mytask, &
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      USE module_dm, ONLY : ntasks, ntasks_x, ntasks_y, itrace, local_communicator, mytask, &
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      USE module_dm, ONLY : ntasks, ntasks_x, ntasks_y, itrace, local_communicator, mytask, &
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      USE module_dm, ONLY : ntasks, ntasks_x, ntasks_y, itrace, local_communicator, mytask, &
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      USE module_dm, ONLY : ntasks, ntasks_x, ntasks_y, itrace, local_communicator, mytask, &
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      USE module_dm, ONLY : ntasks, ntasks_x, ntasks_y, itrace, local_communicator, mytask, &
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      USE module_dm, ONLY : ntasks, ntasks_x, ntasks_y, itrace, local_communicator, mytask, &
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:      USE module_dm, ONLY : ntasks, ntasks_x, ntasks_y, itrace, local_communicator, mytask, &
+external/RSL_LITE/.svn/text-base/module_dm.F.svn-base:                            local_communicator, itrace
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:    fprintf(fp," CALL RSL_LITE_INIT_EXCH ( local_communicator, %s, 0, &\n",maxstenwidth) ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:    gen_packs_halo( fp, p, maxstenwidth, 0, 0, "RSL_LITE_PACK", "local_communicator" ) ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:    fprintf(fp,"   CALL RSL_LITE_EXCH_Y ( local_communicator , mytask, ntasks, ntasks_x, ntasks_y, &\n") ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:    gen_packs_halo( fp, p, maxstenwidth, 0, 1 , "RSL_LITE_PACK", "local_communicator" ) ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:    fprintf(fp," CALL RSL_LITE_INIT_EXCH ( local_communicator, %s, 1, &\n",maxstenwidth) ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:    gen_packs_halo( fp, p, maxstenwidth, 1, 0, "RSL_LITE_PACK", "local_communicator" ) ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:    fprintf(fp,"   CALL RSL_LITE_EXCH_X ( local_communicator , mytask, ntasks, ntasks_x, ntasks_y, &\n") ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:    gen_packs_halo( fp, p, maxstenwidth, 1, 1, "RSL_LITE_PACK", "local_communicator" ) ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:      print_call_or_def(fpcall, p, "CALL", commname, "local_communicator", need_config_flags );
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:      print_call_or_def(fpsub, p, "SUBROUTINE", commname, "local_communicator", need_config_flags );
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:      print_decl(fpsub, p, "local_communicator", need_config_flags );
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:    print_call_or_def(fpcall, p, "CALL", commname, "local_communicator_periodic", 1 );
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:    print_call_or_def(fpsub, p, "SUBROUTINE", commname, "local_communicator_periodic", 1 );
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:    print_decl(fpsub, p, "local_communicator_periodic", 1 );
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:    fprintf(fp,"CALL RSL_LITE_INIT_PERIOD ( local_communicator_periodic, %d , &\n",maxperwidth) ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:    gen_packs( fp, p, maxperwidth, 1, 0, "RSL_LITE_PACK_PERIOD", "local_communicator_periodic" ) ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:    fprintf(fp,"   CALL RSL_LITE_EXCH_PERIOD_X ( local_communicator_periodic , mytask, ntasks, ntasks_x, ntasks_y )\n") ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:    gen_packs( fp, p, maxperwidth, 1, 1, "RSL_LITE_PACK_PERIOD", "local_communicator_periodic" ) ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:    fprintf(fp,"CALL RSL_LITE_INIT_PERIOD ( local_communicator_periodic, %d , &\n",maxperwidth) ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:    gen_packs( fp, p, maxperwidth, 0, 0, "RSL_LITE_PACK_PERIOD", "local_communicator_periodic" ) ;  
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:    fprintf(fp,"   CALL RSL_LITE_EXCH_PERIOD_Y ( local_communicator_periodic , mytask, ntasks, ntasks_x, ntasks_y )\n") ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:    gen_packs( fp, p, maxperwidth, 0, 1, "RSL_LITE_PACK_PERIOD", "local_communicator_periodic" ) ;  
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:    fprintf(fp,"CALL RSL_LITE_INIT_SWAP ( local_communicator, %d , &\n", xy ) ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:    gen_packs( fp, p, 1, xy, 0, "RSL_LITE_PACK_SWAP", "local_communicator" ) ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:    fprintf(fp,"   CALL RSL_LITE_SWAP ( local_communicator , mytask, ntasks, ntasks_x, ntasks_y )\n") ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:    gen_packs( fp, p, 1, xy, 1, "RSL_LITE_PACK_SWAP", "local_communicator" ) ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:    fprintf(fp,"CALL RSL_LITE_INIT_CYCLE ( local_communicator, %d , %d, &\n", xy, inout ) ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:    gen_packs( fp, p, inout, xy, 0, "RSL_LITE_PACK_CYCLE", "local_communicator" ) ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:    fprintf(fp,"   CALL RSL_LITE_CYCLE ( local_communicator , mytask, ntasks, ntasks_x, ntasks_y )\n") ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:    gen_packs( fp, p, inout, xy, 1, "RSL_LITE_PACK_CYCLE", "local_communicator" ) ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:        fprintf(fp,"  call trans_z2x ( ntasks_x, local_communicator_x, 1, RWORDSIZE, IWORDSIZE, DATA_ORDER_%s , &\n", memord ) ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:        fprintf(fp,"  call trans_z2x ( ntasks_x, local_communicator_x, 0, RWORDSIZE, IWORDSIZE, DATA_ORDER_%s , &\n", memord ) ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:        fprintf(fp,"  call trans_x2y ( ntasks_y, local_communicator_y, 1, RWORDSIZE, IWORDSIZE, DATA_ORDER_%s , &\n", memord ) ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:        fprintf(fp,"  call trans_x2y ( ntasks_y, local_communicator_y, 0, RWORDSIZE, IWORDSIZE, DATA_ORDER_%s , &\n", memord ) ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:        fprintf(fp,"  call trans_x2y ( ntasks_y, local_communicator_y, 0, RWORDSIZE, IWORDSIZE, DATA_ORDER_%s , &\n", memord ) ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:        fprintf(fp,"  call trans_z2x ( ntasks_x, local_communicator_x, 0, RWORDSIZE, IWORDSIZE, DATA_ORDER_%s , &\n", memord ) ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:        fprintf(fp,"  call trans_z2x ( ntasks_x, local_communicator_x, 1, RWORDSIZE, IWORDSIZE, DATA_ORDER_%s , &\n", memord ) ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:        fprintf(fp,"  call trans_x2y ( ntasks_y, local_communicator_y, 1, RWORDSIZE, IWORDSIZE, DATA_ORDER_%s , &\n", memord ) ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:        fprintf(fp,"CALL %s( local_communicator, msize*RWORDSIZE                               &\n",info_name ) ;
+external/RSL_LITE/.svn/text-base/gen_comms.c.svn-base:        fprintf(fp,"CALL %s( local_communicator, msize*RWORDSIZE                               &\n",info_name ) ;
+external/RSL_LITE/module_dm.F:   INTEGER local_communicator, local_communicator_periodic, local_iocommunicator
+external/RSL_LITE/module_dm.F:   INTEGER local_communicator_x, local_communicator_y ! subcommunicators for rows and cols of mesh
+external/RSL_LITE/module_dm.F:      CALL mpi_cart_create( new_local_comm, 2, dims, isperiodic, .false., local_communicator, ierr )
+external/RSL_LITE/module_dm.F:      CALL mpi_cart_create( new_local_comm, 2, dims, isperiodic, .false., local_communicator_periodic, ierr )
+external/RSL_LITE/module_dm.F:      CALL mpi_comm_rank( local_communicator_periodic, mytask, ierr )
+external/RSL_LITE/module_dm.F:      CALL mpi_cart_coords( local_communicator_periodic, mytask, 2, coords, ierr )
+external/RSL_LITE/module_dm.F:      CALL mpi_comm_rank( local_communicator, mytask, ierr )
+external/RSL_LITE/module_dm.F:      CALL mpi_cart_coords( local_communicator, mytask, 2, coords, ierr )
+external/RSL_LITE/module_dm.F:      CALL MPI_Comm_split(comdup,mytask_y,mytask,local_communicator_x,ierr)
+external/RSL_LITE/module_dm.F:      CALL MPI_Comm_split(comdup,mytask_x,mytask,local_communicator_y,ierr)
+external/RSL_LITE/module_dm.F:      CALL wrf_set_dm_communicator ( local_communicator )
+external/RSL_LITE/module_dm.F:      CALL mpi_allreduce ( inval, retval , 1, getrealmpitype(), MPI_MAX, local_communicator, ierr )
+external/RSL_LITE/module_dm.F:      CALL mpi_allreduce ( inval, retval , 1, getrealmpitype(), MPI_MIN, local_communicator, ierr )
+external/RSL_LITE/module_dm.F:      CALL mpi_allreduce ( inval, retval , n, getrealmpitype(), MPI_MIN, local_communicator, ierr )
+external/RSL_LITE/module_dm.F:      CALL mpi_allreduce ( inval, retval , 1, getrealmpitype(), MPI_SUM, local_communicator, ierr )
+external/RSL_LITE/module_dm.F:      CALL mpi_allreduce ( inval, retval, SIZE(inval), getrealmpitype(), MPI_SUM, local_communicator, ierr )
+external/RSL_LITE/module_dm.F:      CALL mpi_allreduce ( inval, retval , 1, MPI_INTEGER, MPI_SUM, local_communicator, ierr )
+external/RSL_LITE/module_dm.F:      CALL mpi_allgather ( dex, 2, MPI_INTEGER, dex_all , 2, MPI_INTEGER, local_communicator, ierr )
+external/RSL_LITE/module_dm.F:      CALL mpi_allgather ( val, 1, getrealmpitype(), val_all , 1, getrealmpitype(), local_communicator, ierr )
+external/RSL_LITE/module_dm.F:      CALL mpi_allgather ( dex, 2, MPI_INTEGER, dex_all , 2, MPI_INTEGER, local_communicator, ierr )
+external/RSL_LITE/module_dm.F:      CALL mpi_allgather ( val, 1, MPI_DOUBLE_PRECISION, val_all , 1, MPI_DOUBLE_PRECISION, local_communicator, ierr )
+external/RSL_LITE/module_dm.F:      CALL mpi_allgather ( dex, 2, MPI_INTEGER, dex_all , 2, MPI_INTEGER, local_communicator, ierr )
+external/RSL_LITE/module_dm.F:      CALL mpi_allgather ( val, 1, MPI_INTEGER, val_all , 1, MPI_INTEGER, local_communicator, ierr )
+external/RSL_LITE/module_dm.F:   USE module_dm , ONLY : local_communicator
+external/RSL_LITE/module_dm.F:   CALL BYTE_BCAST ( buf , size, local_communicator )
+external/RSL_LITE/module_dm.F:      USE module_dm , ONLY : local_communicator
+external/RSL_LITE/module_dm.F:      communicator = local_communicator
+external/RSL_LITE/module_dm.F:      USE module_dm , ONLY : local_communicator_x
+external/RSL_LITE/module_dm.F:      communicator = local_communicator_x
+external/RSL_LITE/module_dm.F:      USE module_dm , ONLY : local_communicator_y
+external/RSL_LITE/module_dm.F:      communicator = local_communicator_y
+external/RSL_LITE/module_dm.F:      USE module_dm , ONLY : local_communicator
+external/RSL_LITE/module_dm.F:      local_communicator = communicator
+external/RSL_LITE/module_dm.F:       USE module_dm, ONLY : local_communicator, ntasks
+external/RSL_LITE/module_dm.F:       CALL collect_on_comm0 (  local_communicator , IWORDSIZE ,  &
+external/RSL_LITE/module_dm.F:       CALL collect_on_comm0 (  local_communicator , typesize ,  &
+external/RSL_LITE/module_dm.F:       USE module_dm, ONLY : local_communicator, ntasks
+external/RSL_LITE/module_dm.F:       CALL collect_on_comm0 (  local_communicator , IWORDSIZE ,  &
+external/RSL_LITE/module_dm.F:       CALL dist_on_comm0 (  local_communicator , typesize ,  &
+external/RSL_LITE/module_dm.F:      USE module_dm, ONLY : ntasks, ntasks_x, ntasks_y, local_communicator, mytask
+external/RSL_LITE/module_dm.F:      USE module_dm, ONLY : ntasks, ntasks_x, ntasks_y, itrace, local_communicator, &
+external/RSL_LITE/module_dm.F:      USE module_dm, ONLY : ntasks, ntasks_x, ntasks_y, itrace, local_communicator, &
+external/RSL_LITE/module_dm.F:      USE module_dm, ONLY : ntasks, ntasks_x, ntasks_y, itrace, local_communicator, mytask
+external/RSL_LITE/module_dm.F:      USE module_dm, ONLY : ntasks, ntasks_x, ntasks_y, itrace, local_communicator, mytask, &
+external/RSL_LITE/module_dm.F:      USE module_dm, ONLY : ntasks, ntasks_x, ntasks_y, itrace, local_communicator, mytask, &
+external/RSL_LITE/module_dm.F:      USE module_dm, ONLY : ntasks, ntasks_x, ntasks_y, itrace, local_communicator, mytask, &
+external/RSL_LITE/module_dm.F:      USE module_dm, ONLY : ntasks, ntasks_x, ntasks_y, itrace, local_communicator, mytask, &
+external/RSL_LITE/module_dm.F:      USE module_dm, ONLY : ntasks, ntasks_x, ntasks_y, itrace, local_communicator, mytask, &
+external/RSL_LITE/module_dm.F:      USE module_dm, ONLY : ntasks, ntasks_x, ntasks_y, itrace, local_communicator, mytask, &
+external/RSL_LITE/module_dm.F:      USE module_dm, ONLY : ntasks, ntasks_x, ntasks_y, itrace, local_communicator, mytask, &
+external/RSL_LITE/module_dm.F:      USE module_dm, ONLY : ntasks, ntasks_x, ntasks_y, itrace, local_communicator, mytask, &
+external/RSL_LITE/module_dm.F:                            local_communicator, itrace
+frame/.svn/text-base/module_io.F.svn-base:  USE module_dm, ONLY :  ntasks_x, mytask_x, local_communicator_x
+frame/.svn/text-base/module_io.F.svn-base:        WRITE(tstr,"(A,',NTASKS_X=',i10,',MYTASK_X=',i10,',LOCAL_COMMUNICATOR_X=',i10)") TRIM(SysDepInfo),ntasks_x,mytask_x,local_communicator_x
+frame/module_io.F:  USE module_dm, ONLY :  ntasks_x, mytask_x, local_communicator_x
+frame/module_io.F:        WRITE(tstr,"(A,',NTASKS_X=',i10,',MYTASK_X=',i10,',LOCAL_COMMUNICATOR_X=',i10)") TRIM(SysDepInfo),ntasks_x,mytask_x,local_communicator_x
+main/.svn/text-base/wrf_comp_mct.F.svn-base:                          mpicomcart=mpicomcart,mpicomx=local_communicator_x,&
+main/.svn/text-base/wrf_comp_mct.F.svn-base:                          mpicomy=local_communicator_y,ntasks=ntasks,ntasks_x=ntasks_x,ntasks_y=ntasks_y,& 
+main/.svn/text-base/wrf_comp_mct.F.svn-base:                          mpicomcart=mpicomcart,mpicomx=local_communicator_x,&
+main/.svn/text-base/wrf_comp_mct.F.svn-base:                          mpicomy=local_communicator_y,ntasks=ntasks,ntasks_x=ntasks_x,ntasks_y=ntasks_y,& 
+main/.svn/text-base/wrf_comp_mct.F.svn-base:      CALL mpi_comm_rank( local_communicator, mytask, ierr )
+main/.svn/text-base/wrf_comp_mct.F.svn-base:      CALL mpi_cart_coords( local_communicator, mytask, 2, coords, ierr )
+main/.svn/text-base/wrf_comp_mct.F.svn-base:       write(iulog,*) '******local comunicator*******',local_communicator
+main/wrf_comp_mct.F.0513:                          mpicomcart_periodic=local_communicator_periodic,&
+main/wrf_comp_mct.F.0513:                          mpicomcart=mpicomcart,mpicomx=local_communicator_x,&
+main/wrf_comp_mct.F.0513:                          mpicomy=local_communicator_y,ntasks=ntasks,ntasks_x=ntasks_x,ntasks_y=ntasks_y,& 
+main/wrf_comp_mct.F.0513:      CALL mpi_comm_rank( local_communicator_periodic, mytask, ierr )
+main/wrf_comp_mct.F.0513:      CALL mpi_cart_coords( local_communicator_periodic, mytask, 2, coords, ierr )
+main/wrf_comp_mct.F.0513:       CALL mpi_comm_rank( local_communicator, mytask, ierr )
+main/wrf_comp_mct.F.0513:       CALL mpi_cart_coords( local_communicator, mytask, 2, coords, ierr )
+main/wrf_comp_mct.F.0513:            call MPI_Recv(buffer, 2, MPI_INTEGER, i, MPI_ANY_TAG, local_communicator, mpi_stat, mpi_ierr)
+main/wrf_comp_mct.F.0513:         call MPI_Send(buffer, 2, MPI_INTEGER, 0, mytask, local_communicator, mpi_ierr)
+main/wrf_comp_mct.F.0513:       call MPI_Bcast(cpuid, ntasks, MPI_INTEGER, 0, local_communicator, mpi_ierr)
+main/wrf_comp_mct.F.0513:       call mpi_barrier(local_communicator, mpi_ierr)  ! by Yuzhu Wang, 2014-04-24
+main/wrf_comp_mct.F.0513:       call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+main/wrf_comp_mct.F.0513:       call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+main/wrf_comp_mct.F.0513:       call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+main/wrf_comp_mct.F.0513:       call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+main/wrf_comp_mct.F.0513:        call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+main/wrf_comp_mct.F:                          mpicomcart_periodic=local_communicator_periodic,&
+main/wrf_comp_mct.F:                          mpicomcart=mpicomcart,mpicomx=local_communicator_x,&
+main/wrf_comp_mct.F:                          mpicomy=local_communicator_y,ntasks=ntasks,ntasks_x=ntasks_x,ntasks_y=ntasks_y,& 
+main/wrf_comp_mct.F:      CALL mpi_comm_rank( local_communicator_periodic, mytask, ierr )
+main/wrf_comp_mct.F:      CALL mpi_cart_coords( local_communicator_periodic, mytask, 2, coords, ierr )
+main/wrf_comp_mct.F:       CALL mpi_comm_rank( local_communicator, mytask, ierr )
+main/wrf_comp_mct.F:       CALL mpi_cart_coords( local_communicator, mytask, 2, coords, ierr )
+main/wrf_comp_mct.F:            call MPI_Recv(buffer, 2, MPI_INTEGER, i, MPI_ANY_TAG, local_communicator, mpi_stat, mpi_ierr)
+main/wrf_comp_mct.F:         call MPI_Send(buffer, 2, MPI_INTEGER, 0, mytask, local_communicator, mpi_ierr)
+main/wrf_comp_mct.F:       call MPI_Bcast(cpuid, ntasks, MPI_INTEGER, 0, local_communicator, mpi_ierr)
+main/wrf_comp_mct.F:       call mpi_barrier(local_communicator, mpi_ierr)  ! by Yuzhu Wang, 2014-04-24
+main/wrf_comp_mct.F:       call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+main/wrf_comp_mct.F:       call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+main/wrf_comp_mct.F:       call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+main/wrf_comp_mct.F:       call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+main/wrf_comp_mct.F:        call mpi_barrier(local_communicator, mpi_ierr)   ! by Yuzhu Wang, 2014-04-24
+phys/module_radiation_driver.F:   USE module_dm        , ONLY : ntasks_x,ntasks_y,local_communicator,mytask,ntasks,wrf_dm_minval_integer
+phys/module_fdda_spnudging.F:  USE module_dm , ONLY : ntasks_x, ntasks_y, local_communicator_x, local_communicator_y, data_order_xzy
+phys/.svn/text-base/module_radiation_driver.F.svn-base:   USE module_dm        , ONLY : ntasks_x,ntasks_y,local_communicator,mytask,ntasks,wrf_dm_minval_integer
+phys/.svn/text-base/module_fdda_spnudging.F.svn-base:  USE module_dm , ONLY : ntasks_x, ntasks_y, local_communicator_x, local_communicator_y, data_order_xzy
+phys/.svn/text-base/module_cumulus_driver.F.svn-base:   USE module_dm        , ONLY : ntasks_x,ntasks_y,local_communicator,mytask,ntasks 
+phys/.svn/text-base/module_fr_sfire_driver.F.svn-base:    USE module_dm        , ONLY : ntasks_x,ntasks_y,local_communicator,mytask,ntasks
+phys/module_radiation_driver.F~:   USE module_dm        , ONLY : ntasks_x,ntasks_y,local_communicator,mytask,ntasks,wrf_dm_minval_integer
+phys/module_fr_sfire_driver.F:    USE module_dm        , ONLY : ntasks_x,ntasks_y,local_communicator,mytask,ntasks
+phys/module_cumulus_driver.F:   USE module_dm        , ONLY : ntasks_x,ntasks_y,local_communicator,mytask,ntasks 
+prep/module_camdomain.F:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*num_metgrid_levels, MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*num_metgrid_levels, MPI_REAL, 0, local_communicator, ierror)     
+prep/module_camdomain.F:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*num_metgrid_levels, MPI_REAL, 0, local_communicator, ierror)   
+prep/module_camdomain.F:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*num_metgrid_levels, MPI_REAL, 0, local_communicator, ierror)   
+prep/module_camdomain.F:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*num_metgrid_levels, MPI_REAL, 0, local_communicator, ierror)   
+prep/module_camdomain.F:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*num_metgrid_levels, MPI_REAL, 0, local_communicator, ierror)                                                 
+prep/module_camdomain.F:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*num_metgrid_levels, MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*num_metgrid_soil_levels, MPI_REAL, 0, local_communicator, ierror)                                    
+prep/module_camdomain.F:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*num_metgrid_soil_levels, MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*num_metgrid_soil_levels, MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*num_metgrid_soil_levels, MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1), MPI_REAL, 0,local_communicator, ierror)
+prep/module_camdomain.F:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*(kpe-kps+1),MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:   use module_dm, only:local_communicator,ntasks_x,ntasks_y,mytask_x,mytask_y
+prep/parallel_module.F:         call MPI_Send(send_array, m, VARTYPE, processors(mytask_y,mytask_x+1), my_proc_id, local_communicator, mpi_ierr)
+prep/parallel_module.F:                             processors(mytask_y,mytask_x-1), MPI_ANY_TAG, local_communicator, mpi_stat, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:         call MPI_Send(send_array, m, VARTYPE, processors(mytask_y,mytask_x-1), my_proc_id, local_communicator, mpi_ierr)
+prep/parallel_module.F:      	 call MPI_Recv(receive_array, m, VARTYPE, processors(mytask_y,mytask_x+1), MPI_ANY_TAG, local_communicator, mpi_stat, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:         call MPI_Send(send_array, m, VARTYPE, processors(mytask_y+1,mytask_x), my_proc_id, local_communicator, mpi_ierr)
+prep/parallel_module.F:      	 call MPI_Recv(receive_array, m, VARTYPE, processors(mytask_y-1,mytask_x), MPI_ANY_TAG, local_communicator, mpi_stat, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:         call MPI_Send(send_array, m, VARTYPE, processors(mytask_y-1,mytask_x), my_proc_id, local_communicator, mpi_ierr)
+prep/parallel_module.F:         call MPI_Recv(receive_array, m, VARTYPE, processors(mytask_y+1,mytask_x), MPI_ANY_TAG, local_communicator, mpi_stat, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:         call MPI_Send(send_array, m, VARTYPE, processors(mytask_y+1,mytask_x-1), my_proc_id, local_communicator, mpi_ierr)
+prep/parallel_module.F:         call MPI_Recv(receive_array,m, VARTYPE, processors(mytask_y-1,mytask_x+1), MPI_ANY_TAG, local_communicator, mpi_stat, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:         call MPI_Send(send_array, m, VARTYPE, processors(mytask_y-1,mytask_x+1), my_proc_id, local_communicator, mpi_ierr)
+prep/parallel_module.F:         call MPI_Recv(receive_array, m, VARTYPE, processors(mytask_y+1,mytask_x-1), MPI_ANY_TAG, local_communicator, mpi_stat, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:         call MPI_Send(send_array, m, VARTYPE, processors(mytask_y-1,mytask_x-1), my_proc_id, local_communicator, mpi_ierr)
+prep/parallel_module.F:         call MPI_Recv(receive_array, m, VARTYPE, processors(mytask_y+1,mytask_x+1), MPI_ANY_TAG, local_communicator, mpi_stat, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:        call MPI_Send(send_array, m, VARTYPE, processors(mytask_y+1,mytask_x+1), my_proc_id, local_communicator, mpi_ierr)
+prep/parallel_module.F:         call MPI_Recv(receive_array, m, VARTYPE, processors(mytask_y-1,mytask_x-1), MPI_ANY_TAG, local_communicator, mpi_stat, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:                  call MPI_Recv(jdims, 2, MPI_INTEGER, processors(i,j),MPI_ANY_TAG, local_communicator, mpi_stat, mpi_ierr)
+prep/parallel_module.F:                  call MPI_Recv(idims, 2, MPI_INTEGER, processors(i,j),MPI_ANY_TAG, local_communicator, mpi_stat, mpi_ierr)
+prep/parallel_module.F:                                 VARTYPE, processors(i,j), MPI_ANY_TAG, local_communicator, mpi_stat, mpi_ierr)
+prep/parallel_module.F:         call MPI_Send(jdims, 2, MPI_INTEGER, 0, my_proc_id, local_communicator,mpi_ierr)
+prep/parallel_module.F:         call MPI_Send(idims, 2, MPI_INTEGER, 0, my_proc_id, local_communicator,mpi_ierr)
+prep/parallel_module.F:                       VARTYPE, 0, my_proc_id, local_communicator, mpi_ierr)
+prep/parallel_module.F:                  call MPI_Recv(jdims, 2, MPI_INTEGER, processors(i,j),MPI_ANY_TAG, local_communicator, mpi_stat, mpi_ierr)
+prep/parallel_module.F:                  call MPI_Recv(idims, 2, MPI_INTEGER, processors(i,j),MPI_ANY_TAG, local_communicator, mpi_stat, mpi_ierr)
+prep/parallel_module.F:                                MPI_DOUBLE_PRECISION, processors(i,j), MPI_ANY_TAG,local_communicator, mpi_stat, mpi_ierr)
+prep/parallel_module.F:         call MPI_Send(jdims, 2, MPI_INTEGER, 0, my_proc_id, local_communicator,mpi_ierr)
+prep/parallel_module.F:         call MPI_Send(idims, 2, MPI_INTEGER, 0, my_proc_id, local_communicator,mpi_ierr)
+prep/parallel_module.F:                       MPI_DOUBLE_PRECISION, 0, my_proc_id, local_communicator, mpi_ierr)
+prep/parallel_module.F:         call MPI_Send(send_array, m, VARTYPE, processors(mytask_y,mytask_x+1), my_proc_id, local_communicator, mpi_ierr)
+prep/parallel_module.F:                             processors(mytask_y,mytask_x-1), MPI_ANY_TAG, local_communicator, mpi_stat, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:         call MPI_Send(send_array, m, VARTYPE, processors(mytask_y,mytask_x-1), my_proc_id, local_communicator, mpi_ierr)
+prep/parallel_module.F:      	 call MPI_Recv(receive_array, m, VARTYPE, processors(mytask_y,mytask_x+1), MPI_ANY_TAG, local_communicator, mpi_stat, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:         call MPI_Send(send_array, m, VARTYPE, processors(mytask_y,mytask_x+1), my_proc_id, local_communicator, mpi_ierr)
+prep/parallel_module.F:                             processors(mytask_y,mytask_x-1), MPI_ANY_TAG, local_communicator, mpi_stat, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:         call MPI_Send(send_array, m, VARTYPE, processors(mytask_y,mytask_x-1), my_proc_id, local_communicator, mpi_ierr)
+prep/parallel_module.F:      	 call MPI_Recv(receive_array, m, VARTYPE, processors(mytask_y,mytask_x+1), MPI_ANY_TAG, local_communicator, mpi_stat, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:         call MPI_Send(send_array, m, VARTYPE, processors(mytask_y+1,mytask_x), my_proc_id, local_communicator, mpi_ierr)
+prep/parallel_module.F:      	 call MPI_Recv(receive_array, m, VARTYPE, processors(mytask_y-1,mytask_x), MPI_ANY_TAG, local_communicator, mpi_stat, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:         call MPI_Send(send_array, m, VARTYPE, processors(mytask_y-1,mytask_x), my_proc_id, local_communicator, mpi_ierr)
+prep/parallel_module.F:         call MPI_Recv(receive_array, m, VARTYPE, processors(mytask_y+1,mytask_x), MPI_ANY_TAG, local_communicator, mpi_stat, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:         call MPI_Send(send_array, m, VARTYPE, processors(mytask_y+1,mytask_x), my_proc_id, local_communicator, mpi_ierr)
+prep/parallel_module.F:      	 call MPI_Recv(receive_array, m, VARTYPE, processors(mytask_y-1,mytask_x), MPI_ANY_TAG, local_communicator, mpi_stat, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/parallel_module.F:         call MPI_Send(send_array, m, VARTYPE, processors(mytask_y-1,mytask_x), my_proc_id, local_communicator, mpi_ierr)
+prep/parallel_module.F:         call MPI_Recv(receive_array, m, VARTYPE, processors(mytask_y+1,mytask_x), MPI_ANY_TAG, local_communicator, mpi_stat, mpi_ierr)
+prep/parallel_module.F:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*num_metgrid_levels, MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*num_metgrid_levels, MPI_REAL, 0, local_communicator, ierror)     
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*num_metgrid_levels, MPI_REAL, 0, local_communicator, ierror)   
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*num_metgrid_levels, MPI_REAL, 0, local_communicator, ierror)   
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*num_metgrid_levels, MPI_REAL, 0, local_communicator, ierror)   
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*num_metgrid_levels, MPI_REAL, 0, local_communicator, ierror)                                                 
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*num_metgrid_levels, MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*num_metgrid_soil_levels, MPI_REAL, 0, local_communicator, ierror)                                    
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*num_metgrid_soil_levels, MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*num_metgrid_soil_levels, MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*num_metgrid_soil_levels, MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*(kpe-kps+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*(kpe-kps+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*(kpe-kps+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*(kpe-kps+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*(kpe-kps+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*(kpe-kps+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*(kpe-kps+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*(kpe-kps+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*(kpe-kps+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*(kpe-kps+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*(kpe-kps+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*(kpe-kps+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*(kpe-kps+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*(kpe-kps+1),MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1)*(kpe-kps+1),MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_bcast(domain_array, (ide-ids+1)*(jde-jds+1), MPI_REAL, 0, local_communicator, ierror)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+prep/module_camdomain.F.twoway.version1:      call mpi_barrier(local_communicator, mpi_ierr)
+var/da/da_test/.svn/text-base/da_test.f90.svn-base:   use module_dm, only : local_communicator, &
+var/da/da_test/da_test.f90:   use module_dm, only : local_communicator, &
+var/da/da_physics/.svn/text-base/da_physics.f90.svn-base:   use module_dm, only : local_communicator, mytask, ntasks, ntasks_x, &
+var/da/da_physics/da_physics.f90:   use module_dm, only : local_communicator, mytask, ntasks, ntasks_x, &
+var/da/da_main/.svn/text-base/da_wrfvar_top.f90.svn-base:   use module_dm, only : local_communicator, local_communicator_x, &
+var/da/da_main/.svn/text-base/da_wrfvar_top.f90.svn-base:      local_communicator_y, ntasks_x, ntasks_y, data_order_xyz, mytask, &
+var/da/da_main/da_wrfvar_top.f90:   use module_dm, only : local_communicator, local_communicator_x, &
+var/da/da_main/da_wrfvar_top.f90:      local_communicator_y, ntasks_x, ntasks_y, data_order_xyz, mytask, &
+var/da/da_transfer_model/da_transfer_model.f90:   use module_dm, only : local_communicator, &
+var/da/da_transfer_model/.svn/text-base/da_transfer_model.f90.svn-base:   use module_dm, only : local_communicator, &
+var/da/da_par_util/.svn/text-base/da_par_util.f90.svn-base:   use module_dm, only : local_communicator_x, &
+var/da/da_par_util/.svn/text-base/da_par_util.f90.svn-base:      local_communicator_y, ntasks_x, ntasks_y, data_order_xyz
+var/da/da_par_util/da_par_util.f90:   use module_dm, only : local_communicator_x, &
+var/da/da_par_util/da_par_util.f90:      local_communicator_y, ntasks_x, ntasks_y, data_order_xyz
+var/da/da_ffts/da_ffts.f90:   use module_dm, only : local_communicator, &
+var/da/da_ffts/.svn/text-base/da_ffts.f90.svn-base:   use module_dm, only : local_communicator, &
+var/da/da_vtox_transforms/.svn/text-base/da_vtox_transforms.f90.svn-base:   use module_dm, only : local_communicator, mytask, ntasks, ntasks_x, & 
+var/da/da_vtox_transforms/da_vtox_transforms.f90:   use module_dm, only : local_communicator, mytask, ntasks, ntasks_x, & 
+var/da/da_dynamics/.svn/text-base/da_dynamics.f90.svn-base:   use module_dm, only : local_communicator, &
+var/da/da_dynamics/da_dynamics.f90:   use module_dm, only : local_communicator, &

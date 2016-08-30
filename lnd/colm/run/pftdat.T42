@@ -1,0 +1,11 @@
+&mkpftexp
+fmetmask   =  ''
+fsurdati   =  '/home/jidy/CoLM_csm/data/srfdata.T42.MOM4p1'
+fsurdato   =  '/home/jidy/CoLM_csm/data/srfdata.T42.MOM4p1.pft'
+lon_points =  128
+lat_points =   64
+edgen      =   90.
+edgee      =  180.
+edges      =  -90.
+edgew      = -180.
+/

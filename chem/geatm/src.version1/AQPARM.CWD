@@ -1,0 +1,276 @@
+
+! Aqeuous species pointers INCLUDE File
+
+!...........PARAMETERS and their descriptions:
+
+INTEGER, PARAMETER  ::  NGAS  = 11 ! number of gas phase species for AQCHEM 
+
+INTEGER, PARAMETER  ::  NAER  = 21 ! number of aerosol species for AQCHEM
+
+!...pointers for the AQCHEM array GAS
+
+INTEGER, PARAMETER  ::  LSO2   =  1  ! local pointer to SO2
+INTEGER, PARAMETER  ::  LHNO3  =  2  ! local pointer to HNO3
+INTEGER, PARAMETER  ::  LN2O5  =  3  ! local pointer to N2O5
+INTEGER, PARAMETER  ::  LCO2   =  4  ! local pointer to CO2
+INTEGER, PARAMETER  ::  LNH3   =  5  ! local pointer to NH3
+INTEGER, PARAMETER  ::  LH2O2  =  6  ! local pointer to H2O2
+INTEGER, PARAMETER  ::  LO3    =  7  ! local pointer to O3
+INTEGER, PARAMETER  ::  LFOA   =  8  ! local pointer to FOA
+INTEGER, PARAMETER  ::  LMHP   =  9  ! local pointer to MHP
+INTEGER, PARAMETER  ::  LPAA   =  10 ! local pointer to PAA
+INTEGER, PARAMETER  ::  LH2SO4 =  11 ! local pointer to H2SO4
+
+!...pointers for the AQCHEM array AEROSOL
+
+INTEGER      LSO4AKN         ! local pointer to SO4I aerosol
+PARAMETER  ( LSO4AKN =  1 )
+
+INTEGER      LSO4ACC         ! local pointer to SO4 aerosol
+PARAMETER  ( LSO4ACC =  2 )
+
+INTEGER      LNH4AKN         ! local pointer to NH4I aerosol
+PARAMETER  ( LNH4AKN =  3 )
+
+INTEGER      LNH4ACC         ! local pointer to NH4 aerosol
+PARAMETER  ( LNH4ACC =  4 )
+
+INTEGER      LNO3AKN         ! local pointer to NO3I aerosol
+PARAMETER  ( LNO3AKN =  5 )
+
+INTEGER      LNO3ACC         ! local pointer to NO3 aerosol
+PARAMETER  ( LNO3ACC =  6 )
+
+INTEGER      LNO3COR         ! local pointer to course aerosol nitrate
+PARAMETER  ( LNO3COR =  7 )
+
+INTEGER      LORGAKN         ! local pointer to organic I aerosol
+PARAMETER  ( LORGAKN =  8 )
+
+INTEGER      LORGACC         ! local pointer to organic aerosol
+PARAMETER  ( LORGACC =  9 )
+
+INTEGER      LPRIAKN         ! local pointer to primary I aerosol
+PARAMETER  ( LPRIAKN = 10 )
+
+INTEGER      LPRIACC         ! local pointer to primary aerosol
+PARAMETER  ( LPRIACC = 11 )
+
+INTEGER      LPRICOR         ! local pointer to primary I aerosol
+PARAMETER  ( LPRICOR = 12 )
+
+INTEGER      LCACO3          ! local pointer to CaCO3 aerosol
+PARAMETER  ( LCACO3  = 13 )
+
+INTEGER      LMGCO3          ! local pointer to MgCO3 aerosol
+PARAMETER  ( LMGCO3  = 14 )
+
+INTEGER      LNACL           ! local pointer to NaCl aerosol
+PARAMETER  ( LNACL   = 15 )
+
+INTEGER      LA3FE           ! local pointer to Fe+++ aerosol
+PARAMETER  ( LA3FE   = 16 )
+
+INTEGER      LB2MN           ! local pointer to Mn++ aerosol
+PARAMETER  ( LB2MN   = 17 )
+
+INTEGER      LKCL            ! local pointer to NaCl aerosol
+PARAMETER  ( LKCL    = 18 )
+
+INTEGER      LNUMAKN         ! local pointer to # Aitken aerosol
+PARAMETER  ( LNUMAKN = 19 )
+
+INTEGER      LNUMACC         ! local pointer to # Aitken aerosol
+PARAMETER  ( LNUMACC = 20 )
+
+INTEGER      LNUMCOR         ! local pointer to # Aitken aerosol
+PARAMETER  ( LNUMCOR = 21 )
+
+!...surrogate names, their background values, and units
+!...  for AQCHEM's GAS species
+
+CHARACTER*16 SGRGAS( NGAS )  ! surrogate name for gases
+SAVE         SGRGAS
+
+REAL         BGNDGAS( NGAS ) ! background values for each gas (ppm)
+SAVE         BGNDGAS
+
+CHARACTER*16 BUNTSGAS        ! units of bkgnd values
+DATA         BUNTSGAS / 'ppm' /
+SAVE         BUNTSGAS
+
+DATA SGRGAS(  1 ), BGNDGAS(  1 ) /'SO2             ',   0.0 /
+DATA SGRGAS(  2 ), BGNDGAS(  2 ) /'HNO3            ',   0.0 /
+DATA SGRGAS(  3 ), BGNDGAS(  3 ) /'N2O5            ',   0.0 /
+DATA SGRGAS(  4 ), BGNDGAS(  4 ) /'CO2             ', 340.0 /
+DATA SGRGAS(  5 ), BGNDGAS(  5 ) /'NH3             ',   0.0 /
+DATA SGRGAS(  6 ), BGNDGAS(  6 ) /'H2O2            ',   0.0 /
+DATA SGRGAS(  7 ), BGNDGAS(  7 ) /'O3              ',   0.0 /
+DATA SGRGAS(  8 ), BGNDGAS(  8 ) /'FOA             ',   0.0 /
+DATA SGRGAS(  9 ), BGNDGAS(  9 ) /'MHP             ',   0.0 /
+DATA SGRGAS( 10 ), BGNDGAS( 10 ) /'PAA             ',   0.0 /
+DATA SGRGAS( 11 ), BGNDGAS( 11 ) /'H2SO4           ',   0.0 /
+
+!...surrogate names, their background values, units, and molecular weights
+!...  for AQCHEM's AEROSOL species
+
+CHARACTER*16 SGRAER( NAER )  ! surrogate name for aerosols
+SAVE         SGRAER
+
+REAL         SGRAERMW( NAER ) ! molecular weight for aerosol species
+SAVE         SGRAERMW
+
+CHARACTER*16 BUNTSAER        ! units of bkgnd values
+DATA         BUNTSAER / 'ug/m3' /
+SAVE         BUNTSAER
+
+REAL         BGNDAER( NAER ) ! bkground vals each aerosols (ug/m3 & #/m3)
+SAVE         BGNDAER
+
+DATA SGRAER(  1 ), SGRAERMW(  1 ) / 'SO4_AITKEN      ' ,  96.0 /
+DATA SGRAER(  2 ), SGRAERMW(  2 ) / 'SO4_ACCUM       ' ,  96.0 /
+DATA SGRAER(  3 ), SGRAERMW(  3 ) / 'NH4_AITKEN      ' ,  18.0 /
+DATA SGRAER(  4 ), SGRAERMW(  4 ) / 'NH4_ACCUM       ' ,  18.0 /
+DATA SGRAER(  5 ), SGRAERMW(  5 ) / 'NO3_AITKEN      ' ,  18.0 /
+DATA SGRAER(  6 ), SGRAERMW(  6 ) / 'NO3_ACCUM       ' ,  18.0 /
+DATA SGRAER(  7 ), SGRAERMW(  7 ) / 'NO3_COARSE      ' ,  18.0 /
+DATA SGRAER(  8 ), SGRAERMW(  8 ) / 'ORG_AITKEN      ' , 120.0 /
+DATA SGRAER(  9 ), SGRAERMW(  9 ) / 'ORG_ACCUM       ' , 120.0 /
+DATA SGRAER( 10 ), SGRAERMW( 10 ) / 'PRI_AITKEN      ' ,   1.0 /
+DATA SGRAER( 11 ), SGRAERMW( 11 ) / 'PRI_ACCUM       ' ,   1.0 /
+DATA SGRAER( 12 ), SGRAERMW( 12 ) / 'PRI_COARSE      ' ,   1.0 /
+DATA SGRAER( 13 ), SGRAERMW( 13 ) / 'CACO3           ' , 100.1 /
+DATA SGRAER( 14 ), SGRAERMW( 14 ) / 'MGCO3           ' ,  84.3 /
+DATA SGRAER( 15 ), SGRAERMW( 15 ) / 'NACL            ' ,  58.4 /
+DATA SGRAER( 16 ), SGRAERMW( 16 ) / 'A3FE            ' ,  55.8 /
+DATA SGRAER( 17 ), SGRAERMW( 17 ) / 'B2MN            ' ,  54.9 /
+DATA SGRAER( 18 ), SGRAERMW( 18 ) / 'KCL             ' ,  74.6 /
+DATA SGRAER( 19 ), SGRAERMW( 19 ) / 'NUM_AITKEN      ' ,   1.0 /
+DATA SGRAER( 20 ), SGRAERMW( 20 ) / 'NUM_ACCUM       ' ,   1.0 /
+DATA SGRAER( 21 ), SGRAERMW( 21 ) / 'NUM_COARSE      ' ,   1.0 /
+
+DATA BGNDAER(  1 ) /  0.0 /
+DATA BGNDAER(  2 ) /  0.0 /
+DATA BGNDAER(  3 ) /  0.0 /
+DATA BGNDAER(  4 ) /  0.0 /
+DATA BGNDAER(  5 ) /  0.0 /
+DATA BGNDAER(  6 ) /  0.0 /
+DATA BGNDAER(  7 ) /  0.0 /
+DATA BGNDAER(  8 ) /  0.0 /
+DATA BGNDAER(  9 ) /  0.0 /
+DATA BGNDAER( 10 ) /  0.0 /
+DATA BGNDAER( 11 ) /  0.0 /
+DATA BGNDAER( 12 ) /  0.0 /
+DATA BGNDAER( 13 ) /  0.0 /
+DATA BGNDAER( 14 ) /  0.0 /
+DATA BGNDAER( 15 ) /  0.0 /
+DATA BGNDAER( 16 ) /  0.010 /
+DATA BGNDAER( 17 ) /  0.005 /
+DATA BGNDAER( 18 ) /  0.0 /
+DATA BGNDAER( 19 ) /  0.0 /
+DATA BGNDAER( 20 ) /  0.0 /
+DATA BGNDAER( 21 ) /  0.0 /
+
+!  Contains:  Fundamental constants for air quality modeling
+
+! Geometric Constants:
+
+REAL*8      PAI ! pai (single precision 3.141593)
+PARAMETER ( PAI = 3.14159265358979324 )
+
+REAL        PAI180 ! pai/180 [ rad/deg ]
+PARAMETER ( PAI180  = PAI / 180.0 )
+
+! Geodetic Constants:
+
+REAL        REARTH ! radius of the earth [ m ]
+                   ! FSB: radius of sphere having same surface area as
+                   ! Clarke ellipsoid of 1866 ( Source: Snyder, 1987)
+PARAMETER ( REARTH = 6370997.0 )
+
+REAL        SIDAY ! length of a sidereal day [ sec ]
+                  ! FSB: Source: CRC76 pp. 14-6
+PARAMETER ( SIDAY = 86164.09 )
+
+REAL        GRAV ! mean gravitational acceleration [ m/sec**2 ]
+                 ! FSB: Value is mean of polar and equatorial values.
+                 ! Source: CRC Handbook (76th Ed) pp. 14-6
+PARAMETER ( GRAV = 9.80622 )
+
+REAL        DG2M ! latitude degrees to meters
+PARAMETER ( DG2M = REARTH * PAI180 )
+
+! Solar Constant:
+REAL        SOLCNST ! Solar constant [ W/m**2 ], p14-2 CRC76
+PARAMETER ( SOLCNST = 1373.0 )
+
+! Fundamental Constants: ( Source: CRC76, pp. 1-1 to 1-6)
+
+REAL        AVO ! Avogadro's Constant [ number/mol ]
+PARAMETER ( AVO = 6.0221367E23 )
+
+REAL        RGASUNIV ! universal gas constant [ J/mol-K ]
+PARAMETER ( RGASUNIV = 8.314510 )
+
+REAL        STDATMPA ! standard atmosphere  [ Pa ]
+PARAMETER ( STDATMPA = 101325.0 )
+
+REAL        STDTEMP ! Standard Temperature [ K ]
+PARAMETER ( STDTEMP = 273.15 )
+
+REAL        STFBLZ ! Stefan-Boltzmann [ W/(m**2 K**4) ]
+PARAMETER ( STFBLZ = 5.67051E-8 )
+
+! FSB Non-MKS
+
+REAL        MOLVOL ! Molar volume at STP [ L/mol ] Non MKS units
+PARAMETER ( MOLVOL = 22.41410 )
+
+! Atmospheric Constants:
+
+REAL        MWAIR ! mean molecular weight for dry air [ g/mol ]
+                  ! FSB: 78.06% N2, 21% O2, and 0.943% A on a mole
+                  ! fraction basis ( Source : Hobbs, 1995) pp. 69-70
+PARAMETER ( MWAIR = 28.9628 )
+
+REAL        RDGAS  ! dry-air gas constant [ J / kg-K ]
+PARAMETER ( RDGAS = 1.0E3 * RGASUNIV / MWAIR ) ! 287.07548994
+
+REAL        MWWAT ! mean molecular weight for water vapor [ g/mol ]
+PARAMETER ( MWWAT = 18.0153 )
+
+REAL        RWVAP ! gas constant for water vapor [ J/kg-K ]
+PARAMETER ( RWVAP = 1.0E3 * RGASUNIV / MWWAT ) ! 461.52492604
+
+! FSB NOTE: CPD, CVD, CPWVAP and CVWVAP are calculated assuming dry air and
+! water vapor are classical ideal gases, i.e. vibration does not contribute
+! to internal energy.
+
+REAL        CPD ! specific heat of dry air at constant pressure [ J/kg-K ]
+PARAMETER ( CPD = 7.0 * RDGAS / 2.0 )          ! 1004.7642148
+
+REAL        CVD ! specific heat of dry air at constant volume [ J/kg-K ]
+PARAMETER ( CVD = 5.0 * RDGAS / 2.0 )          ! 717.68872485
+
+REAL        CPWVAP ! specific heat for water vapor at constant pressure [ J/kg-K ]
+PARAMETER ( CPWVAP = 4.0 * RWVAP )             ! 1846.0997042
+
+REAL        CVWVAP ! specific heat for water vapor at constant volume [ J/kg-K ]
+PARAMETER ( CVWVAP = 3.0 * RWVAP )             ! 1384.5747781
+
+REAL        VP0 ! vapor press of water at 0 C [ Pa ] Source: CRC76 pp. 6-15
+PARAMETER ( VP0 = 611.29 )
+
+! FSB The following values are taken from p. 641 of Stull (1988):
+
+REAL        LV0 ! latent heat of vaporization of water at 0 C [ J/kg ]
+PARAMETER ( LV0 = 2.501E6 )
+
+REAL        DLVDT ! Rate of change of latent heat of vaporization with
+                  ! respect to temperature [ J/kg-K ]
+PARAMETER ( DLVDT = 2370.0 )
+
+REAL        LF0 ! latent heat of fusion of water at 0 C [ J/kg ]
+PARAMETER ( LF0 = 3.34E5 )
+
+!.......................................................................

@@ -1,0 +1,20 @@
+ &clmexp
+ site           = 'site15'
+ flaidat        = ''
+ fmetdat        = '/home/zhq/data/PRCsingle/site15'
+ fhistTimeConst = '/p2/zhq/CoLM_PRC/site15/RSTDAT/site15-rstTimeConst'
+ fhistTimeVar   = 
+ '/p2/zhq/CoLM_PRC/site15/RSTDAT/site15-rstTimeVar-1991-001-01800'
+ foutdat        = '/p2/zhq/CoLM_PRC/site15/OUT/site15'
+ lhistTimeConst =          150
+ lhistTimeVar   =          160
+ lulai          =          120
+ lumet          =          140
+ luout          =          170
+ lon_points     =            1
+ lat_points     =            1
+ numcolumn      =            3
+ numpatch       =            3
+ deltim         =    1800.00000000000     
+ mstep          =       175200
+ /

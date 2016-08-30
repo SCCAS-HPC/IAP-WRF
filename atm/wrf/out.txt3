@@ -1,0 +1,73 @@
+main/wrf_comp_mct.F:  real, dimension(:,:,:),allocatable :: gcoef
+main/real_nmm.F:   REAL, DIMENSION(:,:,:), ALLOCATABLE, SAVE :: ubdy3dtemp1 , vbdy3dtemp1 ,&
+main/real_nmm.F:   REAL, DIMENSION(:,:,:), ALLOCATABLE, SAVE :: ubdy3dtemp2 , vbdy3dtemp2 , &
+main/tc_em.F:  real, dimension(:,:,:) , allocatable :: u11,v11,t11,rh11,phi11
+main/tc_em.F:  real, dimension(:,:,:) , allocatable :: u1 , v1 , t1 , rh1 , phi1
+main/wrf_comp_mct.F.0513:  real, dimension(:,:,:),allocatable :: gcoef
+main/wrf_comp_mct.F.0522.right:  real, dimension(:,:,:),allocatable :: gcoef
+main/.svn/text-base/real_nmm.F.svn-base:   REAL, DIMENSION(:,:,:), ALLOCATABLE, SAVE :: ubdy3dtemp1 , vbdy3dtemp1 ,&
+main/.svn/text-base/real_nmm.F.svn-base:   REAL, DIMENSION(:,:,:), ALLOCATABLE, SAVE :: ubdy3dtemp2 , vbdy3dtemp2 , &
+main/.svn/text-base/tc_em.F.svn-base:  real, dimension(:,:,:) , allocatable :: u11,v11,t11,rh11,phi11
+main/.svn/text-base/tc_em.F.svn-base:  real, dimension(:,:,:) , allocatable :: u1 , v1 , t1 , rh1 , phi1
+prep/process_domain_module.F.0515-2:       real, dimension(:,:,:), allocatable :: av
+prep/process_domain_module.F.0515-2:       real, dimension(:,:,:), allocatable :: av
+prep/process_domain_module.F.0523.right.jingjian:       real, dimension(:,:,:), allocatable :: av
+prep/process_domain_module.F.0523.right.jingjian:       real, dimension(:,:,:), allocatable :: av
+prep/process_domain_module.F.right.zuizhong:       real, dimension(:,:,:), allocatable :: av
+prep/process_domain_module.F.right.zuizhong:       real, dimension(:,:,:), allocatable :: av
+prep/process_domain_module.F.8:       real, dimension(:,:,:), allocatable :: av
+prep/process_domain_module.F.8:       real, dimension(:,:,:), allocatable :: av
+prep/process_tile_module.F.badexample3:      real, dimension(:,:,:), allocatable :: field, slp_field
+prep/module_camdomain.F.twoway.version1:   real, dimension(:,:,:), allocatable :: patch_array
+prep/module_camdomain.F.twoway.version1:   real, dimension(:,:,:), allocatable :: domain_array
+prep/module_camdomain.F.twoway.version1:   real, dimension(:,:,:), allocatable :: patch_array
+prep/module_camdomain.F.twoway.version1:   real, dimension(:,:,:), allocatable :: domain_array
+prep/module_camdomain.F.twoway.version1:   real, dimension(:,:,:), allocatable :: patch_array
+prep/module_camdomain.F.twoway.version1:   real, dimension(:,:,:), allocatable :: domain_array
+prep/module_camdomain.F.twoway.version1:   real, dimension(:,:,:), allocatable :: patch_array
+prep/module_camdomain.F.twoway.version1:   real, dimension(:,:,:), allocatable :: domain_array
+prep/module_camdomain.F.twoway.version1:   real, dimension(:,:,:), allocatable :: patch_array
+prep/module_camdomain.F.twoway.version1:   real, dimension(:,:,:), allocatable :: domain_array
+prep/process_domain_module.F.0522-1:       real, dimension(:,:,:), allocatable :: av
+prep/process_domain_module.F.0522-1:       real, dimension(:,:,:), allocatable :: av
+prep/process_tile_module.F.0522.right:      real, dimension(:,:,:), allocatable :: field, slp_field
+prep/process_domain_module.F.0521-2:       real, dimension(:,:,:), allocatable :: av
+prep/process_domain_module.F.0521-2:       real, dimension(:,:,:), allocatable :: av
+prep/module_geogrid.F.badexample2:   real, dimension(:,:,:),allocatable:: albedo12m,  greenfrac
+prep/module_geogrid.F.badexample2:   real, dimension(:,:,:),allocatable:: soilctop, soilcbot
+prep/module_geogrid.F.badexample2:   real, dimension(:,:,:),allocatable:: landusef
+prep/module_camdomain.F:   real, dimension(:,:,:), allocatable :: patch_array
+prep/module_camdomain.F:   real, dimension(:,:,:), allocatable :: domain_array
+prep/module_camdomain.F:   real, dimension(:,:,:), allocatable :: patch_array
+prep/module_camdomain.F:   real, dimension(:,:,:), allocatable :: domain_array
+prep/module_camdomain.F:   real, dimension(:,:,:), allocatable :: patch_array
+prep/module_camdomain.F:   real, dimension(:,:,:), allocatable :: domain_array
+prep/module_camdomain.F:   real, dimension(:,:,:), allocatable :: patch_array
+prep/module_camdomain.F:   real, dimension(:,:,:), allocatable :: domain_array
+prep/module_camdomain.F:   real, dimension(:,:,:), allocatable :: patch_array
+prep/module_camdomain.F:   real, dimension(:,:,:), allocatable :: domain_array
+prep/process_tile_module.F.badexample2:      real, dimension(:,:,:), allocatable :: field, slp_field
+prep/process_domain_module.F.0522:       real, dimension(:,:,:), allocatable :: av
+prep/process_domain_module.F.0522:       real, dimension(:,:,:), allocatable :: av
+prep/process_domain_module.F.last.right.0701:       real, dimension(:,:,:), allocatable :: av
+prep/process_domain_module.F.last.right.0701:       real, dimension(:,:,:), allocatable :: av
+prep/module_geodomain.F:    real, dimension(:,:,:),allocatable:: albedo12m,  greenfrac
+prep/module_geodomain.F:    real, dimension(:,:,:),allocatable:: soilctop, soilcbot
+prep/module_geodomain.F:    real, dimension(:,:,:),allocatable:: landusef
+prep/process_domain_module.F.0516:       real, dimension(:,:,:), allocatable :: av
+prep/process_domain_module.F.0516:       real, dimension(:,:,:), allocatable :: av
+prep/process_tile_module.F:      real, dimension(:,:,:), allocatable :: field, slp_field
+prep/process_domain_module.F.0627.right.jingjian:       real, dimension(:,:,:), allocatable :: av
+prep/process_domain_module.F.0627.right.jingjian:       real, dimension(:,:,:), allocatable :: av
+prep/process_domain_module.F.9:       real, dimension(:,:,:), allocatable :: av
+prep/process_domain_module.F.9:       real, dimension(:,:,:), allocatable :: av
+prep/process_domain_module.F:       real, dimension(:,:,:), allocatable :: av
+prep/process_domain_module.F:       real, dimension(:,:,:), allocatable :: av
+prep/process_domain_module.F.0515:       real, dimension(:,:,:), allocatable :: av
+prep/process_domain_module.F.0515:       real, dimension(:,:,:), allocatable :: av
+var/da/da_setup_structures/da_write_kma_increments.inc:   real, dimension(:,:,:), allocatable :: u_g, v_g, t_g, q_g, p_g
+var/da/da_setup_structures/da_write_increments.inc:   real, dimension(:,:,:), allocatable :: u_global, v_global, w_global, &
+var/da/da_setup_structures/.svn/text-base/da_write_increments.inc.svn-base:   real, dimension(:,:,:), allocatable :: u_global, v_global, w_global, &
+var/da/da_setup_structures/.svn/text-base/da_write_kma_increments.inc.svn-base:   real, dimension(:,:,:), allocatable :: u_g, v_g, t_g, q_g, p_g
+Binary file var/convertor/convertor.tar matches
+Binary file var/convertor/.svn/text-base/convertor.tar.svn-base matches

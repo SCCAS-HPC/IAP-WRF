@@ -1,0 +1,177 @@
+'open ../ctl/CN.reg.ctl'
+*'open co2-355.ctl'
+*'open co2-375.ctl'
+
+'set grid off'
+'set grads off'
+*'set parea 1 9 0.3 8.3'
+
+imagepath='global500/'
+
+*'set t 465 512'
+*'set t 1425 1472'
+
+'enable print global500.gm'
+
+t=500
+*t=1425
+
+while(t<=500)
+
+   'set t 't
+
+   'c'
+   'set gxout shaded'
+   'set clevs 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0'
+   'set ccols 0 4 11 5 13 3 10 7 12 8 2 6' 
+*   'set cint 2'
+   'd nettem'
+   'draw title Needleleaf Evergreen Temperate Tree \ spinup year: '%t%''
+   'cbarn'
+*  'printim '%imagepath%'NETtem'%t%'.gif gif x1024 y768 white'
+   'print'
+   'c'
+
+   'set gxout shaded'
+   'set clevs 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0'
+   'set ccols 0 4 11 5 13 3 10 7 12 8 2 6'  
+*   'set cint 2'
+   'd netbor'
+   'draw title Needleleaf Evergreen Boreal Tree \ spinup year: '%t%''
+   'cbarn'
+*  'printim '%imagepath%'NETbor'%t%'.gif gif x1024 y768 white'
+   'print'
+   'c'
+
+   'set gxout shaded'
+   'set clevs 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0'
+   'set ccols 0 4 11 5 13 3 10 7 12 8 2 6'  
+*   'set cint 2'
+   'd bettro'
+   'draw title Broadleaf Evergreen Tropical Tree \ spinup year: '%t%''
+   'cbarn'
+*  'printim '%imagepath%'BETtro'%t%'.gif gif x1024 y768 white'
+   'print'
+   'c'
+
+   'set gxout shaded'
+   'set clevs 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0'
+   'set ccols 0 4 11 5 13 3 10 7 12 8 2 6'  
+*   'set cint 2'
+   'd bettem'
+   'draw title Broadleaf Evergreen Temperate Tree \ spinup year: '%t%''
+   'cbarn'
+*  'printim '%imagepath%'BETtem'%t%'.gif gif x1024 y768 white'
+   'print'
+   'c'
+
+   'set gxout shaded'
+   'set clevs 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0'
+   'set ccols 0 4 11 5 13 3 10 7 12 8 2 6'  
+*   'set cint 2'
+   'd bdttro'
+   'draw title Broadleaf Decidous Tropical Tree \ spinup year: '%t%''
+   'cbarn'
+*  'printim '%imagepath%'BDTtro'%t%'.gif gif x1024 y768 white'
+   'print'
+   'c'
+
+   'set gxout shaded'
+   'set clevs 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0'
+   'set ccols 0 4 11 5 13 3 10 7 12 8 2 6'  
+*   'set cint 2'
+   'd bdttem'
+   'draw title Broadleaf Decidous Temperate Tree \ spinup year: '%t%''
+   'cbarn'
+*  'printim '%imagepath%'BDTtem'%t%'.gif gif x1024 y768 white'
+   'print'
+   'c'
+
+   'set gxout shaded'
+   'set clevs 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0'
+   'set ccols 0 4 11 5 13 3 10 7 12 8 2 6'  
+*   'set cint 2'
+   'd bdtbor'
+   'draw title Broadleaf Decidous Boreal Tree \ spinup year: '%t%''
+   'cbarn'
+*  'printim '%imagepath%'BDTbor'%t%'.gif gif x1024 y768 white'
+   'print'
+   'c'
+
+   'set gxout shaded'
+   'set clevs 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0'
+   'set ccols 0 4 11 5 13 3 10 7 12 8 2 6'  
+*   'set cint 2'
+   'd c3arc'
+   'draw title C3 Actic Grass \ spinup year: '%t%''
+   'cbarn'
+*  'printim '%imagepath%'C3arc'%t%'.gif gif x1024 y768 white'
+   'print'
+   'c'
+
+   'set gxout shaded'
+   'set clevs 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0'
+   'set ccols 0 4 11 5 13 3 10 7 12 8 2 6'  
+*   'set cint 2'
+   'd c3'
+   'draw title C3 Non-Actic Grass \ spinup year: '%t%''
+   'cbarn'
+*  'printim '%imagepath%'C3'%t%'.gif gif x1024 y768 white'
+   'print'
+   'c'
+
+   'set gxout shaded'
+   'set clevs 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0'
+   'set ccols 0 4 11 5 13 3 10 7 12 8 2 6'  
+*   'set cint 2'
+   'd c4'
+   'draw title C4 Non-Actic Grass \ spinup year: '%t%''
+   'cbarn'
+*  'printim '%imagepath%'C4'%t%'.gif gif x1024 y768 white'
+   'print'
+   'c'
+
+    t=t+20; say t
+endwhile 
+
+*t=490
+*   'set t 't
+*   'set gxout shaded'
+**   'set cint 2'
+*   'd lai.2+sai.2'
+*   'draw title Vegetation Leaf & Stem Area Index \ '
+*   'cbarn'
+*   'printim '%imagepath%t%'lai_sai.gif gif x1024 y768 white'
+*   'c'
+*
+*   'set gxout shaded'
+**   'set cint 2'
+*   'd sigf.2'
+*   'draw title Fraction of Vegetation Cover \ '
+*   'cbarn'
+*   'printim '%imagepath%t%'sigf.gif gif x1024 y768 white'
+*   'c'
+*
+*t=1450
+*   'set t 't
+*   'set gxout shaded'
+**   'set cint 2'
+*   'd lai.2+sai.2'
+*   'draw title Vegetation Leaf & Stem Area Index \ '
+*   'cbarn'
+*   'printim '%imagepath%t%'lai_sai.gif gif x1024 y768 white'
+*   'c'
+*
+*   'set gxout shaded'
+**   'set cint 2'
+*   'd sigf.2'
+*   'draw title Fraction of Vegetation Cover \ '
+*   'cbarn'
+*   'printim '%imagepath%t%'sigf.gif gif x1024 y768 white'
+*   'c'
+*
+*'close 3'
+*'close 2'
+'close 1'
+
+'disable print'

@@ -1,0 +1,19 @@
+ &clmexp
+ site           = 'global.1deg'
+ flaidat        = ''
+ fmetdat        = '/mnt/swgfs/jidy/Princeton_30MIN'
+ fhistTimeConst = '/home/jidy/colmcn/data/global.1deg.const.pft'
+ fhistTimeVar   = '/home/jidy/colmcn/data/global.1deg.restart.pft-1990-001-01800'
+ foutdat        = '/home/jidy/colmcn/output/global'
+ lhistTimeConst =          150
+ lhistTimeVar   =          160
+ lulai          =          120
+ lumet          =          140
+ luout          =          170
+ lon_points     =          360
+ lat_points     =          180
+ numcolumn      =        36363
+ numpatch       =       379547
+ deltim         =    1800.0000000000000     
+ mstep          =       175200
+ /

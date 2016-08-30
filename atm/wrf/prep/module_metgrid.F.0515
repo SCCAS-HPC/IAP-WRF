@@ -1,0 +1,101 @@
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! Program metgrid
+!
+! First version: Michael Duda -- January 2006 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  module module_metgrid
+
+   use interp_option_module
+   use module_debug
+   use process_domain_module
+   use module_domain
+   use module_configure
+   use module_camdomain
+   use module_dm     ! by Yuzhu Wang, 2014-04-25
+   use perf_mod      ! by Yuzhu Wang, 2014-04-21
+ 
+   contains
+
+   subroutine metgrid(mgrid, grid, n)
+   
+   type(metgrid_info) :: mgrid
+   type(domain) :: grid
+   integer, intent(in) :: n
+   
+   logical :: extra_col, extra_row
+   integer :: ids, ide, jds, jde, kds, kde,    &
+              ims, ime, jms, jme, kms, kme,    &    
+              ips, ipe, jps, jpe, kps, kpe 
+
+   integer :: fort_test,rank_number  !by Yuzhu Wang, 2014-04-27
+   real :: ts1,te1,ts2,te2,ts3,te3,ts4,te4  !by Yuzhu Wang, 2014-04-27
+   ! Having determined which processor we are, which grid type we are, and where 
+   !   our patch is located in the domain, we can determine if U or V staggered 
+   !   fields will have one more row or column than the M staggered fields
+      
+     call t_startf('get_ijk_from_grid')  !by Yuzhu Wang, 2014-04-27
+     call cpu_time(ts1)  !by Yuzhu Wang, 2014-04-27
+     call get_ijk_from_grid ( grid,    &
+                              ids, ide, jds, jde, kds, kde,    &
+                              ims, ime, jms, jme, kms, kme,    &    
+
+                              ips, ipe, jps, jpe, kps, kpe    )    
+     call cpu_time(te1)  !by Yuzhu Wang, 2014-04-27
+     
+     fort_test=10+mytask  !by Yuzhu Wang, 2014-04-27
+     rank_number=mytask   !by Yuzhu Wang, 2014-04-27
+     write(fort_test,*) 'jjr test: mytask=',mytask,'ips,ipe,jps,jpe,kps,kpe=',ips,ipe,jps,jpe,kps,kpe  !by Yuzhu Wang, 2014-04-24
+     write(fort_test,*) 'jjr test: get_ijk_from_grid time=',te1-ts1  !by Yuzhu Wang, 2014-04-27
+     call t_stopf  ('get_ijk_from_grid')  !by Yuzhu Wang, 2014-04-27
+ 
+       if (ipe .eq. ide) then ! One more column for U points
+            extra_col = .true.
+       else
+            extra_col = .false.
+       end if
+  
+       if (jpe .eq. jde ) then ! One more row for V points
+            extra_row = .true.
+       else
+            extra_row = .false.
+       end if
+
+   ! Get info about which interpolators should be used with each field
+      ! call t_startf('read_interp_table')
+       call cpu_time(ts2)  !by Yuzhu Wang, 2014-04-27
+       call  read_interp_table()
+       call cpu_time(te2)  !by Yuzhu Wang, 2014-04-27
+       write(fort_test,*) 'jjr test: read_interp_table time=',te2-ts2  !by Yuzhu Wang, 2014-04-27
+       !call t_stopf  ('read_interp_table')
+
+   ! Now begin the processing work, looping over all domains to be processed    
+       !call t_startf('process_domain')
+       call cpu_time(ts3)  !by Yuzhu Wang, 2014-04-27
+       call process_domain(mgrid, grid, n, rank_number, extra_row, extra_col)
+       call cpu_time(te3)  !by Yuzhu Wang, 2014-04-27
+       write(fort_test,*) 'jjr test: process_domain time=',te3-ts3  !by Yuzhu Wang, 2014-04-27
+       !call t_stopf  ('process_domain')
+
+   ! Clean up and quit.
+       !call t_startf('interp_option_destroy')
+       call cpu_time(ts4)  !by Yuzhu Wang, 2014-04-27
+       call interp_option_destroy()
+       call cpu_time(te4)  !by Yuzhu Wang, 2014-04-27
+       write(fort_test,*) 'jjr test: interp_option_destroy time=',te4-ts4  !by Yuzhu Wang, 2014-04-27
+      ! call t_stopf  ('interp_option_destroy')
+
+!       print *, ' *** Successful completion of metgrid *** '
+ !      if (n.eq.2) then
+         write(fort_test,*) 'jjr test: n=',n,'mgrid ids, ide, jds, jde, kds,kde=',mgrid%ids,mgrid%ide,mgrid%jds,mgrid%jde,mgrid%kds,mgrid%kde
+         write(fort_test,*) 'jjr test: n=',n,'mgrid ims, ime, jms, jme, kms,kme=',mgrid%ims,mgrid%ime,mgrid%jms,mgrid%jme,mgrid%kms,mgrid%kme
+         write(fort_test,*) 'jjr test: n=',n,'mgrid imsx, imex, jmsx, jmex, kmsx,kmex=',mgrid%imsx,mgrid%imex,mgrid%jmsx,mgrid%jmex,mgrid%kmsx,mgrid%kmex
+         write(fort_test,*) 'jjr test: n=',n,'mgrid imsy, imey, jmsy, jmey, kmsy,kmey=',mgrid%imsy,mgrid%imey,mgrid%jmsy,mgrid%jmey,mgrid%kmsy,mgrid%kmey
+         write(fort_test,*) 'jjr test: n=',n,'mgrid ips, ipe, jps, jpe, kps,kpe=',mgrid%ips,mgrid%ipe,mgrid%jps,mgrid%jpe,mgrid%kps,mgrid%kpe
+         write(fort_test,*) 'jjr test: n=',n,'mgrid ipsx, ipex, jpsx, jpex, kpsx,kpex=',mgrid%ipsx,mgrid%ipex,mgrid%jpsx,mgrid%jpex,mgrid%kpsx,mgrid%kpex
+         write(fort_test,*) 'jjr test: n=',n,'mgrid ipsy, ipey, jpsy, jpey, kpsy,kpey=',mgrid%ipsy,mgrid%ipey,mgrid%jpsy,mgrid%jpey,mgrid%kpsy,mgrid%kpey
+         !write(fort_test,*) 'jjr test: mytask=',mytask,'mgrid xlat=',mgrid%xlat
+         !write(fort_test,*) 'jjr test: mytask=',mytask,'mgrid xlon=',mgrid%xlon
+!       end if
+      end subroutine metgrid
+
+end module module_metgrid

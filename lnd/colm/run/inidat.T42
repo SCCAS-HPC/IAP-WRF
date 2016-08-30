@@ -1,0 +1,19 @@
+&clminiexp
+site           = 'global.t42'
+greenwich      = .true.
+start_yr       =  1990
+start_jday     =  1
+start_sec      =  1800
+fsurdat        = '/home/jidy/CoLM_csm/data/srfdat.T42.MOM4p1.pft'
+flaidat        = ''
+fsoildat       = ''
+fmetdat        = ''
+fhistTimeConst = '/home/jidy/CoLM_csm/data/T42.MOM4p1-rstTimeConst'
+fhistTimeVar   = '/home/jidy/CoLM_csm/data/T42.MOM4p1-rstTimeVar'
+foutdat        = '/home/jidy/CoLM_csm/output/T42.MOM4p1'
+finfolist      = '/home/jidy/CoLM_csm/colmcn/run/clmini.infolist.T42.MOM4p1'
+lon_points     =  128
+lat_points     =   64
+deltim         =  1800
+mstep          =  175200
+/
